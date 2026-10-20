@@ -5,7 +5,9 @@ set -euo pipefail
 OUT=${1:-build/web_artifact}
 GODOT=${2:-${GODOT:-godot}}
 cd "$(dirname "$0")/.."
-mkdir -p export/web
+mkdir -p export/web "$OUT"
+# keep Godot from importing (and packing) earlier build output
+touch export/.gdignore "$(dirname "$OUT")/.gdignore"
 "$GODOT" --headless --path . --export-release "Web" export/web/index.html
 python3 tools/web_artifact.py export/web "$OUT"
 ls -la "$OUT"
