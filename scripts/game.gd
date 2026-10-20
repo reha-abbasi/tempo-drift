@@ -62,6 +62,7 @@ var _death_cause := ""
 
 func _ready() -> void:
 	_parse_args()
+	_tune_for_renderer()
 	hud.pause_pressed.connect(_pause)
 	hud.resume_pressed.connect(_resume)
 	hud.restart_pressed.connect(_start_run)
@@ -73,6 +74,17 @@ func _ready() -> void:
 	if _autoplay:
 		_bot = Autopilot.new()
 		_start_run.call_deferred()
+
+
+## The Compatibility renderer (used by the Web build) lights the scene brighter
+## than the Mobile renderer used on iPhone, so tone it down to look the same.
+func _tune_for_renderer() -> void:
+	if RenderingServer.get_current_rendering_method() != "gl_compatibility":
+		return
+	var env: Environment = $WorldEnvironment.environment
+	env.ambient_light_energy = 0.45
+	env.tonemap_exposure = 0.8
+	$Sun.light_energy = 1.0
 
 
 func _exit_tree() -> void:
@@ -341,6 +353,9 @@ func _collect(delta: float) -> void:
 
 
 func _update_camera(delta: float) -> void:
+	# portrait phone: fit the 3 lanes to the width. Wide desktop window: fit the height.
+	var vp := get_viewport().get_visible_rect().size
+	camera.keep_aspect = Camera3D.KEEP_WIDTH if vp.x < vp.y else Camera3D.KEEP_HEIGHT
 	var target: Vector3
 	var look: Vector3
 	var px := player.position.x

@@ -149,6 +149,7 @@ func step(delta: float, track: Track, speed: float) -> String:
 func idle(delta: float) -> void:
 	_run_phase += delta * 2.0
 	_model.rotation.x = lerpf(_model.rotation.x, 0.0, 1.0 - exp(-delta * 10.0))
+	_model.rotation.y = lerpf(_model.rotation.y, -0.45, 1.0 - exp(-delta * 6.0))  # face the menu camera
 	_body.position.y = sin(_run_phase) * 0.02
 	_leg_l.rotation.x = 0.0
 	_leg_r.rotation.x = 0.0
@@ -179,6 +180,7 @@ func _animate(delta: float, speed: float) -> void:
 	if _lane_t < 1.0:
 		lean = signf(GameConfig.lane_x(lane) - _lane_from_x) * -0.35 * sin(_lane_t * PI)
 	_model.rotation.z = lean
+	_model.rotation.y = lerpf(_model.rotation.y, 0.0, 1.0 - exp(-delta * 10.0))
 
 	if is_sliding():
 		_model.rotation.x = lerpf(_model.rotation.x, 1.15, k)
