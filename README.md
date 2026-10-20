@@ -4,6 +4,9 @@ A 3-lane endless runner for iPhone in the style of Subway Surfers / Temple Run, 
 [@reha-abbasi](https://github.com/reha-abbasi) and [@muratbyk](https://github.com/muratbyk).
 Goal: publish on the Apple App Store.
 
+**New to coding or git?** Read [`docs/START-HERE.md`](docs/START-HERE.md) first. It explains the words, the folders and
+the common jobs in plain language. Each folder also has a `README.md` saying what's in it.
+
 Built with **[Godot 4.7.2](https://godotengine.org/download/archive/4.7.2-stable/)**: free, open source, exports to iOS,
 and its scene/script files are plain text, so two people can work on it in git without constant merge conflicts.
 
@@ -55,6 +58,7 @@ We keep a private browser copy of the game at https://claude.ai/artifact/HmgViG5
    ```bash
    tools/web_preview.sh build/web_artifact /path/to/godot
    ```
+   Step-by-step version for non-coders: [`tools/README.md`](tools/README.md).
    This exports the Web preset and runs `tools/web_artifact.py`, which splits the engine file into parts under 15 MB
    and renames `index.pck` to `index.pck.wasm`, because artifacts only accept smaller files with known extensions.
 3. Ask Claude: *"Publish `build/web_artifact/index.html` with all the other files in that folder as supporting files,
