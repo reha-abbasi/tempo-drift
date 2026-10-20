@@ -45,6 +45,23 @@ Apple requires a **Mac with Xcode** to build an iPhone app, for testing and for 
 
 There is also a **Web** export preset (`Project > Export > Web`), handy for quick tests in a phone browser.
 
+## Updating the shared web preview (Claude artifact)
+
+We keep a private browser copy of the game at https://claude.ai/artifact/HmgViG5EE7wUr46QJXHNBE
+(open it on a phone to test). Anyone with **edit** access to that artifact can update it from a Claude Code session:
+
+1. `git pull` on `main` so the preview matches the merged code.
+2. Build the preview files (needs Godot 4.7.2 and its export templates, see *Getting it onto an iPhone* step 2):
+   ```bash
+   tools/web_preview.sh build/web_artifact /path/to/godot
+   ```
+   This exports the Web preset and runs `tools/web_artifact.py`, which splits the engine file into parts under 15 MB
+   and renames `index.pck` to `index.pck.wasm`, because artifacts only accept smaller files with known extensions.
+3. Ask Claude: *"Publish `build/web_artifact/index.html` with all the other files in that folder as supporting files,
+   to the existing artifact https://claude.ai/artifact/HmgViG5EE7wUr46QJXHNBE."*
+
+`build/` is in `.gitignore`, so the generated files never get committed.
+
 ## Project layout
 
 ```
@@ -65,7 +82,7 @@ scripts/
 shaders/               ground (tracks/sidewalk) and building-window shaders
 assets/audio/          placeholder sounds (made by tools/make_audio.py)
 tests/run_tests.gd     gameplay tests
-tools/                 audio generator, screenshot script
+tools/                 audio generator, screenshot script, web preview packager
 ```
 
 The world scrolls toward the camera and the player stays at z = 0, so numbers never get huge on long runs.
