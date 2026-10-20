@@ -62,22 +62,6 @@ We keep a private browser copy of the game at https://claude.ai/artifact/HmgViG5
 
 `build/` is in `.gitignore`, so the generated files never get committed.
 
-## Updating the web preview (Claude artifact)
-
-Our shared, playable test copy lives at **https://claude.ai/artifact/HmgViG5EE7wUr46QJXHNBE** (private: open it
-with an account that was given access). Anyone with **edit** access can update it with Claude Code:
-
-1. Merge your changes into `main` and `git pull`.
-2. Install Godot 4.7.2 and its export templates (*Editor > Manage Export Templates > Download and Install*).
-3. Build the preview: `python3 tools/build_web_preview.py "path/to/Godot"`. It writes everything to `export/web_preview/`.
-4. Ask Claude Code, in this project folder:
-
-   > Read the artifact https://claude.ai/artifact/HmgViG5EE7wUr46QJXHNBE, then publish
-   > `export/web_preview/index.html` to that same URL, with every other file in `export/web_preview/`
-   > as supporting files at the same names.
-
-The same link updates for everyone. Only publish from `main`, so the preview always matches the shared code.
-
 ## Project layout
 
 ```
