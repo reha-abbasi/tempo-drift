@@ -14,6 +14,12 @@ Open this folder in Claude Code and ask in normal words, for example:
 
 The rest of this page is for when you want to understand or do things yourself.
 
+## Do I need to install Godot?
+
+Not to play or test: just open the web preview link in a browser.
+To change the code and try your change, see the options table in the main [`README.md`](../README.md#do-i-need-to-download-godot).
+Some options don't need any download.
+
 ## Words you'll see
 
 | Word | What it means |
