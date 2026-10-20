@@ -1,0 +1,13 @@
+# Godot 4 cache / editor data
+.godot/
+*.translation
+
+# Builds
+export/
+build/
+*.ipa
+*.apk
+
+# OS junk
+.DS_Store
+Thumbs.db
