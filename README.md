@@ -1,7 +1,7 @@
 # Runner Game
 
 A 3-lane endless runner for iPhone (Subway Surfers / Temple Run style), built by
-[@reha-abbasi](https://github.com/reha-abbasi) and [@mbuyukyoruk](https://github.com/mbuyukyoruk).
+[@reha-abbasi](https://github.com/reha-abbasi) and [@muratbyk](https://github.com/muratbyk).
 Goal: publish on the Apple App Store.
 
 ## Gameplay (planned)
