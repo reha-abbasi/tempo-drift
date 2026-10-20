@@ -1,0 +1,5 @@
+# Normalize line endings so Windows/Mac/Linux edits don't fight in git
+* text=auto eol=lf
+*.wav binary
+*.png binary
+*.ogg binary
