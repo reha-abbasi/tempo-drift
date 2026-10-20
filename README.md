@@ -1,7 +1,7 @@
 # Lane Runner (working title)
 
 A 3-lane endless runner for iPhone in the style of Subway Surfers / Temple Run, built by
-[@reha-abbasi](https://github.com/reha-abbasi) and [@mbuyukyoruk](https://github.com/mbuyukyoruk).
+[@reha-abbasi](https://github.com/reha-abbasi) and [@muratbyk](https://github.com/muratbyk).
 Goal: publish on the Apple App Store.
 
 Built with **[Godot 4.7.2](https://godotengine.org/download/archive/4.7.2-stable/)**: free, open source, exports to iOS,
