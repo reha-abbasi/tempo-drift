@@ -323,6 +323,19 @@ tr:last-child td{border-bottom:0}
 .mres .mr.done .r{color:#1a0a04}
 .mres .bar{grid-column:1/-1;height:4px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden}
 .mres .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ff9a6b)}
+/* change log: every version, newest first */
+.home .pill.news{cursor:pointer;color:#fff;border-color:rgba(255,255,255,.3);font-size:12px;margin-left:auto}
+.home .pill.news+.ghost.icon{margin-left:0}
+.home .pill.news:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#changes{justify-content:flex-start}
+.clog{list-style:none;margin:0;padding:0 2px 8px;display:grid;gap:9px;overflow-y:auto;min-height:0;flex:1 1 auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.clog>li{background:rgba(20,16,30,.86);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 12px}
+.clog>li.now{border-color:var(--gold);box-shadow:0 0 0 1px rgba(255,212,92,.35)}
+.clog .vh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.clog .vh b{font:700 14.5px var(--display);letter-spacing:.02em}
+.clog .vh .v{font:600 11px var(--mono);color:var(--gold)}
+.clog .vh small{margin-left:auto;font:400 10.5px var(--mono);color:var(--muted)}
+.clog ul{margin:6px 0 0;padding-left:17px;display:grid;gap:3px;font:400 12px/1.45 var(--body);color:#d8d0ec}
 </style>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#000;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -360,6 +373,7 @@ body{padding:0!important}
         <div class="topbar">
           <span class="pill"><i class="coin"></i> <span id="walletN">0</span></span>
           <span class="pill star" id="starTot">★ 0/75</span>
+          <button class="pill news" id="logBtn" aria-label="Change log: what's new">✦ <span id="logVer">v17.2</span></button>
           <button class="ghost icon" id="setBtn" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.4 7.4 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="toast" id="toast" hidden></div>
@@ -385,6 +399,10 @@ body{padding:0!important}
             <button class="tile" id="boardBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11 M17 6h3v1.5A3.5 3.5 0 0 1 16.5 11 M12 13v4 M8.5 20h7l-.8-3h-5.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>SCORES</span></button>
           </div>
         </div>
+      </div>
+      <div class="menu panel" id="changes" hidden>
+        <div class="phead"><button class="ghost back" id="logBack">‹ BACK</button><b>CHANGE LOG</b><span class="tot"></span></div>
+        <ol class="clog" id="clog"></ol>
       </div>
       <div class="menu panel" id="settings" hidden>
         <div class="phead"><button class="ghost back" id="setBack">‹ BACK</button><b>SETTINGS</b><span class="tot"></span></div>
@@ -471,7 +489,7 @@ body{padding:0!important}
 
   <div class="info">
     <div>
-      <div class="eyebrow">Version 17 · world map · Murat’s list</div>
+      <div class="eyebrow">Version 17.2 · change log</div>
       <h1>Tempo Drift</h1>
       <p class="lede">Rebuilt around the Golden Hour Realism style: real sunlight, shadows, reflections and textured buildings in every city. Three eras instead of four, back to three lanes, and new things to do: tap to shatter glass on the beat, grab power-ups, chase missions and a daily gift.</p>
     </div>
@@ -2375,13 +2393,41 @@ function resize(){const r=cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.w
   pathMat.resolution.set(w,h);aimMat.resolution.set(w,h);if(typeof iCam!=='undefined'){iCam.aspect=w/h;iCam.updateProjectionMatrix();}}
 new ResizeObserver(resize).observe(cv);resize();
 let running=!reduce,visible=true;
-const PANELS=['menu','eps','board','garage','missions','settings'];
+const PANELS=['menu','eps','board','garage','missions','settings','changes'];
 function showPanel(id){for(const p of PANELS)$(p).hidden=p!==id;}
 const MUSIC_WORD={old:'swing',sunset:'pop',rain:'industrial'};
 // the episode PLAY starts: Flight School first, then the first one not yet cleared, else the one with the fewest stars
 function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[m];
   for(let i=0;i<E.length;i++)if(unlocked(m,i)&&!epSave(m,i).stars)return i;
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
+// the change log, newest first: version, name, date, what changed
+const CHANGELOG=[
+ ['17.2','Change Log','23 Oct 2026',['This change log, from the ✦ button at the top of the main menu.']],
+ ['17.1','One Lane at a Time','23 Oct 2026',['One swipe always moves exactly one lane, however far your finger goes.','A coin two lanes over takes two swipes, and the course leaves time for both.','Flight School: “Two lanes over? Swipe twice.”']],
+ ['17','World Map','23 Oct 2026',['EPISODES opens a world map of the era’s five cities and the route you fly: a parchment chart (Past), a night map (Present), a hologram (Future).','Breaking glass bursts into shards, with a flash and the sound of breaking glass.','Flying into glass you didn’t break is a crash and costs a life.','Up and down signs stand upright in the coin’s lane, pointing to the level to go to.','Coins take their level’s color: blue below, gold on the skyway, rose above.','Roadblocks stand still; only traffic moves.','Every tap gets its own pulse ring.','Result screens show the missions you finished and how close you are on the rest.']],
+ ['16','Tempo Drift','23 Oct 2026',['The game is named Tempo Drift.','Coins in glass: tap as you reach one to break it open. Tap right as it lands for PERFECT.','Calmer coins: plain gold, no glow.','An iPhone version you can add to the home screen.']],
+ ['15','Title Screen','23 Oct 2026',['A new main menu: the city and your car fill the screen, one big PLAY starts your next episode.','Settings moved into their own panel.','A tap never changes lane.','A tap with nothing to break is a misfire and resets your combo.','Smoother on slower phones: the game lowers its quality step by step.']],
+ ['14.1','One-Note Hops','22 Oct 2026',['Hops and dives last one note, then you drop straight back.','Holding your finger no longer keeps you up.','Flat tunes get a hop or dive every couple of bars.']],
+ ['14','Golden Hour','22 Oct 2026',['A realistic look: sunlight and shadows, reflections, textured buildings, trees, wet streets at night.','Three eras with their own music: Past (swing), Present (pop), Future (dark industrial).','Back to three lanes, swipe controls only.','Tap to fire a pulse that breaks glass.','Power-ups: magnet, shield and 2× score.','Missions and a daily gift.']],
+ ['13','Slow-Motion School','22 Oct 2026',['Flight School shows each move once and slows down instead of stopping.','Five art-style demos to choose the new look from.']],
+ ['12','Five Lanes','22 Oct 2026',['Five lanes, with coins placed by the pitch of the melody.','Haptics (a buzz on catches and crashes).','Bigger coins, rounded shapes, a garage view from behind.','A studio intro: Creative House.']],
+ ['11','Dev Mode','22 Oct 2026',['A dev mode switch: opens every episode and adds test coins in the garage.','Map cards show your stars.']],
+ ['10','Around the World','22 Oct 2026',['Four eras: Old World, Today, Future and Year 3000.','Every episode is a real city with its own buildings, colors and skyline.','A swing band for the old world.','A bigger Garage button and a bounce at the edge lanes.']],
+ ['9','Garage','21 Oct 2026',['A smaller car that no longer blocks the view.','Five cars to buy with the coins you catch.','Flight School, the tutorial.']],
+ ['8','Five Stars','21 Oct 2026',['A different painted background for every episode.','Steeper episodes.','Stars: 3 lives plus 2 extra stars for coins, 5 in all.','Music on the main menu.']],
+ ['7','Episodes','21 Oct 2026',['Three heights, with the skyway in the middle: hop up, dive down.','Roadblocks to hop over.','20 songs as episodes, plus Infinite mode.','Stars and a high-score board.']],
+ ['6.1','In Sync','21 Oct 2026',['The game follows the music clock, so it never drifts off the beat.','Shorter buses and trucks, smaller crash smoke.']],
+ ['6','Feedback Round','21 Oct 2026',['Pause when you leave the app, with a 3-2-1 to resume.','Traffic moves slower; each height has its own color.','The car tumbles on a crash and glides back in.','A Techno style and Normal / Hard levels.']],
+ ['5','Sunset City','21 Oct 2026',['The golden-hour Sunset City style, with moving traffic.','Smoke, motion blur and call-outs: NEAR MISS, AILERON ROLL.','A car shadow to show height.']],
+ ['4','Clear Path','21 Oct 2026',['A glowing line through the coins ahead shows your path.','Sound on/off and the iPhone silent-switch fix.','No diagonal coins.']],
+ ['3','Two Styles','21 Oct 2026',['A main menu with Cyberpunk and Arcade styles, each with its own song.','The camera never shakes or rolls.','Hazards and shields.']],
+ ['2','Rain Canyon','21 Oct 2026',['Became a flying-car rhythm game in 3D: every coin plays a note of the song.','Smooth lane changes; the melody drops out when you miss.']],
+ ['1','First Draft','20 Oct 2026',['The first endless runner, made in Godot.','Three looks to choose from for the flying-car idea.']]];
+function renderLog(){const ol=$('clog');if(ol.childElementCount)return;CHANGELOG.forEach(([v,name,date,items],i)=>{const li=document.createElement('li');if(!i)li.className='now';
+  li.innerHTML='<div class="vh"><span class="v"></span><b></b><small></small></div><ul></ul>';li.querySelector('.v').textContent='v'+v;li.querySelector('b').textContent=name;li.querySelector('small').textContent=date;
+  for(const t of items){const x=document.createElement('li');x.textContent=t;li.querySelector('ul').append(x);}ol.append(li);});}
+$('logVer').textContent='v'+CHANGELOG[0][0];
+$('logBtn').addEventListener('click',()=>openMenu('changes'));$('logBack').addEventListener('click',()=>openMenu('menu'));
 function renderMenu(){const E=EPISODES[key],nx=nextEpisode(key),b=infList(key)[0],k=document.querySelector(`.style[data-theme="${key}"]`).style.getPropertyValue('--k');
   $('menu').style.setProperty('--era',k);
   const city=n=>n.replace(/\s\d{4}$/,'');$('eraSub').textContent=`${city(E[0].name)} → ${city(E[E.length-1].name)}`;$('eraMus').textContent=`${MAPINFO[key].era} · ${MUSIC_WORD[key]} music`;
@@ -2480,8 +2526,8 @@ function openMenu(panel='menu'){inMenu=true;over=false;paused=false;countEnd=0;f
   if(SONG.ep>=0||SONG.tut){setSong(loopSong(key));resetRun();}
   const wasG=garage;garage=panel==='garage';if(garage){gIdx=CAR_KEYS.indexOf(selCar);renderGarage();for(const r of fxRings){r.age=9;r.m.visible=false;}for(const b of bursts){b.age=9;b.p.visible=false;}}else{showCar(selCar);if(wasG)resetRun();}
   renderMenu();showPanel(panel);if(panel==='eps'){epSel=-1;renderEps();}if(panel==='board')renderBoard();
-  if(panel==='missions')renderMissions();
-  ({menu:$('start'),eps:$('epsBack'),board:$('boardBack'),garage:$('garageBack'),missions:$('misBack'),settings:$('setBack')})[panel].focus({preventScroll:true});}
+  if(panel==='missions')renderMissions();if(panel==='changes')renderLog();
+  ({menu:$('start'),eps:$('epsBack'),board:$('boardBack'),garage:$('garageBack'),missions:$('misBack'),settings:$('setBack'),changes:$('logBack')})[panel].focus({preventScroll:true});}
 // garage: flip through the cars (any can be looked at), buy one with coins, choose which one you fly
 function renderGarage(){const k=CAR_KEYS[gIdx],C=CARS[k],own=owns(k),w=wallet.get(),act=$('carAct');showCar(k);
   $('carName').textContent=C.name.toUpperCase();$('carAbout').textContent=C.about;$('gWallet').textContent=w.toLocaleString('en-US');
