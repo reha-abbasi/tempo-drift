@@ -486,7 +486,7 @@ body{padding:0!important}
         <li><span class="dot"></span><span class="ask">Flying into glass is a crash</span>
           <p>A case you don’t break now costs a life, like any other crash. To be fair about it, you can tap up to 0.12 s after reaching it.</p></li>
         <li><span class="dot"></span><span class="ask">Two lanes in one move</span>
-          <p>A coin two lanes over used to come with time for only one swipe. Now the course leaves time for two, and you can keep dragging after the first lane change to take the next lane too. Flight School teaches it.</p></li>
+          <p>A coin two lanes over used to come with time for only one swipe. Now the course leaves time for two swipes. One swipe always moves exactly one lane. Flight School teaches it.</p></li>
         <li><span class="dot"></span><span class="ask">Clearer up and down signs</span>
           <p>The chevrons on the road looked like speed boosts. Now an upright sign stands in the coin’s lane, with an arrow pointing to the lit level (up or down), in that level’s color.</p></li>
         <li><span class="dot"></span><span class="ask">Coins in their level’s color</span>
@@ -917,7 +917,7 @@ const TUT=[
   {say:'SWIPE → TO CHANGE LANE',c:[[0,1,1],[4,2,1,'right']]},
   {c:[[0,2,1],[4,2,1]]},
   {say:'SWIPE ← BACK ACROSS',c:[[0,1,1,'left'],[4,0,1]]},
-  {say:'KEEP DRAGGING TO CROSS TWO LANES',c:[[0,0,1],[4,2,1]]},
+  {say:'TWO LANES OVER? SWIPE TWICE',c:[[0,0,1],[4,2,1]]},
   {say:'ROSE COIN UP HIGH: SWIPE ↑ TO HOP',c:[[0,1,1],[4,1,2,'up']]},
   {say:'ONE NOTE UP, THEN YOU DROP BACK',c:[[0,1,1],[4,1,1]]},
   {c:[[0,1,1],[4,1,2]]},
@@ -2559,10 +2559,8 @@ let ptr=null,heldKey=null;
 const onTap=()=>{if(!inMenu)pulseFire();};
 const swipe=(dx,dy)=>{if(Math.abs(dy)>=Math.abs(dx)){move(0,-Math.sign(dy));holdV=cs.row!==HOME;}else move(Math.sign(dx),0);};
 cv.addEventListener('pointerdown',e=>{ptr={x:e.clientX,y:e.clientY,fired:false};try{cv.setPointerCapture(e.pointerId);}catch(err){}});
-// keep dragging the same way after a lane change and the car takes the next lane too
-cv.addEventListener('pointermove',e=>{if(!ptr)return;const dx=e.clientX-ptr.x,dy=e.clientY-ptr.y;
-  if(ptr.fired){if(ptr.side&&ptr.more&&Math.sign(dx)===ptr.side&&Math.abs(dx)>=ptr.more){ptr.more=0;move(ptr.side,0);}return;}
-  if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;ptr.fired=true;swipe(dx,dy);if(Math.abs(dx)>Math.abs(dy)){ptr.side=Math.sign(dx);ptr.more=Math.abs(dx)+52;}});
+// one swipe moves one lane, however far the finger goes; a coin two lanes over takes two swipes
+cv.addEventListener('pointermove',e=>{if(!ptr||ptr.fired)return;const dx=e.clientX-ptr.x,dy=e.clientY-ptr.y;if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;ptr.fired=true;swipe(dx,dy);});
 const lift=e=>{if(ptr&&!ptr.fired){const dx=e.clientX-ptr.x,dy=e.clientY-ptr.y;if(Math.max(Math.abs(dx),Math.abs(dy))>=30)swipe(dx,dy);else onTap();}ptr=null;holdV=false;};
 cv.addEventListener('pointerup',lift);cv.addEventListener('pointercancel',e=>{ptr=null;holdV=false;});
 addEventListener('keydown',e=>{if(e.key===' '||e.key==='Escape'||e.key==='p'){if(paused)resumeGame();else pauseGame();return;}
