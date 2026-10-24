@@ -39,13 +39,34 @@ body{font-family:var(--body);font-size:15px;line-height:1.55;
 .hud .shields{position:absolute;left:14px;top:14px;font-size:11px;letter-spacing:.08em}
 .hud .shields b{font-weight:400;color:var(--cyan);letter-spacing:.15em}
 .hud .shields b.low{color:var(--red)}
-.hud .combo{position:absolute;left:50%;top:44px;transform:translateX(-50%);font-size:11px;letter-spacing:.08em;color:var(--gold);white-space:nowrap}
-.hud .puh{position:absolute;right:14px;top:66px;font-size:11px;color:var(--gold);text-align:right;line-height:1.5}
+.hud .combo{position:absolute;left:50%;top:66px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.1em;color:#efe9f8;white-space:nowrap}
+/* Sync (your life) top left; Flow under the score: three notches where the multiplier steps up, the multiplier beside it */
+.hud .sync{position:absolute;left:14px;top:16px;display:flex;flex-direction:column;gap:4px}
+.hud .sync small{font:500 9.5px var(--mono);letter-spacing:.16em;color:#efe9f8}
+.hud .sync .bar{display:block;width:96px;height:8px;border-radius:4px;background:rgba(10,8,18,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);overflow:hidden}
+.hud .sync .bar i{display:block;height:100%;width:75%;border-radius:4px;background:linear-gradient(90deg,#2ef2ff,#8affc1);transition:width .25s,background .3s}
+.hud .sync.low .bar i{background:linear-gradient(90deg,#ff3d4f,#ff8b95);animation:lowpulse .5s ease-in-out infinite alternate}
+.hud .sync.hit .bar{animation:synchit .35s}
+@keyframes lowpulse{to{opacity:.55}}
+@keyframes synchit{0%{box-shadow:inset 0 0 0 1px #ff8b95,0 0 14px #ff3d4f}}
+.hud .flow{position:absolute;left:50%;top:44px;transform:translateX(-50%);display:flex;align-items:center;gap:8px}
+.hud .fbar{position:relative;display:block;width:120px;height:5px;border-radius:3px;background:rgba(10,8,18,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+.hud .fbar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;background:linear-gradient(90deg,var(--gold),#ff9a6b);transition:width .15s}
+.hud .fbar s{position:absolute;top:-2px;bottom:-2px;width:1px;background:rgba(255,255,255,.45)}
+.hud .flow b{min-width:30px;font:700 15px var(--display);color:var(--gold);font-variant-numeric:tabular-nums}
+.hud .flow b.up{animation:multup .35s ease-out}
+@keyframes multup{0%{transform:scale(1.6)}}
+.screen.od .hud .fbar i{background:linear-gradient(90deg,#ff3fb4,#ffd45c,#2ef2ff,#ff3fb4);background-size:200% 100%;animation:odbar .6s linear infinite}
+.screen.od .hud .flow b{color:#fff;text-shadow:0 0 12px #ff3fb4,0 0 4px #ffd45c}
+@keyframes odbar{to{background-position:200% 0}}
+.pop.od{font-size:40px;background:linear-gradient(90deg,#ff3fb4,#ffd45c,#2ef2ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 10px rgba(255,63,180,.7))}
+.hud .puh{position:absolute;right:10px;top:60px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.hud .puh span{font:500 10.5px var(--mono);letter-spacing:.08em;color:#1a0a04;background:linear-gradient(90deg,#ffd45c,#ff9a6b);border-radius:99px;padding:2px 8px;text-shadow:none;font-variant-numeric:tabular-nums}
 /* the melody only says something when it's gone: then it tells you how to get it back */
-.hud .mel{position:absolute;left:50%;top:62px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.08em;padding:3px 10px;border-radius:99px;
+.hud .mel{position:absolute;left:50%;top:86px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.08em;padding:3px 10px;border-radius:99px;
   background:rgba(10,8,18,.55);box-shadow:inset 0 0 0 1px rgba(255,91,91,.75);color:#ff8b95;white-space:nowrap;text-shadow:none}
 .hud .mel[hidden]{display:none}
-.hud .pops{position:absolute;left:0;right:0;top:104px;display:flex;flex-direction:column;align-items:center;gap:0}
+.hud .pops{position:absolute;left:0;right:0;top:118px;display:flex;flex-direction:column;align-items:center;gap:0}
 .hud .judge{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);font:italic 700 15px var(--display);letter-spacing:.06em;color:#fff;opacity:0;white-space:nowrap;
   text-shadow:0 1px 0 rgba(0,0,0,.6),0 0 10px rgba(0,0,0,.4)}
 .hud .judge.gold{color:var(--gold)} .hud .judge.cyan{color:#8ff6ff} .hud .judge.red{color:#ff8b95} .hud .judge.dim{color:#d8d0ec}
@@ -59,6 +80,8 @@ body{font-family:var(--body);font-size:15px;line-height:1.55;
 .hud .hbtn svg{width:18px;height:18px;fill:currentColor}
 .flash{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 110px 40px rgba(255,40,60,.9);background:rgba(255,30,50,.18)}
 /* iPhone browsers can't buzz on a crash, so the flash carries it: a hard red edge that lingers */
+/* overdrive: the screen edges glow in the era's colour and throb on the beat (opacity set each frame) */
+.odglow{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 120px 30px var(--odc,#ff3fb4),inset 0 0 40px 6px rgba(255,255,255,.35);mix-blend-mode:screen}
 .flash.on{animation:flash .8s ease-out}
 @keyframes flash{0%{opacity:1}25%{opacity:.85}100%{opacity:0}}
 .screen.in-menu .hud,.screen.is-over .hud{opacity:0}
@@ -122,7 +145,7 @@ tr:last-child td{border-bottom:0}
 .hud .prog{position:absolute;left:0;right:0;top:0;height:3px;background:rgba(255,255,255,.14)}
 .hud .prog[hidden]{display:none}
 .hud .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink))}
-.hud .eplabel{position:absolute;left:50%;top:84px;transform:translateX(-50%);font-size:9.5px;letter-spacing:.12em;color:#efe9f8;opacity:.8;white-space:nowrap;transition:opacity .8s}
+.hud .eplabel{position:absolute;left:50%;top:90px;transform:translateX(-50%);font-size:9.5px;letter-spacing:.12em;color:#efe9f8;opacity:.8;white-space:nowrap;transition:opacity .8s}
 .hud .eplabel.fade{opacity:0}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .modeb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;cursor:pointer;color:var(--fg);background:rgba(20,16,30,.8);
@@ -186,6 +209,29 @@ tr:last-child td{border-bottom:0}
 .ranks li span:nth-child(3){color:var(--gold);white-space:nowrap}
 .ranks li.dim span:nth-child(3){color:var(--muted)}
 .ranks li.empty{grid-template-columns:1fr;color:var(--muted);text-align:center}
+/* results: a grade stamped next to the stars and accuracy, then one row of judgement counts */
+.ceyebrow{font:500 11px var(--mono);letter-spacing:.16em;color:var(--muted);text-align:center;margin-bottom:-6px}
+.rank{display:flex;justify-content:center;align-items:center;gap:18px}
+.rank[hidden]{display:none}
+.grade{width:104px;height:104px;display:grid;place-items:center;border-radius:26px;font:700 76px/1 var(--display);color:#fff;background:rgba(20,14,34,.8);border:2px solid rgba(255,255,255,.3);opacity:0}
+.grade.go{animation:stamp .5s cubic-bezier(.2,1.6,.4,1) .35s forwards}
+@keyframes stamp{0%{opacity:0;transform:scale(2.2) rotate(-12deg)}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(-4deg)}}
+.grade.g-S{color:#1a0a04;background:linear-gradient(135deg,#fff3b0,#ffd45c 40%,#ff9a6b);border-color:#fff3b0;box-shadow:0 0 40px -6px rgba(255,212,92,.9)}
+.grade.g-A{color:#8ff6ff;border-color:#8ff6ff;box-shadow:0 0 30px -8px rgba(46,242,255,.8)}
+.grade.g-B{color:#c9b6ff;border-color:#a98cff}
+.grade.g-C,.grade.g-D{color:#d8d0ec}
+.rside{display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-variant-numeric:tabular-nums}
+.rside b{font:700 30px var(--display)}
+.rside small{font:500 10px var(--mono);letter-spacing:.14em;color:var(--muted)}
+.gstars{display:flex;gap:4px;font-size:30px;line-height:1}
+.gstars i{font-style:normal;color:rgba(255,255,255,.16);transform:scale(.6);transition:transform .35s cubic-bezier(.3,1.6,.5,1),color .2s}
+.gstars i.on{color:var(--gold);transform:scale(1);text-shadow:0 0 16px rgba(255,212,92,.8)}
+.jud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;max-width:340px;align-self:center}
+.jud[hidden]{display:none}
+.jud div{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border-radius:10px;background:rgba(20,14,34,.75)}
+.jud small{font:500 9.5px var(--mono);letter-spacing:.1em;color:var(--muted)}
+.jud b{font:600 17px var(--display);font-variant-numeric:tabular-nums}
+.jud .p b{color:var(--gold)} .jud .g b{color:#8ff6ff} .jud .m b{color:#ff8b95}
 .bigstars{display:flex;justify-content:center;align-items:center;gap:8px;font-size:44px;line-height:1}
 .bigstars i{font-style:normal;color:rgba(255,255,255,.16);transform:scale(.6);transition:transform .35s cubic-bezier(.3,1.6,.5,1),color .2s}
 .bigstars i.on{color:var(--gold);transform:scale(1);text-shadow:0 0 18px rgba(255,212,92,.8)}
@@ -397,10 +443,12 @@ body{padding:0!important}
       <canvas id="cv" aria-label="Live 3D preview of the flying car rhythm game"></canvas>
       <div class="intro" id="intro" hidden><div class="ifade" id="introFade"></div><button class="ghost skip" id="skipIntro">SKIP ›</button></div>
       <div class="flash" id="flash"></div>
+      <div class="odglow" id="odGlow"></div>
       <div class="hud" aria-hidden="true">
         <div class="prog" id="prog" hidden><i id="progBar"></i></div>
         <div class="score" id="score">0</div>
-        <div class="shields"><span id="shLabel">SHIELD</span> <b id="shields">◆◆◆</b></div>
+        <div class="sync" id="syncHud"><small>SYNC</small><span class="bar"><i id="syncBar"></i></span></div>
+        <div class="flow" id="flowHud"><span class="fbar"><i id="flowBar"></i><s style="left:30%"></s><s style="left:60%"></s><s style="left:90%"></s></span><b id="multEl">×1</b></div>
         <div class="combo" id="combo"></div>
         <div class="puh" id="puHud"></div>
         <div class="mel" id="mel" hidden></div>
@@ -414,7 +462,7 @@ body{padding:0!important}
       <div class="menu home" id="menu">
         <div class="topbar">
           <span class="pill"><i class="coin"></i> <span id="walletN">0</span></span>
-          <span class="pill star" id="starTot">★ 0/75</span>
+          <span class="pill star" id="starTot">★ 0/45</span>
           <button class="pill news" id="logBtn" aria-label="Change log: what's new">✦ <span id="logVer">v17.2</span></button>
           <button class="ghost icon" id="setBtn" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.4 7.4 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
         </div>
@@ -433,7 +481,7 @@ body{padding:0!important}
             <button class="ghost arrow" id="eraNext" aria-label="Next era">›</button></div>
           <button class="big play" id="start"><span class="pl">▶ PLAY</span><small id="playSub">Episode 1 · London 1890</small></button>
           <div class="seg">
-            <button class="ghost" id="modeEp">EPISODES <small id="epsSub">★ 0/25</small></button>
+            <button class="ghost" id="modeEp">EPISODES <small id="epsSub">★ 0/15</small></button>
             <button class="ghost" id="modeInf">ENDLESS <small id="infSub">no best yet</small></button>
           </div>
           <div class="tiles">
@@ -464,6 +512,7 @@ body{padding:0!important}
         <ul class="setlist">
           <li><span>Sound<small>music and effects</small></span><button class="ghost" id="sndMenu" aria-pressed="true">SOUND ON</button></li>
           <li><span>Audio sync<small id="syncSub">automatic</small></span><button class="ghost" id="syncBtn">SET UP</button></li>
+          <li><span>Reduce effects<small>no rain, fewer shards, steadier view</small></span><button class="ghost" id="fxBtn" aria-pressed="false">OFF</button></li>
           <li><span>Haptics<small>a buzz on catches and crashes</small></span><button class="ghost" id="hapBtn" aria-pressed="true">HAPTICS ON</button></li>
           <li><span>Endless difficulty<small>how fast Endless gets</small></span><button class="ghost" id="levelBtn">NORMAL</button></li>
           <li><span>Flight School<small>replay the tutorial</small></span><button class="ghost" id="tutBtn">PLAY</button></li>
@@ -486,14 +535,14 @@ body{padding:0!important}
       <div class="menu panel" id="eps" hidden>
         <div class="phead"><button class="ghost back" id="epsBack">‹ BACK</button>
           <span class="eratitle"><button class="ghost arrow sm" id="mapPrev" aria-label="Previous era">‹</button><b id="epsTitle">PAST</b><button class="ghost arrow sm" id="mapNext" aria-label="Next era">›</button></span>
-          <span class="tot" id="epsStars">★ 0/25</span></div>
+          <span class="tot" id="epsStars">★ 0/15</span></div>
         <div class="wmap" id="wmap"><canvas id="wmapCv" aria-hidden="true"></canvas><svg class="route" id="wroute" aria-hidden="true"></svg><div class="pins" id="epPins"></div></div>
         <button class="school" id="tutPin"><span class="n">✦</span><span class="nm">Flight School<small>learn the moves · about a minute</small></span><b id="tutState">START HERE</b></button>
         <div class="epcard" id="epCard">
           <div class="echead"><span class="n" id="ecNum">1</span><span class="nm"><b id="ecName">London 1890</b><small id="ecSub">112 BPM · saloon piano</small></span><span class="st" id="ecStars"></span></div>
           <button class="big" id="epPlay">PLAY</button>
         </div>
-        <p class="legend">3 lives, each crash costs one. <span class="gold">★★★</span> one per life kept · <span class="pink">★</span> 85% of the coins · <span class="pink">★</span> every coin. The next episode opens at ★★★ or 85% of the coins.</p>
+        <p class="legend"><span class="gold">★</span> clear the song · <span class="gold">★★</span> grade A (90% accuracy) · <span class="gold">★★★</span> grade S (96%, no crash). Clearing an episode opens the next; 10★ in an era opens the next era.</p>
       </div>
       <div class="menu panel" id="missions" hidden>
         <div class="phead"><button class="ghost back" id="misBack">‹ BACK</button><b>MISSIONS</b><span class="tot"><i class="coin"></i> <span id="mWallet">0</span></span></div>
@@ -503,19 +552,20 @@ body{padding:0!important}
         <p class="legend" id="dailyNote"></p>
       </div>
       <div class="menu panel" id="board" hidden>
-        <div class="phead"><button class="ghost back" id="boardBack">‹ BACK</button><b>HIGH SCORES</b><span class="tot" id="boardTotal">★ 0/75</span></div>
+        <div class="phead"><button class="ghost back" id="boardBack">‹ BACK</button><b>HIGH SCORES</b><span class="tot" id="boardTotal">★ 0/45</span></div>
         <div class="tabs" id="boardTabs">
           <button class="tab" data-map="old" style="--k:#e8c38a">Past</button><button class="tab" data-map="sunset" style="--k:#ffb37a">Present</button>
           <button class="tab" data-map="rain" style="--k:#ff3fb4">Future</button>
         </div>
         <div class="label">Infinite · your top 5</div>
         <ol class="ranks" id="boardInf"></ol>
-        <div class="label">Episodes · stars and best score</div>
+        <div class="label">Episodes · stars, best grade and score</div>
         <ol class="ranks" id="boardEps"></ol>
         <p class="legend">Saved on this device.</p>
       </div>
       <div class="over" id="pause" hidden>
         <h3 class="calm">PAUSED</h3>
+        <p class="note2" id="pauseInfo"></p>
         <button class="big" id="resume">RESUME</button>
         <div class="row2"><button class="ghost" id="restart">RESTART</button><button class="ghost" id="pauseMenu">MAIN MENU</button></div>
         <button class="ghost" id="sndBtn" aria-pressed="true">SOUND ON</button>
@@ -531,10 +581,12 @@ body{padding:0!important}
         <button class="ghost" id="toMenu">MAIN MENU</button>
       </div>
       <div class="over" id="clear" hidden>
+        <small class="ceyebrow" id="clearCity"></small>
         <h3 class="calm win" id="clearTitle">EPISODE CLEAR</h3>
-        <div class="bigstars" id="clearStars"><i>★</i><i>★</i><i>★</i><i class="x">★</i><i class="x">★</i></div>
-        <div class="starkey" id="starKey"><span>LIVES KEPT</span><span>EXTRA</span></div>
-        <div class="res"><div><small>COINS</small><b id="clearPct">0%</b></div><div><small>SCORE</small><b id="clearScore">0</b></div></div>
+        <div class="rank" id="clearRank"><div class="grade" id="clearGrade">S</div>
+          <div class="rside"><div class="gstars" id="clearStars"><i>★</i><i>★</i><i>★</i></div><b id="clearAcc">0%</b><small>ACCURACY</small></div></div>
+        <div class="jud" id="clearJud"></div>
+        <div class="res"><div><small>SCORE</small><b id="clearScore">0</b></div><div><small>MAX COMBO</small><b id="clearCombo">0</b></div></div>
         <p class="note2" id="clearNote"></p>
         <p class="note2 earn" id="clearEarn"></p>
         <div class="mres" id="clearMis"></div>
@@ -666,6 +718,8 @@ const need=(dc,dr=0)=>{if(!dc&&!dr)return 0;const L=SONG.diff||LEVELS[MODE==='ep
 // low / skyway / high: blue, warm white, orange
 const ROW_COLORS=[0x4aa8ff,0xffe2b8,0xff5a8c], ROWC=ROW_COLORS.map(c=>new THREE.Color(c));
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Reduce effects (Settings): starts on for people who ask their phone for less motion
+let fxLow=store.get('td-fx')===null?reduce:store.get('td-fx')==='1';
 const midi=n=>440*Math.pow(2,(n-69)/12);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hsh=(i,s)=>{const v=Math.sin(i*127.1+s*311.7)*43758.5453;return v-Math.floor(v)};
@@ -955,7 +1009,7 @@ function writeSection(rng,prog,sc,style,base,dense,motifs){
 function degMidi(d,tonic,sc){return tonic+12*Math.floor(d/7)+sc[((d%7)+7)%7];}
 // each era starts harder than the last: Past runs episode settings 0 → 3, Present 0.5 → 3.5, Future 1 → 4 (in between, values blend)
 function diffAt(map,i){const L=clamp(i*0.75+MAPS.indexOf(map)*0.5,0,DIFF.length-1),a=DIFF[Math.floor(L)],b=DIFF[Math.ceil(L)],f=L-Math.floor(L),o={};
-  for(const k in a)o[k]=a[k]+(b[k]-a[k])*f;o.dense=Math.round(o.dense);return o;}
+  for(const k in a)o[k]=a[k]+(b[k]-a[k])*f;o.dense=Math.round(o.dense);o.L=L;return o;}
 function buildSong(map,i){const E=EPISODES[map][i],D=diffAt(map,i),tk=thOf(map,i),sc=SCALES[E.scale],style=STYLE[tk],rng=mkRng(E.seed*7919);
   // melody tonic: put the scale's third between D4 and C#5
   let mt=48+E.key;while(mt+sc[2]<62)mt+=12;
@@ -999,7 +1053,7 @@ const TUT=[
   {say:'TWO LANES OVER? SWIPE TWICE',c:[[0,0,1],[4,2,1]]},
   {say:'ROSE COIN UP HIGH: SWIPE ↑ TO HOP',c:[[0,1,1],[4,1,2,'up']]},
   {say:'ONE NOTE UP, THEN YOU DROP BACK',c:[[0,1,1],[4,1,1]]},
-  {c:[[0,1,1],[4,1,2]]},
+  {say:'HEAR THAT? YOUR FLOW BROUGHT THE BAND IN',c:[[0,1,1],[4,1,2]]},
   {say:'BLUE COIN DOWN LOW: SWIPE ↓ TO DIVE',c:[[0,1,1],[4,1,0,'down']]},
   {c:[[0,1,1],[4,1,1]]},
   {say:'HOP OVER THE BLOCK',c:[[0,1,1],[4,1,2]],over:true},
@@ -1008,11 +1062,11 @@ const TUT=[
   {say:'TAP JUST AS YOU REACH IT FOR A PERFECT',c:[[0,1,1,null,'g'],[4,1,1,null,'g']]},
   {say:'TRAFFIC! MOVE OUT OF ITS LANE',c:[[0,1,1],[4,0,1]],cars:[[8,1]]},
   {c:[[0,0,1],[4,0,1,null,'g']]},
-  {say:'NOW ON YOUR OWN',c:[[0,1,1],[4,2,1]]},
+  {say:'NOW ON YOUR OWN · SWIPE ON THE NOTE FOR A PERFECT',c:[[0,1,1],[4,2,1]]},
   {c:[[0,2,1],[4,2,2]]},
-  {c:[[0,1,1],[4,1,0]]},
+  {say:'FILL YOUR FLOW TO GO INTO OVERDRIVE ×8',c:[[0,1,1],[4,1,0]]},
   {c:[[0,1,1],[4,0,1]]},
-  {say:'IN EPISODES EACH CRASH COSTS A LIFE ★',c:[[0,0,1],[4,1,1]]},
+  {say:'IN EPISODES, MISSES DRAIN YOUR SYNC BAR',c:[[0,0,1],[4,1,1]]},
 ];
 function tutSong(map){const tk=MAPINFO[map].th,th=THEMES[tk],bars=[];
   for(let k=0;k<2;k++)bars.push({sec:'I',chord:th.chords[0],mel:[],lvl:k+1});
@@ -1342,7 +1396,9 @@ function sharedUpdate(dt,dist,melLevel,boost){
     const o=i*6;sPos[o]=q.x;sPos[o+1]=q.y;sPos[o+2]=q.z;sPos[o+3]=q.x;sPos[o+4]=q.y;sPos[o+5]=q.z-q.len*(1+boost)*(LOOK.warp||1);}
   streakGeo.attributes.position.needsUpdate=true;streakMat.opacity=(0.4+0.3*melLevel)*(1+boost*0.6);
   const hl=rowNow();floorTex.offset.y=(dist/4)%1;
-  lanes.forEach((f,c)=>{f.material.opacity+=((c===cs.col?0.55:0.17)*TH.floorK-f.material.opacity)*Math.min(1,dt*10);});
+  // the lane lines throb on the beat once the band is in, harder the higher your Flow, and blaze in Overdrive
+  const lg=1+(inMenu||fxLow?0:beatPulse*Math.max(0,flow-20)/80*0.9)+boost*1.4;
+  lanes.forEach((f,c)=>{f.material.opacity+=((c===cs.col?0.55:0.17)*TH.floorK*lg-f.material.opacity)*Math.min(1,dt*10);});
   if(!TH.rails)return;
   let i=0;
   for(const r of rails)r.m.material.color.copy(ROWC[r.row]).multiplyScalar(r.row===hl?1.8:r.row===HOME?0.5:0.18);
@@ -1899,8 +1955,8 @@ const shardMesh=new THREE.InstancedMesh(shardGeo,shardMat,SHARDS);
 shardMesh.frustumCulled=false;shardMesh.count=SHARDS;scene.add(shardMesh);const shards=[...Array(SHARDS)].map(()=>({age:9,p:new THREE.Vector3(),v:new THREE.Vector3(),r:new THREE.Euler(),w:new THREE.Vector3(),k:1}));let shardI=0;
 for(let i=0;i<SHARDS;i++){dummy.position.set(0,-99,0);dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
 const breakFlash=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xdff4ff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));breakFlash.visible=false;scene.add(breakFlash);let flashAge=9;
-const SHARD_LIFE=0.95;
-function shatterFx(x,y,z,big=false){if(sim)return;const n=big?36:24; // fewer, bigger-feeling pieces keep the lane readable
+const SHARD_LIFE=0.6;
+function shatterFx(x,y,z,big=false){if(sim)return;const n=(big?36:24)>>(fxLow?1:0); // fewer, bigger-feeling pieces keep the lane readable
   for(let i=0;i<n;i++){const s=shards[shardI++%SHARDS];s.age=0;
     // pieces start on the case's front and sides and fly outward from its middle; the world carries them past the car
     const ox=(rand()-0.5)*1.1,oy=(rand()-0.5)*1.1;s.p.set(x+ox,y+oy,z+(rand()-0.5)*0.5);const out=2.5+rand()*4;
@@ -1916,7 +1972,7 @@ function pulseShardUpdate(dt){for(const P of pulses){if(P.age>=0.35){P.m.visible
   // shards are only drawn while some are flying
   let alive=0;for(let i=0;i<SHARDS;i++){const s=shards[i];if(s.age>SHARD_LIFE)continue;alive++;s.age+=dt;s.v.y-=11*dt;s.p.addScaledVector(s.v,dt);s.r.x+=s.w.x*dt;s.r.y+=s.w.y*dt;s.r.z+=s.w.z*dt;
     if(s.p.y<ROAD_Y+0.03){s.p.y=ROAD_Y+0.03;s.v.y*=-0.25;s.v.x*=0.6;s.w.multiplyScalar(0.5);}
-    dummy.position.copy(s.age>SHARD_LIFE?tmpV.set(0,-99,0):s.p);dummy.rotation.copy(s.r);dummy.scale.setScalar(s.k);dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
+    dummy.position.copy(s.age>SHARD_LIFE?tmpV.set(0,-99,0):s.p);dummy.rotation.copy(s.r);dummy.scale.setScalar(s.k*(1-0.6*Math.min(1,s.age/SHARD_LIFE)));dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
   dummy.rotation.set(0,0,0);dummy.scale.set(1,1,1);shardMesh.visible=alive>0;if(alive)shardMesh.instanceMatrix.needsUpdate=true;}
 const SPARKS=18;
 const bursts=[...Array(10)].map(()=>{const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(SPARKS*3),3));
@@ -1940,7 +1996,7 @@ function applyLook(lk){LOOK={...TH.look,...lk};scene.fog.density=LOOK.fogD??TH.f
     farTowers.visible=!!tw;if(tw){farTowers.scale.y=tw[0];farTowers.position.y=40*(tw[0]-1);farTowers.material.color.set(tw[1]);}
     const lamps=!LOOK.palms&&LOOK.lamp!=='none';poles.visible=arms.visible=heads.visible=lamps;glows.forEach(s=>s.visible=lamps);poleMat.color.set(LOOK.lamp==='gas'?0x1e2024:0x5b5f66);
     road.material.map=LOOK.road==='cobble'?cobbleTex:roadTex;}
-  rainLines.visible=TH.eng==='rain'||!!LOOK.drizzle;rainLines.material.color.set(LOOK.rainCol??0xd2b8f0);
+  rainLines.visible=!fxLow&&(TH.eng==='rain'||!!LOOK.drizzle);rainLines.material.color.set(LOOK.rainCol??0xd2b8f0);
   sunsetCity.redress();
   for(const k in DECO)DECO[k].g.visible=(LOOK.deco||[]).includes(k);
   // wet streets mirror the city; trees line the sidewalks unless palms do
@@ -1985,7 +2041,7 @@ const cam={pos:new THREE.Vector3(0,1.5,7.2),look:new THREE.Vector3(0,-0.5,-14)};
 function smoothDamp(cur,target,vel,st,dt){const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+0.235*x*x*x),ch=cur-target,tmp=(vel+w*ch)*dt;return[target+(ch+tmp)*e,(vel-w*tmp)*e];}
 // a run starts on the next bar line, after the song's intro; an episode's course is the same on every try
 function resetRun(){tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
-  score=0;combo=0;streak16=0;shields=MAX_SHIELDS;invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
+  score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;flow=0;odT=0;odN=0;maxCombo=0;J={p:0,g:0,o:0,m:0};lastHurt=-9;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
   cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
   grand=mkRng(SONG.ep>=0?SONG.seed*31+7:(runSeed=(runSeed*69069+1)>>>0));
   gateT=SONG.len===Infinity?Infinity:(songBar0+SONG.len-2)*BAR;
@@ -2059,20 +2115,21 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
       const n={id:nid++,step,time,col,row,note,len,state:0,skip:hsh(nid,42)<0.05,runStart:cont?last.runStart:time,wait:fix&&fix.wait,pu,glass,cracked:false,
         mv:!!last&&(col!==last.col||(row!==last.row&&row!==HOME))};nodes.push(n);last=n;});}
   placeHazards(bar-1);bar++;}}
-const epLabelEl=$('epLabel'),scoreEl=$('score'),comboEl=$('combo'),melEl=$('mel'),modeEl=$('mode'),shieldEl=$('shields'),flashEl=$('flash'),popsEl=$('pops'),progEl=$('prog'),progBar=$('progBar'),shLabel=$('shLabel'),puHud=$('puHud');
-function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}`:'',x2T>0?`2× ${Math.ceil(x2T)}`:'',shieldOn?'SHIELD':''].filter(Boolean).join('<br>');if(puHud.innerHTML!==ph)puHud.innerHTML=ph;scoreEl.textContent=score.toLocaleString('en-US');comboEl.textContent=combo>1?`COMBO ×${combo}`:'';
-  // in episodes the shields are your lives, and each one is a star
-  const ep=SONG.ep>=0,sh=clamp(shields,0,MAX_SHIELDS);shieldEl.parentElement.style.visibility=SONG.tut?'hidden':'';shLabel.textContent=ep?'LIVES':'SHIELD';shieldEl.classList.toggle('lives',ep);
-  shieldEl.textContent=ep?'★'.repeat(sh)+'☆'.repeat(MAX_SHIELDS-sh):'◆'.repeat(sh)+'◇'.repeat(MAX_SHIELDS-sh);shieldEl.classList.toggle('low',sh<=1);
+const odGlow=$('odGlow'),syncHud=$('syncHud'),syncBar=$('syncBar'),flowBar=$('flowBar'),multEl=$('multEl'),epLabelEl=$('epLabel'),scoreEl=$('score'),comboEl=$('combo'),melEl=$('mel'),modeEl=$('mode'),flashEl=$('flash'),popsEl=$('pops'),progEl=$('prog'),progBar=$('progBar'),puHud=$('puHud');
+function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}s`:'',x2T>0?`2× SCORE ${Math.ceil(x2T)}s`:'',shieldOn?'SHIELD ON':''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');if(puHud.innerHTML!==ph)puHud.innerHTML=ph;scoreEl.textContent=score.toLocaleString('en-US');comboEl.textContent=combo>=5?`${combo} COMBO`:'';
+  syncHud.style.visibility=SONG.tut?'hidden':'';syncBar.style.width=sync+'%';syncHud.classList.toggle('low',sync<30);
+  if(lastHurt>t-0.05&&!syncHud.classList.contains('hit')){syncHud.classList.add('hit');setTimeout(()=>syncHud.classList.remove('hit'),350);}
+  flowBar.style.width=(odT>0?100:flow)+'%';const m='×'+tier();if(multEl.textContent!==m){multEl.textContent=m;multEl.classList.remove('up');void multEl.offsetWidth;multEl.classList.add('up');}
   progEl.hidden=SONG.ep<0&&!SONG.tut;if(!progEl.hidden)progBar.style.width=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100+'%';
-  let msg=inMenu?'':t<hintUntil?'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS':'';
+  // the first few episodes open with the rules of the run instead of the controls
+  let msg=inMenu?'':t<hintUntil?(runTip?'CATCH COINS ON THE BEAT TO BUILD FLOW · MISSES DRAIN SYNC':'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS'):'';
   // flight school: the lesson for the coming bar (it shows a beat early)
   if(SONG.tut&&!inMenu){msg='';for(let k=Math.floor((t+BEAT)/BAR)-songBar0;k>=0;k--){const B=SONG.bar(k);if(B&&B.say){msg=B.say;break;}}}
   modeEl.classList.toggle('tutor',!!SONG.tut&&!inMenu);epLabelEl.classList.toggle('fade',!inMenu&&t>runBar*BAR+BAR);
   if(modeEl.textContent!==msg)modeEl.textContent=msg;}
 // one call-out at a time: a new one replaces the current one unless the current one matters more
 // (3: countdown, crash, finish · 2: power-ups, shields, missions · 1: everything else)
-let popPri=0,popUntil=0;
+let popPri=0,popUntil=0,runTip=false;
 function pop(text,cls='',pri=1){if(inMenu||over||sim)return;const now=performance.now();if(now<popUntil&&pri<popPri)return;popPri=pri;popUntil=now+700;
   popsEl.textContent='';const d=document.createElement('div');d.className='pop '+cls;d.textContent=text;popsEl.append(d);setTimeout(()=>d.remove(),950);}
 // timing grades sit just above the car, small, where the eyes already are
@@ -2092,16 +2149,16 @@ function holdFor(w){tutHold=w;const[a,txt,dx,dy]=TUT_MOVE[w.wait],el=$('tut');$(
   // a lane lesson puts the prompt over the lane to tap
   el.style.setProperty('--dx',dx);el.style.setProperty('--dy',dy);el.hidden=false;tutShown.add(w.wait);}
 function releaseHold(){tutHold.waited=true;tutHold=null;$('tut').hidden=true;needSync=true;}
-const PULSE_RANGE=28,TAP_EARLY=0.45,TAP_LATE=0.12,MOVE_LEAD=0.1,MOVE_PERFECT=0.07,MOVE_GOOD=0.15;let pulseCD=0,glassHint=0;
+const PULSE_RANGE=28,TAP_EARLY=0.45,TAP_LATE=0.12,MOVE_LEAD=0.1,MOVE_PERFECT=0.07,MOVE_GOOD=0.18;let pulseCD=0,glassHint=0;
 function pulseFire(){if(over||paused||respawn>0.45||t<pulseCD)return false;pulseCD=t+0.12;
   // the nearest coin in glass in your lane, from a moment before you reach it until just after
   const early=SONG.tut?1.7:TAP_EARLY,g=nodes.find(n=>n.glass&&!n.cracked&&n.state===0&&n.col===cs.col&&Math.abs(LY[n.row]-cs.y)<0.9&&n.time-t<early&&n.time-t>-TAP_LATE);
   // a pulse with nothing to break is a misfire: it breaks the combo, so tapping all the time doesn't pay
-  pulseFx(!!g);if(!g){if(!sim&&!inMenu)whoosh();if(!inMenu&&!SONG.tut&&combo>0){combo=0;judge('MISFIRE','red');}return false;}
+  pulseFx(!!g);if(!g){if(!sim&&!inMenu)whoosh();if(!inMenu&&!SONG.tut&&combo>0){combo=0;flow=Math.max(0,flow-10);judge('MISFIRE','red');}return false;}
   // timing: right as you reach the coin is PERFECT, close to it GOOD
   const d=Math.abs(t-g.time),grade=d<0.07?'PERFECT':d<0.14?'GOOD':'';
-  g.cracked=true;shatterFx(LX[g.col],LY[g.row],-(g.time-t)*SPEED);const pts=(grade==='PERFECT'?300:grade==='GOOD'?200:100)*(x2T>0?2:1);
-  if(!inMenu){score+=pts;judge((grade||'BROKEN')+' +'+pts,grade==='PERFECT'?'gold':'');mission('shatter',1);if(grade==='PERFECT')mission('perfect',1);}
+  g.cracked=true;g.tapGrade=grade==='PERFECT'?'p':grade==='GOOD'?'g':'o';shatterFx(LX[g.col],LY[g.row],-(g.time-t)*SPEED);
+  if(!inMenu){judge(grade||'BROKEN',grade==='PERFECT'?'gold':grade==='GOOD'?'cyan':'dim');mission('shatter',1);if(grade==='PERFECT')mission('perfect',1);}
   if(sim){sim.stats.shatters++;if(grade==='PERFECT')sim.stats.perfects++;}haptic('tick');
   if(tutHold&&tutOk(tutHold))releaseHold();return true;}
 // running into a coin still in glass: a dull knock, and the coin is lost
@@ -2118,7 +2175,9 @@ function jetFx(dir){jetT=0.3;if(sim||dir<0)return;const c=TH.pods;
   for(let i=0;i<16;i++){carPt(CARM.jets[i%CARM.jets.length],tmpV);emit(tmpV.x,tmpV.y-0.05,tmpV.z,(rand()-0.5)*0.7,-5-rand()*3,SPEED*0.5,0.32,0.1,0.5,0.55,c);}}
 function setMelody(on,at){melodyOn=on;melEl.textContent='♪ MELODY LOST · CATCH THE NEXT COIN';melEl.hidden=on||inMenu;
   if(audioOn&&A.ctx){const g=A.mel.gain;g.cancelScheduledValues(A.ctx.currentTime);g.setTargetAtTime(on?1:0,Math.max(A.ctx.currentTime,at),on?0.012:0.035);}}
-function playLead(at,note,len,out){const L=LEADS[SONG.V.lead]||LEADS.pluck,keep=A.mel;if(out)A.mel=out;L.f(at,midi(note),Math.max(L.min,len*EIGHTH*L.k));A.mel=keep;}
+function playLead(at,note,len,out){const L=LEADS[SONG.V.lead]||LEADS.pluck,keep=A.mel,d=Math.max(L.min,len*EIGHTH*L.k);if(out)A.mel=out;L.f(at,midi(note),d);
+  // in overdrive the lead is doubled an octave up, softer
+  if(odT>0&&!inMenu){const g=A.ctx.createGain();g.gain.value=0.4;g.connect(A.mel);A.mel=g;L.f(at,midi(note+12),d);}A.mel=keep;}
 /* audio delay: the time from scheduling a sound to hearing it (Bluetooth headphones add 0.15-0.25 s). The game clock t runs that
    much behind the audio clock, so what you see and what you hear line up, and taps and swipes are judged against the beat you hear.
    A tap-along test in Settings measures it (speaker, headphones and touch screen together); without one, the browser's estimate is used */
@@ -2130,41 +2189,73 @@ function preLead(n){if(n.pre||audLat<0.03||!audioOn||!A.ctx||sim||inMenu)return;
 function playBacking(st,sb,at){const B=SONG.bar(sb);if(!B)return;
   if(B.sec==='E'){if(st===0){const[r,tri]=B.chord;kick(at,1.1);nz(at,{type:'highpass',freq:5000,dur:1.8,g:0.2,verb:0.6});
     tri.forEach(iv=>tone(at,midi(r+12+iv),{dur:BAR*1.2,g:0.045,cut:1800,attack:0.01,detune:10}));tone(at,midi(r-12),{type:'sine',dur:BAR,g:0.3,cut:400});}return;}
-  TH.backing(st,at,S16,B,SONG.V,B.sec==='I'?B.lvl:0,sb);}
+  TH.backing(st,at,S16,B,SONG.V,B.sec==='I'?B.lvl:bandLevel(),sb);
+  // overdrive: a shimmer of open hi-hats on the off-beats
+  if(odT>0&&!inMenu&&st%4===2)nz(at,{type:'highpass',freq:9000,dur:0.09,g:0.07,verb:0.3});}
 function powerUp(k){if(k==='magnet')magnetT=10*CARS[selCar].perk.mag;else if(k==='x2')x2T=12;else shieldOn=true;if(sim){sim.stats.power++;return;}
   if(!inMenu){pop({magnet:'MAGNET!',x2:'DOUBLE SCORE!',shield:'SHIELD!'}[k],'gold',2);mission('power',1);haptic('buy');}if(A.ctx&&audioOn)chime();}
+/* ---------- Sync, Flow and Overdrive ----------
+   Sync is your health: every coin you catch tops it up a little (more for a PERFECT), a miss costs 7, a crash 22; at zero the run
+   is over. Flow is how well you're playing right now: it builds with every catch, drops with a miss and empties on a crash. It sets
+   the score multiplier (x1 to x4) and the band: below 30 only the drums and bass play, from 30 the whole band comes in. At 100 you
+   go into OVERDRIVE: eight bars at x8, nothing costs Sync, the lead doubles an octave up and the screen opens up. */
+const SYNC_START=75,SYNC_CRASH=22,SYNC_MISS=7,OD_BARS=8;
+let sync=SYNC_START,flow=0,odT=0,odN=0,maxCombo=0,J={p:0,g:0,o:0,m:0},lastHurt=-9;
+// later episodes (and later eras) make misses and crashes cost more Sync: x0.8 in the first Past episode up to x1.4
+const syncK=()=>SONG.diff?0.8+0.15*(SONG.diff.L??0):1;
+const tier=()=>odT>0?8:1+Math.min(3,Math.floor(flow/30));
+const scoreMult=()=>tier()*(x2T>0?2:1);
+const bandLevel=()=>inMenu||odT>0||flow>=30?0:2;
+function judgeCoin(g,shown,lost=false){J[g]++;if(g!=='m'){maxCombo=Math.max(maxCombo,combo);
+    const base=g==='p'?100:g==='g'?80:50,bonus=shown?(g==='p'?60:g==='g'?30:0):0;score+=(base+bonus)*scoreMult();
+    // a PERFECT move gets a soft high ping over its note
+    if(shown&&g==='p'&&audioOn&&A.ctx&&!sim){const at=A.ctx.currentTime;tone(at,midi(96),{type:'sine',dur:0.14,g:0.03,cut:12000,attack:0.002,out:A.master});}
+    if(!SONG.tut)sync=Math.min(100,sync+(g==='p'?2:g==='g'?1:0.5));if(odT<=0){flow=Math.min(100,flow+(g==='p'?3:g==='g'?2:1));if(flow>=100)startOverdrive();}}
+  else if(!lost){flow=Math.max(0,flow-25);hurt(SYNC_MISS*syncK());}}
+function hurt(n){if(SONG.tut||odT>0||inMenu)return;sync=Math.max(0,sync-n);lastHurt=t;if(sim){sim.stats.minSync=Math.min(sim.stats.minSync??100,sync);return;}
+  if(sync<=0&&!over){over=true;setTimeout(()=>gameOver('sync'),700);}}
+function startOverdrive(){odT=OD_BARS*BAR;odN++;mission('od',1);if(sim){sim.stats.ods=(sim.stats.ods||0)+1;return;}
+  screenEl.style.setProperty('--odc',{old:'#ffb347',sunset:'#ff6fa8',rain:'#ff3fb4'}[key]||'#ff3fb4');
+  screenEl.classList.add('od');pop('OVERDRIVE','od big',3);haptic('win');
+  if(A.ctx&&audioOn){const at=A.ctx.currentTime;nz(at,{type:'highpass',freq:3000,dur:1.2,g:0.18,verb:0.7});[0,4,7,12].forEach((x,i)=>tone(at+i*0.05,midi(72+x),{type:'triangle',dur:0.6,g:0.06,cut:7000,out:A.master}));}}
+function endOverdrive(cut=false){odT=0;flow=cut?0:30;screenEl.classList.remove('od');}
 function crash(h){if(shieldOn&&!inMenu){shieldOn=false;h.state=1;invuln=1.2;fx(LX[h.col],LY[h.row],new THREE.Color(0x8ff6ff).multiplyScalar(2.5),true);if(!sim){pop('SHIELD SAVED YOU','gold',2);haptic('bump');}return;}
   h.state=1;combo=0;streak16=0;if(sim){sim.stats.crashes++;const ck=h.over?"block":h.kind==="glass"?"glass":"traffic";sim.stats.crashBy=sim.stats.crashBy||{};sim.stats.crashBy[ck]=(sim.stats.crashBy[ck]||0)+1;}
   const x=LX[h.col],y=LY[h.row];fx(x,y,new THREE.Color(0xff3d4f).multiplyScalar(2.5),true);
   if(!sim)for(let i=0;i<34;i++){const a=rand()*Math.PI*2,s=1+rand()*3.5,g=0.75+rand()*0.25;emit(x+(rand()-0.5)*0.6,y+(rand()-0.5)*0.4,-0.5-rand(),Math.cos(a)*s,Math.sin(a)*s*0.7+0.6,SPEED*0.3+rand()*2,0.8+rand()*0.5,0.5,1.6+rand()*0.9,0.6,[g,g,g]);}
   if(melodyOn)setMelody(false,0);
   if(inMenu)return;
-  if(!SONG.tut)shields--;run.lost++;respawn=RESPAWN;invuln=RESPAWN+0.9;cs.row=HOME;vt=0;holdV=false;
-  if(!sim){flashEl.classList.remove('on');void flashEl.offsetWidth;flashEl.classList.add('on');}crashSound();haptic('crash');pop(SONG.ep>=0?'CRASH!  −1 ★':'CRASH!','red',3);
-  if(shields<=0&&!sim){over=true;setTimeout(()=>gameOver('lives'),700);}}
+  run.lost++;respawn=RESPAWN;invuln=RESPAWN+0.9;cs.row=HOME;vt=0;holdV=false;flow=0;if(odT>0)endOverdrive(true);
+  if(!sim){flashEl.classList.remove('on');void flashEl.offsetWidth;flashEl.classList.add('on');}crashSound();haptic('crash');pop('CRASH!','red',3);
+  hurt(SYNC_CRASH*syncK());}
 
 /* ---------- saves: stars and bests per episode, top five Infinite runs per map (this device only) ---------- */
 const readJ=k=>{try{return JSON.parse(store.get(k)||'null');}catch(e){return null;}};
 // an episode record keeps its best star count (lives kept + extras), best score and best coin %
-const epSave=(m,i)=>{const r=readJ(`lr-ep-${m}-${i}`)||{stars:0,score:0,pct:0};if(r.base===undefined){r.base=Math.min(3,r.stars);r.extra=r.stars-r.base;}return r;};
+// an episode record keeps its best stars (0-3), grade, accuracy and score
+const epSave=(m,i)=>readJ(`td-ep-${m}-${i}`)||{stars:0,score:0,acc:0,grade:''};
 const infList=m=>readJ(`lr-inf-${m}`)||[];
 // dev mode (the switch at the top of the menu) opens every episode on every map
 const devOn=()=>store.get('lr-dev')==='1';
-const ERA_NEED=8,eraOpen=m=>{const k=MAPS.indexOf(m);return k<=0||devOn()||mapStars(MAPS[k-1])>=ERA_NEED;};
-const epPassed=(m,i)=>{const r=epSave(m,i);return r.stars>=3||r.pct>=85;};
+const ERA_NEED=10,eraOpen=m=>{const k=MAPS.indexOf(m);return k<=0||devOn()||mapStars(MAPS[k-1])>=ERA_NEED;};
+const epPassed=(m,i)=>epSave(m,i).stars>0;
 const unlocked=(m,i)=>devOn()||(eraOpen(m)&&(i===0||epPassed(m,i-1)));
 const mapStars=m=>[0,1,2,3,4].reduce((s,i)=>s+epSave(m,i).stars,0);
-// stars: one for each of the three lives you keep, plus two extra: 85% of the coins, and every coin
-function starsOf(lost,hits,coins){const base=Math.max(0,MAX_SHIELDS-lost),extra=(hits>=0.85*coins)+(hits>=coins);return{base,extra,total:base+extra};}
-function starsEl(base,extra){const b=document.createElement('b');b.className='stars';
-  const add=(cls,n)=>{if(n>0)b.append(Object.assign(document.createElement('span'),{className:cls,textContent:'★'.repeat(n)}));};
-  add('g',base);add('d',3-base);b.append(' ');add('p',extra);add('d',2-extra);return b;}
+// accuracy weighs every coin of the song: PERFECT 1, GOOD 0.8, OK 0.6, missed 0. Grades: S at 96% with no crash, A 90, B 80, C 70, else D.
+// Stars: one for clearing, two for an A, three for an S
+const accuracy=()=>{const n=J.p+J.g+J.o+J.m;return n?(J.p+0.8*J.g+0.6*J.o)/n:1;};
+const accText=a=>(Math.floor(a*1000)/10).toFixed(1)+'%';
+const gradeOf=(a,clean)=>a>=0.96&&clean?'S':a>=0.9?'A':a>=0.8?'B':a>=0.7?'C':'D';
+const starsFor=g=>g==='S'?3:g==='A'?2:1,GRANK='DCBAS';
+function starsEl(n){const b=document.createElement('b');b.className='stars';
+  b.append(Object.assign(document.createElement('span'),{className:'g',textContent:'★'.repeat(n)}),Object.assign(document.createElement('span'),{className:'d',textContent:'★'.repeat(3-n)}));return b;}
 const today=()=>new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
-function recordEp(st,pct){const old=epSave(key,EP),best=score>old.score,more=st.total>old.stars,top=more?{stars:st.total,base:st.base,extra:st.extra}:{stars:old.stars,base:old.base,extra:old.extra};
-  store.set(`lr-ep-${key}-${EP}`,JSON.stringify({...top,score:Math.max(score,old.score),pct:Math.max(pct,old.pct)}));
-  return{best,firstClear:old.stars===0&&st.total>0,moreStars:more,newStars:Math.max(0,st.total-old.stars)};}
+function recordEp(stars,acc,grade){const old=epSave(key,EP),best=score>old.score;
+  store.set(`td-ep-${key}-${EP}`,JSON.stringify({stars:Math.max(stars,old.stars),score:Math.max(score,old.score),acc:Math.max(acc,old.acc),
+    grade:GRANK.indexOf(grade)>GRANK.indexOf(old.grade||'D')||!old.grade?grade:old.grade}));
+  return{best,firstClear:old.stars===0,newStars:Math.max(0,stars-old.stars),bestGrade:!old.grade||GRANK.indexOf(grade)>GRANK.indexOf(old.grade)};}
 /* the wallet: every coin you catch is kept (even if you quit a run), new stars pay STAR_PAY each; coins buy cars in the garage */
-const STAR_PAY=25, wallet={get:()=>Math.max(0,+store.get('lr-coins')||0),add(n){store.set('lr-coins',String(wallet.get()+n));}};
+const STAR_PAY=40, wallet={get:()=>Math.max(0,+store.get('lr-coins')||0),add(n){store.set('lr-coins',String(wallet.get()+n));}};
 const owns=k=>!CARS[k].price||store.get('lr-unlockcars')==='1'||(readJ('lr-cars')||[]).includes(k);
 let selCar=CARS[store.get('lr-car')]&&owns(store.get('lr-car'))?store.get('lr-car'):'arrow';showCar(selCar);
 function payRun(bonus=0){if(inMenu||sim)return 0;const n=Math.round((run.hits-(run.paidHits||0))*CARS[selCar].perk.coin)+bonus;run.paidHits=run.hits;wallet.add(n);return n;}
@@ -2173,7 +2264,8 @@ const earnText=(n,why)=>`+${n.toLocaleString('en-US')} coins${why} · you have $
 const MISSION_POOL=[
   {id:'onbeat',goals:[15,40,90],say:n=>`Make ${n} moves on the beat`},{id:'perfect',goals:[4,12,30],say:n=>`Get ${n} PERFECT glass breaks`},
   {id:'clean',goals:[1,2,4],say:n=>n>1?`Finish ${n} episodes without crashing`:'Finish an episode without crashing'},
-  {id:'combo',goals:[30,60,100],say:n=>`Reach a ${n}-coin combo`,max:true},{id:'stars3',goals:[1,3,6],say:n=>n>1?`Earn ★★★ or more in ${n} episodes`:'Earn ★★★ or more in an episode'},
+  {id:'combo',goals:[30,60,100],say:n=>`Reach a ${n}-coin combo`,max:true},{id:'od',goals:[1,4,10],say:n=>n>1?`Go into OVERDRIVE ${n} times`:'Go into OVERDRIVE'},
+  {id:'agrade',goals:[1,3,6],say:n=>n>1?`Get an A or better in ${n} episodes`:'Get an A or better in an episode'},{id:'sgrade',goals:[1,2,4],say:n=>n>1?`Get an S in ${n} episodes`:'Get an S in an episode'},
   {id:'over',goals:[4,12,30],say:n=>`Hop over ${n} roadblocks`},{id:'shatter',goals:[8,20,45],say:n=>`Break ${n} coins out of glass`},
   {id:'coins',goals:[300,800,1800],say:n=>`Catch ${n} coins`},{id:'power',goals:[3,8,15],say:n=>`Collect ${n} power-ups`}];
 function missionState(){let m=readJ('lr-missions');if(m&&m.active&&m.active.some(a=>!MISSION_POOL.some(p=>p.id===a.id)))m=null; // from an older version
@@ -2208,15 +2300,15 @@ $('giftClaim').addEventListener('click',()=>{const g=giftToday();$('gift').hidde
 function recordInf(){const list=infList(key);list.push({s:score,l:LEVEL,d:today()});list.sort((a,b)=>b.s-a.s);
   const rank=list.findIndex(e=>e.s===score)+1;store.set(`lr-inf-${key}`,JSON.stringify(list.slice(0,5)));return rank;}
 
-const REVIVE_COST=200,CLEAR_MIN=0.5;
+const REVIVE_COST=200;
 function gameOver(why='lives'){if(inMenu||!$('over').hidden)return;over=true;paused=true;countEnd=0;audioOn=false;screenEl.classList.add('is-over');$('over').hidden=false;
-  $('overTitle').textContent=why==='coins'?'TOO FEW COINS':SONG.ep>=0?'OUT OF LIVES':'CRASHED';
+  $('overTitle').textContent=SONG.ep>=0?'OUT OF SYNC':'GAME OVER';
   // one paid revive per episode run, while the song still has a way to go
-  const rv=$('revive'),can=SONG.ep>=0&&why==='lives'&&!run.revives&&t<gateT-BAR;rv.hidden=!can;$('again').className=can&&wallet.get()>=REVIVE_COST?'ghost':'big';
+  const rv=$('revive'),can=SONG.ep>=0&&why==='sync'&&!run.revives&&t<gateT-BAR;rv.hidden=!can;$('again').className=can&&wallet.get()>=REVIVE_COST?'ghost':'big';
   if(can){const w=wallet.get();rv.disabled=w<REVIVE_COST;rv.innerHTML=w>=REVIVE_COST?`REVIVE · <i class="coin"></i> ${REVIVE_COST}`:`REVIVE · NEED ${REVIVE_COST-w} MORE <i class="coin"></i>`;}
   if(SONG.ep>=0){const prog=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1);
-    $('ovA').textContent='SONG';$('finalScore').textContent=Math.round(prog*100)+'%';$('ovB').textContent='COINS';$('best').textContent=Math.round(100*run.hits/Math.max(1,run.coins))+'%';
-    $('overNote').textContent=why==='coins'?`Catch at least ${CLEAR_MIN*100}% of the coins to finish an episode. The course is the same every try.`:'Three crashes end the episode. The course is the same every try, so you can learn it.';$('again').textContent='TRY AGAIN';$('toMenu').textContent='EPISODES';}
+    $('ovA').textContent='SONG';$('finalScore').textContent=Math.round(prog*100)+'%';$('ovB').textContent='ACCURACY';$('best').textContent=accText(accuracy());
+    $('overNote').textContent='Your Sync ran out. The course is the same every try, so you can learn it.';$('again').textContent='TRY AGAIN';$('toMenu').textContent='EPISODES';}
   else{const rank=recordInf(),best=infList(key)[0].s;
     $('ovA').textContent='SCORE';$('finalScore').textContent=score.toLocaleString('en-US');$('ovB').textContent='BEST';$('best').textContent=best.toLocaleString('en-US');
     $('overNote').textContent=rank===1&&score>0?'NEW HIGH SCORE':rank<=5?`#${rank} on your ${MAPINFO[key].name} board`:'';$('again').textContent='FLY AGAIN';$('toMenu').textContent='MAIN MENU';}
@@ -2224,33 +2316,40 @@ function gameOver(why='lives'){if(inMenu||!$('over').hidden)return;over=true;pau
   (rv.hidden||rv.disabled?$('again'):rv).focus({preventScroll:true});}
 // back in the air with one life: a 3-2-1, then the song carries on from where you crashed
 function revive(){if(!over||run.revives||wallet.get()<REVIVE_COST)return;wallet.add(-REVIVE_COST);run.revives++;
-  shields=1;invuln=RESPAWN+2;respawn=0;over=false;$('over').hidden=true;screenEl.classList.remove('is-over');hud();
+  sync=50;flow=0;invuln=RESPAWN+2;respawn=0;over=false;$('over').hidden=true;screenEl.classList.remove('is-over');hud();
   if(initAudio()){audioOn=true;A.ctx.resume().catch(()=>{});}countEnd=performance.now()+1500;pop('3','big',3);setTimeout(()=>pop('2','big',3),500);setTimeout(()=>pop('1','big',3),1000);}
+// numbers on the results screen roll up to their value (instantly when effects are reduced)
+function countUp(el,to,fmt,ms=900){if(fxLow){el.textContent=fmt(to);return;}const t0=performance.now();
+  const step=now=>{const k=Math.min(1,(now-t0)/ms),e=1-Math.pow(1-k,3);el.textContent=fmt(to*e);if(k<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
+function showJudgements(){const el=$('clearJud');el.textContent='';el.hidden=false;
+  for(const[k,name]of[['p','PERFECT'],['g','GOOD'],['o','OK'],['m','MISS']]){const d=document.createElement('div');d.className=k;d.innerHTML='<b></b><small></small>';d.querySelector('b').textContent=J[k];d.querySelector('small').textContent=name;el.append(d);}}
 function episodeClear(){if(inMenu||over)return;
-  const pct=run.hits/Math.max(1,run.coins),st=starsOf(run.lost,run.hits,run.coins);
-  if(sim){over=true;sim.result={stars:st.total,base:st.base,extra:st.extra,pct};return;}
-  if(pct<CLEAR_MIN){gameOver('coins');return;}over=true;
-  if(run.lost===0)mission('clean',1);if(st.total>=3)mission('stars3',1);
-  audioOn=false;haptic('win');const r=recordEp(st,Math.floor(pct*100)),got=payRun(r.newStars*STAR_PAY);
-  screenEl.classList.add('is-over');$('clear').hidden=false;$('clearStars').hidden=$('starKey').hidden=false;
+  const acc=accuracy(),clean=run.lost===0,gr=gradeOf(acc,clean),stars=starsFor(gr);
+  if(sim){over=true;sim.result={stars,grade:gr,acc};return;}
+  over=true;if(clean)mission('clean',1);if(gr==='S'||gr==='A')mission('agrade',1);if(gr==='S')mission('sgrade',1);
+  const nextEra=MAPS[MAPS.indexOf(key)+1],wasOpen=!nextEra||eraOpen(nextEra);
+  audioOn=false;haptic('win');const r=recordEp(stars,acc,gr),got=payRun(r.newStars*STAR_PAY),opened=!wasOpen&&eraOpen(nextEra);
+  screenEl.classList.add('is-over');$('clear').hidden=false;$('clearRank').hidden=false;
   $('clearEarn').textContent=earnText(got,r.newStars?` (${r.newStars*STAR_PAY} for new stars)`:'');resMissions('clearMis');
-  $('clearTitle').textContent=EP===4?'MAP COMPLETE':'EPISODE CLEAR';
-  $('clearPct').textContent=Math.floor(pct*100)+'%';$('clearScore').textContent=score.toLocaleString('en-US');
-  // lives kept light up first, lost ones break, then the extras
-  const el=[...$('clearStars').children];el.forEach(s=>s.classList.remove('on','lost'));
-  el.forEach((s,i)=>{const on=i<3?i<st.base:i-3<st.extra;setTimeout(()=>s.classList.add(on?'on':i<3?'lost':'off'),250+i*260);});
-  const lost=run.lost?`Lost ${run.lost} ${run.lost>1?'lives':'life'}: −${run.lost} ★`:'No lives lost',
-    ex=st.extra===2?'every coin: both extra stars':st.extra?'catch every coin for the last extra ★':'catch 85% of the coins for an extra ★';
-  $('clearNote').textContent=(r.best?'NEW BEST SCORE · ':'')+lost+' · '+ex;
-  $('nextEp').hidden=EP>=4;$('nextEp').textContent=`NEXT · ${EPISODES[key][Math.min(4,EP+1)].name.toUpperCase()}`;
-  (EP>=4?$('retryEp'):$('nextEp')).focus({preventScroll:true});}
+  $('clearCity').textContent=`${MAPINFO[key].name.toUpperCase()} · EPISODE ${EP+1} · ${SONG.name.toUpperCase()}`;
+  $('clearTitle').textContent=EP===4?'ERA COMPLETE':'EPISODE CLEAR';
+  const ge=$('clearGrade');ge.textContent=gr;ge.className='grade g-'+gr;void ge.offsetWidth;ge.classList.add('go');
+  countUp($('clearAcc'),acc,accText);countUp($('clearScore'),score,v=>Math.round(v).toLocaleString('en-US'));$('clearCombo').textContent=maxCombo;showJudgements();
+  const el=[...$('clearStars').children];el.forEach(s=>s.classList.remove('on'));el.forEach((s,i)=>{if(i<stars)setTimeout(()=>s.classList.add('on'),700+i*220);});
+  const tip=gr==='S'?'Flawless.':gr==='A'?(clean?'S needs 96% accuracy.':'S needs 96% and no crash.'):'★★ at 90% accuracy (grade A), ★★★ at 96% with no crash (S).';
+  $('clearNote').textContent=(opened?`THE ${MAPINFO[nextEra].name.toUpperCase()} IS OPEN · `:'')+(r.best?'NEW BEST SCORE · ':'')+(odN?`OVERDRIVE ×${odN} · `:'')+tip;
+  if(opened){pop(`${MAPINFO[nextEra].name.toUpperCase()} UNLOCKED`,'gold',3);chime();}
+  // after the last episode of an era, on to the next era if it's open
+  const ne=$('nextEp'),toEra=EP>=4&&nextEra&&eraOpen(nextEra)?nextEra:'';ne.dataset.era=toEra;ne.hidden=EP>=4&&!toEra;
+  ne.textContent=toEra?`NEXT ERA · ${MAPINFO[toEra].name.toUpperCase()}`:`NEXT · ${EPISODES[key][Math.min(4,EP+1)].name.toUpperCase()}`;
+  (ne.hidden?$('retryEp'):ne).focus({preventScroll:true});}
 // end of flight school: no stars, a one-time bonus, then on to episode 1
 function tutorialDone(){if(inMenu||over)return;over=true;audioOn=false;haptic('win');const first=store.get('lr-tut')!=='1';store.set('lr-tut','1');const got=payRun(first?100:0);
-  screenEl.classList.add('is-over');$('clear').hidden=false;$('clearStars').hidden=$('starKey').hidden=true;$('clearTitle').textContent='FLIGHT SCHOOL DONE';
-  $('clearPct').textContent=Math.floor(100*run.hits/Math.max(1,run.coins))+'%';$('clearScore').textContent=score.toLocaleString('en-US');
-  $('clearNote').textContent='You know every move. In episodes you have 3 lives, and each crash costs a star.';
+  screenEl.classList.add('is-over');$('clear').hidden=false;$('clearRank').hidden=true;$('clearTitle').textContent='FLIGHT SCHOOL DONE';$('clearCity').textContent='YOU KNOW EVERY MOVE';
+  showJudgements();$('clearScore').textContent=score.toLocaleString('en-US');$('clearCombo').textContent=maxCombo;
+  $('clearNote').textContent='In episodes, your Sync bar is your life: misses and crashes drain it, catches fill it. Keep the flow up and the band joins in.';
   $('clearEarn').textContent=earnText(got,first?' (100 for finishing school)':'');resMissions('clearMis');
-  $('nextEp').hidden=false;$('nextEp').textContent='START EPISODE 1';$('nextEp').focus({preventScroll:true});}
+  $('nextEp').hidden=false;$('nextEp').dataset.era='';$('nextEp').textContent='START EPISODE 1';$('nextEp').focus({preventScroll:true});}
 
 // simulated player for the model test: it sees the coins and pads, waits a moment after each coin, and swipes at human speed;
 // hops are timed to arrive just before the coin, and it holds the swipe through a run of coins up there
@@ -2297,26 +2396,30 @@ function update(dt){
   if(sim){sim.stats.air=cs.row!==HOME?sim.stats.air+dt:0;sim.stats.airMax=Math.max(sim.stats.airMax,+sim.stats.air.toFixed(2));}
   if(sim&&sim.bot)humanStep();else if((inMenu&&!garage)||over||demo||(sim&&!sim.bot))autopilot();
   [cs.x,cs.vx]=smoothDamp(cs.x,LX[cs.col],cs.vx,0.11,dt);[cs.y,cs.vy]=smoothDamp(cs.y,LY[cs.row],cs.vy,0.11,dt);
-  const mult=x2T>0?2:1;magnetT=Math.max(0,magnetT-dt);x2T=Math.max(0,x2T-dt);
+  magnetT=Math.max(0,magnetT-dt);x2T=Math.max(0,x2T-dt);
+  if(odT>0&&!inMenu){odT-=dt;if(odT<=0)endOverdrive();}
   for(const n of nodes){if(n.state)continue;
-    if(respawn>0.45){if(n.pre&&A.ctx){n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);n.pre=null;}if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;}continue;} // coins during a crash don't count
+    if(respawn>0.45){if(n.pre&&A.ctx){n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);n.pre=null;}if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;if(!inMenu)judgeCoin('m',false,true);}continue;} // coins during a crash are lost (no extra penalty)
     const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:CARS[selCar].perk.reach)&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
-    if(near&&t>=n.time-0.05&&!(n.glass&&!n.cracked)){n.state=1;lastJudged=n.time;combo++;streak16++;if(!inMenu){run.hits++;mission('coins',1);mission('combo',combo);}if(n.pu)powerUp(n.pu);if(sim)sim.stats.hits++;score+=Math.round(100*(1+Math.min(combo,8)*0.25))*mult;fx(LX[n.col],LY[n.row],COIN_METAL[n.row].clone().multiplyScalar(0.55),false,n.row);
-      // a coin you had to move for is graded on when you moved: the swipe that lands on the note (the car needs ~0.1 s to get there) is PERFECT
-      if(n.mv&&!inMenu&&!SONG.tut&&cs.moveT!==undefined){const d=cs.moveT-(n.time-MOVE_LEAD),g=Math.abs(d)<MOVE_PERFECT?2:Math.abs(d)<MOVE_GOOD?1:0;run.moves++;
-        if(g){run.onBeat++;score+=(g===2?150:75)*mult;mission('onbeat',1);judge(g===2?'PERFECT':'GOOD',g===2?'gold':'cyan');}else judge(d<0?'EARLY':'LATE','dim');}
-      if(sim&&n.mv&&cs.moveT!==undefined){const d=cs.moveT-(n.time-MOVE_LEAD);sim.stats.moves=(sim.stats.moves||0)+1;if(Math.abs(d)<MOVE_GOOD)sim.stats.onBeat=(sim.stats.onBeat||0)+1;}
+    if(near&&t>=n.time-0.05&&!(n.glass&&!n.cracked)){n.state=1;lastJudged=n.time;combo++;if(!inMenu){run.hits++;mission('coins',1);mission('combo',combo);}if(n.pu)powerUp(n.pu);if(sim)sim.stats.hits++;fx(LX[n.col],LY[n.row],COIN_METAL[n.row].clone().multiplyScalar(0.55),false,n.row);
+      // the grade: a coin in glass by its tap; a coin you had to move for by when you moved (the swipe that lands on the note, the car
+      // needing ~0.1 s to get there, is PERFECT); a coin you were already lined up for counts as PERFECT without a call-out
+      let g='p',shown=false;
+      if(n.glass)g=n.tapGrade||'o';
+      else if(n.mv&&cs.moveT!==undefined){const d=cs.moveT-(n.time-MOVE_LEAD);g=Math.abs(d)<MOVE_PERFECT?'p':Math.abs(d)<MOVE_GOOD?'g':'o';shown=true;
+        if(!inMenu&&!n.wait&&!sim)judge(g==='p'?'PERFECT':g==='g'?'GOOD':d<0?'EARLY':'LATE',g==='p'?'gold':g==='g'?'cyan':'dim');if(g!=='o')mission('onbeat',1);}
+      if(sim&&n.mv){sim.stats.moves=(sim.stats.moves||0)+1;if(g!=='o')sim.stats.onBeat=(sim.stats.onBeat||0)+1;}
+      if(!inMenu)judgeCoin(g,n.mv&&shown);
       // a coin up there (or down there) ends the hop: the car drops straight back to the skyway
       if(n.row!==HOME)vt=DROP_TAIL;
-      // in Infinite, a streak of 16 coins earns a shield back
-      if(streak16>=16){streak16=0;if(shields<MAX_SHIELDS&&SONG.ep<0){shields++;pop('SHIELD +1','gold',2);}}
       const at=audioOn&&A.ctx?Math.max(A.ctx.currentTime,offset+n.time):0;if(!melodyOn)setMelody(true,at);if(audioOn&&A.ctx&&!sim&&!n.pre)playLead(at,n.note,n.len);}
-    else if(t>n.time+(n.glass&&!n.cracked?TAP_LATE:0.08)){n.state=2;lastJudged=n.time;combo=0;streak16=0;if(n.pre&&A.ctx)n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);if(n.glass&&!n.cracked&&near&&!inMenu){n.cracked=true;shatterFx(LX[n.col],LY[n.row],0,true);if(invuln<=0){if(glassHint++<2)pop('TAP TO BREAK THE GLASS','',2);crash({state:0,col:n.col,row:n.row,kind:'glass'});}}if(melodyOn)setMelody(false,0);
+    else if(t>n.time+(n.glass&&!n.cracked?TAP_LATE:0.08)){n.state=2;lastJudged=n.time;combo=0;if(n.pre&&A.ctx)n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);let hit=false;if(n.glass&&!n.cracked&&near&&!inMenu){n.cracked=true;shatterFx(LX[n.col],LY[n.row],0,true);if(invuln<=0){hit=true;if(glassHint++<2)pop('TAP TO BREAK THE GLASS','',2);crash({state:0,col:n.col,row:n.row,kind:'glass'});}}if(melodyOn)setMelody(false,0);
+      if(!inMenu)judgeCoin('m',false,hit);
       if(sim){sim.stats.misses++;const pv=sim.prevCoin;sim.stats.missLog.push([+(pv?n.time-pv.time:0).toFixed(2),pv?pv.row:-1,n.row,pv?n.col-pv.col:0,n.runStart===n.time?'start':'run',cs.row,+vt.toFixed(2)]);}}
     if(sim&&n.state)sim.prevCoin=n;}
   const rowGap=LY[1]-LY[0];
   for(const h of hazards){if(h.state)continue;const z=hz(h),reach=KINDS[h.kind].len/2+0.9;if(z<-reach)continue;
-    if(z>reach){h.state=2;if(h.over&&!inMenu&&!over)mission('over',1);if(h.near&&!inMenu&&!over){score+=50*mult;if(sim)sim.stats.nearMiss++;}continue;}
+    if(z>reach){h.state=2;if(h.over&&!inMenu&&!over)mission('over',1);if(h.near&&!inMenu&&!over){score+=25*scoreMult();if(sim)sim.stats.nearMiss++;}continue;}
     const dx=Math.abs(cs.x-LX[h.col]),dy=Math.abs(cs.y-LY[h.row]);
     if(invuln<=0&&dx<0.75&&dy<(h.over?0.45:0.8)){crash(h);continue;}
     if((dx<1.9&&dy<0.5)||(dx<0.5&&dy<rowGap+0.3))h.near=true;}
@@ -2335,7 +2438,7 @@ function fx(x,y,col,big,row){if(sim)return;const r=fxRings.find(r=>r.age>0.5)||f
 
 const PLAY_CAM={h:2.0,lookY:-0.7,shift:0.07};
 const camTarget=new THREE.Vector3(), lookTarget=new THREE.Vector3(), tmpV=new THREE.Vector3(), tmpC=new THREE.Color();
-let exhaustAcc=0, jetAcc=0, camSnap=false;
+let exhaustAcc=0, jetAcc=0, camSnap=false, odB=0, beatPulse=0;
 function render(dt){
   const ph=(((t%BEAT)+BEAT)%BEAT)/BEAT, pulse=Math.exp(-ph*5), hl=rowNow();
   // crash: tumble back toward the camera, then glide back in from above to the lane
@@ -2383,12 +2486,13 @@ function render(dt){
   menuLift+=((inMenu&&!garage&&!$('menu').hidden?1:0)-menuLift)*(camSnap?1:1-Math.exp(-dt*5));
   const vo=show?0:0.2*menuLift-PLAY_CAM.shift*(1-menuLift);
   if(Math.abs(vo)>0.001){renderer.getSize(tmpV2);camera.setViewOffset(tmpV2.x,tmpV2.y,0,tmpV2.y*vo,tmpV2.x,tmpV2.y);}else if(camera.view&&camera.view.enabled)camera.clearViewOffset();
-  const fovT=show?58:TH.fov;fovNow+=(fovT-fovNow)*(camSnap?1:Math.min(1,dt*5));camSnap=false;
+  const fovT=show?58:TH.fov+(fxLow?0:odB*9);fovNow+=(fovT-fovNow)*(camSnap?1:Math.min(1,dt*5));camSnap=false;
   if(Math.abs(camera.fov-fovNow)>0.01){camera.fov=fovNow;camera.updateProjectionMatrix();}
   pMat.uniforms.scale.value=renderer.domElement.clientHeight/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2)));
   blurPass.uniforms.strength.value=TH.blur;
   sunsetUpdate(dt,dist,melLevel,t);
-  sharedUpdate(dt,dist,melLevel,0);backdropUpdate(dt,pulse);
+  odB+=((odT>0&&!inMenu?1:0)-odB)*Math.min(1,dt*4);beatPulse=pulse;odGlow.style.opacity=odB>0.01?(odB*(0.45+0.4*pulse)*(fxLow?0.5:1)).toFixed(3):'0';bloom.strength=TH.bloom[0]*(1+odB*1.3);
+  sharedUpdate(dt,dist,melLevel,odB);backdropUpdate(dt,pulse);
   // path: along the skyway, a ramp up (or down) from each launch pad to the coins, and a landing right after them
   const up=nodes.filter(n=>n.state===0&&-(n.time-t)*SPEED<-1.2).slice(0,10),pts=[],cols=[];
   const pushPt=(x,y,z,c)=>{pts.push(x,y,z);const f=Math.pow(clamp(1-(-z)/45,0,1),1.5)*0.28;cols.push(c.r*f,c.g*f,c.b*f);};
@@ -2528,6 +2632,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, what changed
 const CHANGELOG=[
+ ['20','The Band','25 Oct 2026',['Every run starts as a bare groove of drums and bass. Catch coins on the beat to build your Flow and the whole band joins in; miss and it drops back out.','Flow sets your multiplier (×1 to ×4). Fill it to go into OVERDRIVE: eight bars at ×8, the lead doubles an octave up and the screen lights up.','Lives are gone: a Sync bar is your life. Catches fill it, misses and crashes drain it, more so in later episodes.','Every coin is graded PERFECT, GOOD or OK. Results give a grade from D to S, your accuracy, a count of each grade and your best combo.','Three stars per episode: clear the song, get an A (90%), get an S (96% with no crash). 10 stars in an era opens the next.','Flight School teaches timing, Flow and Overdrive; the first episodes open with the rules of the run.','New missions: grades, Overdrives, timing. A Reduce effects setting, a PERFECT ping, and a pause screen that shows how you’re doing.']],
  ['18','Play Test','24 Oct 2026',['Moves are graded on the beat: swipe as the note lands for PERFECT, close for GOOD (with bonus points).','Traffic arrives on the music’s accents, mostly beats 2 and 4.','Audio sync in Settings: tap along to line up sound and screen (for Bluetooth headphones).','A lower camera that shows more road ahead.','One call-out at a time; the timing grade sits just above the car.','The next episode opens at ★★★ or 85% of the coins; an episode needs half the coins to clear.','Eras get harder in turn, and the Present and Future open with 8 stars in the era before.','Car perks, and a revive for 200 coins when you run out of lives.','Missions ask for timing, clean runs and stars.','Flight School waits until you make each move.','The daily gift is a card you claim on the main menu.','Bigger buttons; sound moved into the pause menu.','Graphics quality steps back up when the phone has room, and a steady 30 fps no longer counts as slow.','Wet streets: fainter reflections, and the car no longer shows upside down in them.']],
  ['17.2','Change Log','23 Oct 2026',['This change log, from the ✦ button at the top of the main menu.']],
  ['17.1','One Lane at a Time','23 Oct 2026',['One swipe always moves exactly one lane, however far your finger goes.','A coin two lanes over takes two swipes, and the course leaves time for both.','Flight School: “Two lanes over? Swipe twice.”']],
@@ -2558,13 +2663,13 @@ $('logBtn').addEventListener('click',()=>openMenu('changes'));$('logBack').addEv
 function renderMenu(){const E=EPISODES[key],nx=nextEpisode(key),b=infList(key)[0],k=document.querySelector(`.style[data-theme="${key}"]`).style.getPropertyValue('--k');
   $('menu').style.setProperty('--era',k);
   const city=n=>n.replace(/\s\d{4}$/,'');$('eraSub').textContent=`${city(E[0].name)} → ${city(E[E.length-1].name)}`;$('eraMus').textContent=`${MAPINFO[key].era} · ${MUSIC_WORD[key]} music`;
-  $('playSub').textContent=nx<0?'Flight School · learn the moves':`Episode ${nx+1} · ${E[nx].name}${epSave(key,nx).stars?' · '+'★'.repeat(epSave(key,nx).stars):''}`;
+  const ns=nx>=0?epSave(key,nx):null;$('playSub').textContent=nx<0?'Flight School · learn the moves':`Episode ${nx+1} · ${E[nx].name}${ns.stars?` · best ${ns.grade} ${'★'.repeat(ns.stars)}`:''}`;
   // a later era opens once you have enough stars in the one before it
   const open=eraOpen(key),prevEra=MAPINFO[MAPS[MAPS.indexOf(key)-1]]?.name,need=open?0:ERA_NEED-mapStars(MAPS[MAPS.indexOf(key)-1]);
   $('start').disabled=$('modeInf').disabled=!open&&nx>=0;$('start').querySelector('.pl').textContent=!open&&nx>=0?'🔒 LOCKED':'▶ PLAY';
   if(!open&&nx>=0)$('playSub').textContent=`Earn ${need} more ★ in the ${prevEra} to open`;
-  $('epsSub').textContent=`★ ${mapStars(key)}/25`;$('infSub').textContent=b?`best ${b.s.toLocaleString('en-US')}`:'no best yet';
-  $('starTot').textContent=`★ ${MAPS.reduce((a,m)=>a+mapStars(m),0)}/75`;$('walletN').textContent=wallet.get().toLocaleString('en-US');
+  $('epsSub').textContent=`★ ${mapStars(key)}/15`;$('infSub').textContent=b?`best ${b.s.toLocaleString('en-US')}`:'no best yet';
+  $('starTot').textContent=`★ ${MAPS.reduce((a,m)=>a+mapStars(m),0)}/45`;$('walletN').textContent=wallet.get().toLocaleString('en-US');
   // a dot on MISSIONS when one is more than half done
   const ms=missionState();$('misBadge').hidden=!ms.active.some(a=>a.prog>=mGoal(a)/2);}
 function cycleEra(d){const i=(MAPS.indexOf(key)+d+MAPS.length)%MAPS.length;running=true;applyTheme(MAPS[i]);renderMenu();}
@@ -2610,7 +2715,7 @@ function drawWorld(m){const cv=$('wmapCv'),r=cv.getBoundingClientRect(),dpr=Math
   if(m==='rain'){g.fillStyle='rgba(46,242,255,.05)';for(let y=0;y<h;y+=3)g.fillRect(0,y,w,1);}
   return{V,w,h,st};}
 function renderEps(){const m=key,E=EPISODES[m],M=drawWorld(m),pins=$('epPins'),svg=$('wroute');pins.textContent='';
-  $('epsTitle').textContent=MAPINFO[m].name.toUpperCase();$('epsStars').textContent=`★ ${mapStars(m)}/25`;$('eps').style.setProperty('--pc',M.st.pin);
+  $('epsTitle').textContent=MAPINFO[m].name.toUpperCase();$('epsStars').textContent=`★ ${mapStars(m)}/15`;$('eps').style.setProperty('--pc',M.st.pin);
   const done=store.get('lr-tut')==='1';$('tutState').textContent=done?'✓ DONE':'START HERE';$('tutPin').style.setProperty('--g',document.querySelector(`.style[data-theme="${m}"]`).style.getPropertyValue('--g'));
   // where each pin goes, then nudged apart so close cities (London and Paris, the four in east Asia) stay readable
   const at=E.map(e=>M.V.proj(...GEO[cityOf(e.name)])),pos=at.map(p=>[...p]);
@@ -2627,13 +2732,13 @@ function renderEps(){const m=key,E=EPISODES[m],M=drawWorld(m),pins=$('epPins'),s
   const nx=nextEpisode(m);if(!(epSel>=0&&epSel<E.length))epSel=Math.max(0,nx);
   E.forEach((e,i)=>{const open=unlocked(m,i),sv=epSave(m,i),b=document.createElement('button');b.className='pin'+(open?'':' locked')+(i===nx?' next':'');
     b.style.left=pos[i][0]+'px';b.style.top=pos[i][1]+'px';b.setAttribute('aria-pressed',String(i===epSel));
-    b.setAttribute('aria-label',open?`Episode ${i+1}, ${e.name}, ${sv.stars} of 5 stars`:`Episode ${i+1}, ${e.name}, locked`);
+    b.setAttribute('aria-label',open?`Episode ${i+1}, ${e.name}, ${sv.stars} of 3 stars${sv.grade?', grade '+sv.grade:''}`:`Episode ${i+1}, ${e.name}, locked`);
     b.innerHTML=`<span class="dot">${open?i+1:'🔒'}</span><span class="lb"></span><span class="sts"></span>`;b.querySelector('.lb').textContent=cityOf(e.name);
-    b.querySelector('.sts').textContent=sv.stars?'★'.repeat(sv.stars):'';b.addEventListener('click',()=>{if(epSel===i&&open){EP=i;startRun();return;}epSel=i;renderEps();});pins.append(b);});
+    b.querySelector('.sts').textContent=sv.stars?'★'.repeat(sv.stars)+' '+sv.grade:'';b.addEventListener('click',()=>{if(epSel===i&&open){EP=i;startRun();return;}epSel=i;renderEps();});pins.append(b);});
   // the chosen episode: its music, best result and PLAY
   const e=E[epSel],sv=epSave(m,epSel),open=unlocked(m,epSel);$('ecNum').textContent=open?epSel+1:'🔒';$('ecName').textContent=e.name;
   $('ecSub').textContent=open?`${e.bpm} BPM · ${LEAD_NAMES[e.V.lead]}${sv.score?' · best '+sv.score.toLocaleString('en-US'):''}`:!eraOpen(m)?`Earn ${ERA_NEED}★ in the ${MAPINFO[MAPS[MAPS.indexOf(m)-1]].name} to open`:`Get ★★★ or 85% of the coins in episode ${epSel} to open`;
-  const st=$('ecStars');st.textContent='';if(open&&sv.stars)st.append(starsEl(sv.base,sv.extra));
+  const st=$('ecStars');st.textContent='';if(open&&sv.stars){st.append(starsEl(sv.stars));const gr=document.createElement('small');gr.textContent=`${sv.grade} · ${accText(sv.acc)}`;st.append(gr);}
   const pb=$('epPlay');pb.disabled=!open;pb.textContent=open?(sv.stars?`PLAY AGAIN · EPISODE ${epSel+1}`:`PLAY EPISODE ${epSel+1}`):'LOCKED';}
 $('epPlay').addEventListener('click',()=>{if(!unlocked(key,epSel))return;EP=epSel;startRun();});
 $('tutPin').addEventListener('click',()=>{EP=-1;startRun();});
@@ -2649,9 +2754,9 @@ function renderBoard(){document.querySelectorAll('#boardTabs .tab').forEach(b=>b
   const row=(list,cells,cls='')=>{const li=document.createElement('li');if(cls)li.className=cls;for(const c of cells){const s=document.createElement('span');s.append(c);li.append(s);}list.append(li);};
   if(!inf.length)row(il,['No runs yet. Play Infinite to set a score.'],'empty');
   inf.forEach((e,i)=>row(il,[`${i+1}`,`${e.s.toLocaleString('en-US')}${e.l==='hard'?'  HARD':''}`,e.d]));
-  EPISODES[boardMap].forEach((E,i)=>{const s=epSave(boardMap,i),f=document.createDocumentFragment();if(s.stars)f.append(starsEl(s.base,s.extra),'  '+s.score.toLocaleString('en-US'));
+  EPISODES[boardMap].forEach((E,i)=>{const s=epSave(boardMap,i),f=document.createDocumentFragment();if(s.stars)f.append(starsEl(s.stars),`  ${s.grade}  ${s.score.toLocaleString('en-US')}`);
     row(el,[`${i+1}`,E.name,s.stars?f:unlocked(boardMap,i)?'not cleared':'locked'],s.stars?'':'dim');});
-  $('boardTotal').textContent=`★ ${MAPS.reduce((a,m)=>a+mapStars(m),0)}/75`;}
+  $('boardTotal').textContent=`★ ${MAPS.reduce((a,m)=>a+mapStars(m),0)}/45`;}
 function openMenu(panel='menu'){inMenu=true;over=false;paused=false;countEnd=0;for(const id of['over','pause','clear'])$(id).hidden=true;screenEl.classList.remove('is-over','is-paused');
   screenEl.classList.add('in-menu');audioOn=false;if(A.ctx&&A.ctx.state!=='running')A.ctx.resume().catch(()=>{});
   if(SONG.ep>=0||SONG.tut){setSong(loopSong(key));resetRun();}
@@ -2674,10 +2779,11 @@ function startRun(){running=true;over=false;paused=false;countEnd=0;garage=false
   setSong(MODE==='ep'?(EP<0?tutSong(key):buildSong(key,EP)):loopSong(key));
   t=Math.ceil(t/BAR)*BAR-0.05;tPrev=t; // the song starts on a bar line
   if(initAudio()){A.ctx.resume().catch(()=>{});audioOn=true;needSync=false;measureLat();offset=A.ctx.currentTime-t-audLat;A.mel.gain.cancelScheduledValues(A.ctx.currentTime);A.mel.gain.setValueAtTime(1,A.ctx.currentTime);}
-  inMenu=false;userAt=t;hintUntil=t+10;showPanel(null);screenEl.classList.remove('in-menu');resetRun();
+  inMenu=false;userAt=t;hintUntil=t+10;{const n=+store.get('td-tips')||0;runTip=MODE==='ep'&&EP>=0&&n<3;if(runTip)store.set('td-tips',String(n+1));}showPanel(null);screenEl.classList.remove('in-menu');resetRun();
   $('epLabel').textContent=MODE==='ep'?(EP<0?'FLIGHT SCHOOL':`EPISODE ${EP+1} · ${SONG.name.toUpperCase()}`):`INFINITE · ${LEVEL.toUpperCase()}`;}
 // leaving the app pauses the run; resuming counts in for a moment, then re-syncs the music clock
-function pauseGame(){if(inMenu||over||paused)return;paused=true;countEnd=0;holdV=false;$('pause').hidden=false;screenEl.classList.add('is-paused');if(A.ctx&&A.ctx.state==='running')A.ctx.suspend().catch(()=>{});}
+function pauseGame(){if(inMenu||over||paused)return;paused=true;countEnd=0;holdV=false;$('pause').hidden=false;
+  $('pauseInfo').textContent=SONG.tut?'FLIGHT SCHOOL':`${accText(accuracy())} ACCURACY · ${score.toLocaleString('en-US')} · ×${tier()}${SONG.ep>=0?` · ${Math.round(clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100)}% OF THE SONG`:''}`;screenEl.classList.add('is-paused');if(A.ctx&&A.ctx.state==='running')A.ctx.suspend().catch(()=>{});}
 function resumeGame(){if(!paused||countEnd)return;if(soundOn)unlockIOS();if(A.ctx)A.ctx.resume().catch(()=>{});$('pause').hidden=true;screenEl.classList.remove('is-paused');
   countEnd=performance.now()+1500;pop('3','big',3);setTimeout(()=>pop('2','big',3),500);setTimeout(()=>pop('1','big',3),1000);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pauseGame();if(inMenu&&A.ctx)A.ctx.suspend().catch(()=>{});}
@@ -2709,7 +2815,7 @@ const TEST_BUILD=true;
 $('boardBtn').addEventListener('click',()=>{boardMap=key;openMenu('board');});$('boardBack').addEventListener('click',()=>openMenu('menu'));
 document.querySelectorAll('#boardTabs .tab').forEach(b=>b.addEventListener('click',()=>{boardMap=b.dataset.map;renderBoard();}));
 $('again').addEventListener('click',startRun);$('revive').addEventListener('click',revive);$('toMenu').addEventListener('click',()=>openMenu(MODE==='ep'?'eps':'menu'));
-$('nextEp').addEventListener('click',()=>{EP=Math.min(4,EP+1);startRun();});$('retryEp').addEventListener('click',startRun);$('clearMenu').addEventListener('click',()=>openMenu('eps'));
+$('nextEp').addEventListener('click',e=>{const era=e.currentTarget.dataset.era;if(era){applyTheme(era);setMode('ep');EP=0;}else EP=Math.min(4,EP+1);startRun();});$('retryEp').addEventListener('click',startRun);$('clearMenu').addEventListener('click',()=>openMenu('eps'));
 $('pauseBtn').addEventListener('click',pauseGame);$('resume').addEventListener('click',resumeGame);$('restart').addEventListener('click',()=>{payRun();startRun();});
 $('pauseMenu').addEventListener('click',()=>{payRun();openMenu('menu');});
 $('garageBtn').addEventListener('click',()=>{running=true;openMenu('garage');});
@@ -2734,6 +2840,8 @@ function toggleSound(){soundOn=!soundOn;if(soundOn){unlockIOS();if(A.ctx&&!pause
 $('sndBtn').addEventListener('click',toggleSound);$('sndMenu').addEventListener('click',toggleSound);applySound();
 function applyHaptics(){$('hapBtn').textContent=hapticsOn?'HAPTICS ON':'HAPTICS OFF';$('hapBtn').setAttribute('aria-pressed',String(hapticsOn));store.set('lr-haptics',hapticsOn?'on':'off');}
 $('hapBtn').addEventListener('click',()=>{hapticsOn=!hapticsOn;applyHaptics();haptic('tick');});applyHaptics();
+function applyFx(){$('fxBtn').textContent=fxLow?'ON':'OFF';$('fxBtn').setAttribute('aria-pressed',String(fxLow));store.set('td-fx',fxLow?'1':'0');applyLook(SONG.look);}
+$('fxBtn').addEventListener('click',()=>{fxLow=!fxLow;applyFx();});applyFx();
 // audio sync: 12 clicks at 100 BPM; the delay is the middle value of (tap - click) over the last 8
 function renderSync(){const c=calGet();$('syncSub').textContent=c===null?'automatic':`${c} ms, set by you`;$('syncVal').textContent=c===null?'AUTO':`${c} ms`;}
 const SYNC={on:false,clicks:[],taps:[]};
@@ -2785,8 +2893,8 @@ window.__lrSim=(o={})=>{const save={key,LEVEL,MODE,EP};
   LEVEL=save.LEVEL;MODE=save.MODE;EP=save.EP;applyTheme(save.key,false);openMenu();
   const hitRate=+(s.hits/Math.max(1,s.hits+s.misses+s.skipped)).toFixed(3);
   // the sim plays on through every crash; a real run ends at the third, so that counts as not passing
-  const passed=!!res&&s.crashes<MAX_SHIELDS&&res.pct>=CLEAR_MIN;
-  return{...cfg,...s,seconds:+songT.toFixed(1),hitRate,passed,stars:passed?res.stars:0,extra:res?res.extra:0,swipesPerMin:+(s.swipes/songT*60).toFixed(1)};};
+  const passed=!!res&&(s.minSync??100)>0;
+  return{...cfg,...s,seconds:+songT.toFixed(1),hitRate,passed,stars:passed?res.stars:0,grade:res?res.grade:'',acc:res?res.acc:0,swipesPerMin:+(s.swipes/songT*60).toFixed(1)};};
 
 window.__lrDebug={crash(){if(!inMenu&&!over)crash({state:0,col:cs.col,row:cs.row,kind:TH.kinds(cs.row)});},state:()=>({t,cs:{...cs},vt,respawn,invuln,key,MODE,EP,song:SONG.name,pads:pads.count,stems:stems.count,padCol:pads.instanceColor&&[...pads.instanceColor.array.slice(0,3)],hz:hazards.length,nodes:nodes.length}),
   freeze(){running=false;audioOn=false;},step(sec,draw=true){const n=Math.round(sec*30);for(let i=0;i<n;i++){update(1/30);if(i===n-2)camSnap=true;if(draw&&i>=n-2)render(1/30);}},
