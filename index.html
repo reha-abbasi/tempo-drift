@@ -39,21 +39,28 @@ body{font-family:var(--body);font-size:15px;line-height:1.55;
 .hud .shields{position:absolute;left:14px;top:14px;font-size:11px;letter-spacing:.08em}
 .hud .shields b{font-weight:400;color:var(--cyan);letter-spacing:.15em}
 .hud .shields b.low{color:var(--red)}
-.hud .combo{position:absolute;right:14px;top:14px;font-size:12px}
-.hud .puh{position:absolute;right:14px;top:32px;font-size:11px;color:var(--gold);text-align:right;line-height:1.5}
-.hud .mel{position:absolute;left:50%;top:48px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.08em;padding:3px 10px;border-radius:99px;
-  background:rgba(10,8,18,.5);box-shadow:inset 0 0 0 1px rgba(255,212,92,.65);color:var(--gold);transition:color .2s,box-shadow .2s;white-space:nowrap;text-shadow:none}
-.hud .mel.lost{color:#ff8b95;box-shadow:inset 0 0 0 1px rgba(255,91,91,.75)}
-.hud .pops{position:absolute;left:0;right:0;top:92px;display:flex;flex-direction:column;align-items:center;gap:0}
+.hud .combo{position:absolute;left:50%;top:44px;transform:translateX(-50%);font-size:11px;letter-spacing:.08em;color:var(--gold);white-space:nowrap}
+.hud .puh{position:absolute;right:14px;top:66px;font-size:11px;color:var(--gold);text-align:right;line-height:1.5}
+/* the melody only says something when it's gone: then it tells you how to get it back */
+.hud .mel{position:absolute;left:50%;top:62px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.08em;padding:3px 10px;border-radius:99px;
+  background:rgba(10,8,18,.55);box-shadow:inset 0 0 0 1px rgba(255,91,91,.75);color:#ff8b95;white-space:nowrap;text-shadow:none}
+.hud .mel[hidden]{display:none}
+.hud .pops{position:absolute;left:0;right:0;top:104px;display:flex;flex-direction:column;align-items:center;gap:0}
+.hud .judge{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);font:italic 700 15px var(--display);letter-spacing:.06em;color:#fff;opacity:0;white-space:nowrap;
+  text-shadow:0 1px 0 rgba(0,0,0,.6),0 0 10px rgba(0,0,0,.4)}
+.hud .judge.gold{color:var(--gold)} .hud .judge.cyan{color:#8ff6ff} .hud .judge.red{color:#ff8b95} .hud .judge.dim{color:#d8d0ec}
+.hud .judge.go{animation:judge .6s ease-out forwards}
+@keyframes judge{0%{opacity:0;transform:translate(-50%,-30%) scale(.8)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%)}}
 .pop{font:italic 700 21px var(--display);letter-spacing:.04em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.55),0 0 14px rgba(255,255,255,.35);animation:pop .95s ease-out forwards;white-space:nowrap}
 .pop.gold{color:var(--gold)} .pop.red{color:#ff6b78} .pop.big{font-size:44px}
 @keyframes pop{0%{transform:scale(.55);opacity:0}14%{transform:scale(1.18);opacity:1}28%{transform:scale(1)}78%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
 .hud .mode{position:absolute;left:12px;right:12px;bottom:50px;text-align:center;font-size:10.5px;letter-spacing:.08em;opacity:.85;text-wrap:balance}
-.hud .hbtn{pointer-events:auto;position:absolute;left:12px;bottom:12px;font:500 11px var(--mono);letter-spacing:.08em;color:#fff;background:rgba(10,8,18,.55);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 10px;cursor:pointer;text-shadow:none}
-.hud .snd{left:auto;right:12px}
-.flash{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 90px 30px rgba(255,40,60,.85);background:rgba(255,30,50,.12)}
-.flash.on{animation:flash .5s ease-out}
-@keyframes flash{from{opacity:1}to{opacity:0}}
+.hud .hbtn{pointer-events:auto;position:absolute;right:8px;top:6px;width:44px;height:44px;display:grid;place-items:center;padding:0;color:#fff;background:rgba(10,8,18,.45);border:1px solid rgba(255,255,255,.22);border-radius:50%;cursor:pointer}
+.hud .hbtn svg{width:18px;height:18px;fill:currentColor}
+.flash{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 110px 40px rgba(255,40,60,.9);background:rgba(255,30,50,.18)}
+/* iPhone browsers can't buzz on a crash, so the flash carries it: a hard red edge that lingers */
+.flash.on{animation:flash .8s ease-out}
+@keyframes flash{0%{opacity:1}25%{opacity:.85}100%{opacity:0}}
 .screen.in-menu .hud,.screen.is-over .hud{opacity:0}
 /* the studio intro covers the screen; tap anywhere (or SKIP) to go straight to the menu */
 .screen.in-intro .hud,.screen.in-intro>.menu{visibility:hidden}
@@ -115,7 +122,8 @@ tr:last-child td{border-bottom:0}
 .hud .prog{position:absolute;left:0;right:0;top:0;height:3px;background:rgba(255,255,255,.14)}
 .hud .prog[hidden]{display:none}
 .hud .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink))}
-.hud .eplabel{position:absolute;left:50%;top:72px;transform:translateX(-50%);font-size:9.5px;letter-spacing:.12em;color:#efe9f8;opacity:.8;white-space:nowrap}
+.hud .eplabel{position:absolute;left:50%;top:84px;transform:translateX(-50%);font-size:9.5px;letter-spacing:.12em;color:#efe9f8;opacity:.8;white-space:nowrap;transition:opacity .8s}
+.hud .eplabel.fade{opacity:0}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .modeb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;cursor:pointer;color:var(--fg);background:rgba(20,16,30,.8);
   border:1px solid rgba(255,255,255,.14);font:700 14px var(--display);letter-spacing:.06em}
@@ -144,6 +152,15 @@ tr:last-child td{border-bottom:0}
 .ghost.toprt{position:absolute;top:12px;right:12px;padding:5px 10px;font-size:11px}
 .toast{position:absolute;left:50%;top:52px;transform:translateX(-50%);z-index:3;white-space:nowrap;font:500 12px var(--mono);color:#1a0a04;background:linear-gradient(90deg,#ffd45c,#ff9a6b);border-radius:99px;padding:6px 14px;box-shadow:0 6px 20px -6px rgba(255,180,90,.8)}
 .toast[hidden]{display:none}
+.gift{position:absolute;inset:0;z-index:4;display:grid;place-items:center;padding:24px;background:rgba(6,4,12,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.gift[hidden]{display:none}
+.gcardx{width:min(100%,290px);display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 18px 16px;border-radius:20px;text-align:center;
+  background:linear-gradient(180deg,rgba(40,28,20,.96),rgba(18,12,24,.97));border:1px solid rgba(255,212,92,.5);box-shadow:0 20px 60px -20px rgba(255,180,90,.6)}
+.gcardx small{font:500 11px var(--mono);letter-spacing:.14em;color:var(--gold)}
+.gcardx .gday{font:700 24px var(--display);letter-spacing:.06em;color:#fff}
+.gcardx .gamt{font:700 40px var(--display);color:var(--gold);text-shadow:0 0 22px rgba(255,212,92,.6);font-variant-numeric:tabular-nums}
+.gcardx p{margin:0 0 6px;font:400 11.5px var(--mono);color:#d8d0ec}
+.gcardx .big{width:100%;min-height:48px}
 .mlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .mlist li{padding:10px 12px;border-radius:12px;background:rgba(20,16,30,.85);border:1px solid rgba(255,255,255,.14);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center}
 .mlist b{font:500 14px var(--display)}
@@ -204,15 +221,17 @@ tr:last-child td{border-bottom:0}
 .gname b{font:700 24px var(--display);letter-spacing:.08em}
 .gname small{font:400 11px var(--mono);color:#c9c2d8;text-wrap:balance}
 .gname .price{font:500 12px var(--mono);color:var(--gold)}
+.gname .perk{font:500 11.5px var(--mono);color:#8ff6ff}
 .dots{display:flex;justify-content:center;gap:8px}
 .dots button{width:12px;height:12px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.45);background:transparent;cursor:pointer}
 .dots button.own{background:rgba(255,255,255,.35)}
 .dots button[aria-current="true"]{background:var(--gold);border-color:var(--gold)}
 .big:disabled{opacity:.55;cursor:default;filter:saturate(.6)}
+.ghost:disabled{opacity:.45;cursor:default}
 /* flight school: the lesson along the bottom, and the move to make while the game holds still */
 .hud .mode.tutor{bottom:54px;font:700 13.5px var(--display);letter-spacing:.06em;color:var(--gold);opacity:1}
 .hud .mode.tutor:not(:empty){left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);background:rgba(10,8,18,.66);border:1px solid rgba(255,212,92,.4);border-radius:12px;padding:6px 12px}
-.tut{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 22px;border-radius:18px;
+.tut{position:absolute;left:50%;top:26%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 22px;border-radius:18px;
   background:rgba(8,6,16,.62);border:1px solid rgba(255,212,92,.35);font:700 16px var(--display);letter-spacing:.1em;color:#fff}
 .tut[hidden]{display:none}
 .tut b{font-size:64px;line-height:1;color:var(--gold);text-shadow:0 0 18px rgba(255,212,92,.8);animation:nudge .7s ease-in-out infinite}
@@ -336,6 +355,17 @@ tr:last-child td{border-bottom:0}
 .clog .vh b{font:700 14.5px var(--display);letter-spacing:.02em}
 .clog .vh .v{font:600 11px var(--mono);color:var(--gold)}
 .clog .vh small{margin-left:auto;font:400 10.5px var(--mono);color:var(--muted)}
+/* audio sync: a big pad to tap along with the clicks */
+.tappad{flex:1 1 auto;min-height:160px;max-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:20px;cursor:pointer;color:#fff;touch-action:manipulation;
+  background:radial-gradient(circle at 50% 40%,rgba(255,212,92,.22),rgba(20,16,30,.88) 70%);border:1.5px solid rgba(255,212,92,.55)}
+.tappad b{font:700 30px var(--display);letter-spacing:.08em}
+.tappad small{font:400 11.5px var(--mono);color:#d8d0ec}
+.tappad.hit{background:radial-gradient(circle at 50% 40%,rgba(255,212,92,.45),rgba(20,16,30,.88) 70%)}
+.tappad:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.syncres{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.syncres small{font:500 10.5px var(--mono);letter-spacing:.12em;color:var(--muted)}
+.syncres b{font:700 28px var(--display);color:var(--gold);font-variant-numeric:tabular-nums}
+.syncres span{font:400 11.5px var(--mono);color:#d8d0ec;min-height:1.2em;text-wrap:balance}
 .clog ul{margin:6px 0 0;padding-left:17px;display:grid;gap:3px;font:400 12px/1.45 var(--body);color:#d8d0ec}
 </style>
 <style>
@@ -345,6 +375,17 @@ body{padding:0!important}
 .info,.hint{display:none!important}
 .stage{position:fixed;left:env(safe-area-inset-left);right:env(safe-area-inset-right);top:env(safe-area-inset-top);bottom:env(safe-area-inset-bottom);gap:0!important}
 .screen{aspect-ratio:auto!important;width:100%;height:100%;max-width:none!important;border-radius:0!important;box-shadow:none!important}
+/* every control is at least 44 px tall (Apple's minimum for a finger) */
+.eras .style{min-height:44px;padding:0 18px}
+.home .pill.news,.ghost.icon{min-height:44px;min-width:44px}
+.ghost.icon{width:44px;height:44px}
+.eraline .arrow{width:44px;height:44px}
+.ghost.skip{min-height:44px;min-width:72px}
+.ghost.back,.tab,.setlist .ghost,.ghost.arrow.sm,.row2 .ghost,.seg .ghost{min-height:44px}
+.ghost.arrow.sm{width:40px;height:40px}
+/* on a wide screen the game keeps a phone's shape, centred, instead of stretching the menus across */
+@media (min-aspect-ratio:3/4){.stage{left:50%!important;right:auto!important;width:min(100vw,calc((100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))*0.5625));transform:translateX(-50%)}
+  body{background:radial-gradient(ellipse at 50% 40%,#1a1424,#000 70%)}}
 </style>
 </head>
 <body>
@@ -362,13 +403,13 @@ body{padding:0!important}
         <div class="shields"><span id="shLabel">SHIELD</span> <b id="shields">◆◆◆</b></div>
         <div class="combo" id="combo"></div>
         <div class="puh" id="puHud"></div>
-        <div class="mel" id="mel">♪ MELODY ON</div>
+        <div class="mel" id="mel" hidden></div>
         <div class="eplabel" id="epLabel"></div>
         <div class="pops" id="pops"></div>
+        <div class="judge" id="judge"></div>
         <div class="mode" id="mode"></div>
         <div class="tut" id="tut" hidden><b id="tutArrow">↑</b><span id="tutText">SWIPE UP</span></div>
-        <button class="hbtn" id="pauseBtn" tabindex="-1">II PAUSE</button>
-        <button class="hbtn snd" id="sndBtn" tabindex="-1" aria-pressed="true">SOUND ON</button>
+        <button class="hbtn" id="pauseBtn" tabindex="-1" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
       </div>
       <div class="menu home" id="menu">
         <div class="topbar">
@@ -402,18 +443,31 @@ body{padding:0!important}
           </div>
         </div>
       </div>
+      <div class="gift" id="gift" hidden role="dialog" aria-labelledby="giftTitle"><div class="gcardx">
+        <small id="giftTitle">DAILY GIFT</small><b class="gday" id="giftDay">DAY 1</b>
+        <div class="gamt"><i class="coin"></i> <span id="giftAmt">+100</span></div>
+        <p id="giftNext"></p><button class="big" id="giftClaim">CLAIM</button></div></div>
+      <div class="menu panel" id="sync" hidden>
+        <div class="phead"><button class="ghost back" id="syncBack">‹ BACK</button><b>AUDIO SYNC</b><span class="tot"></span></div>
+        <p class="legend">Use the speaker or headphones you play with. Press START, then tap the pad on every click you hear: four to warm up, then eight that count.</p>
+        <button class="tappad" id="syncPad" aria-label="Tap pad"><b id="syncBig">START</b><small id="syncCount">12 clicks · about 8 seconds</small></button>
+        <div class="syncres"><small>SOUND DELAY</small><b id="syncVal">AUTO</b><span id="syncNote"></span></div>
+        <div class="row2"><button class="ghost" id="syncMinus">− 10 ms</button><button class="ghost" id="syncPlus">+ 10 ms</button></div>
+        <button class="ghost" id="syncAuto">USE AUTOMATIC</button>
+      </div>
       <div class="menu panel" id="changes" hidden>
         <div class="phead"><button class="ghost back" id="logBack">‹ BACK</button><b>CHANGE LOG</b><span class="tot"></span></div>
         <ol class="clog" id="clog"></ol>
       </div>
       <div class="menu panel" id="settings" hidden>
-        <div class="phead"><button class="ghost back" id="setBack">‹ BACK</button><b>SETTINGS</b><span class="tot"></span></div>
+        <div class="phead"><button class="ghost back" id="setBack">‹ BACK</button><b id="setTitle">SETTINGS</b><span class="tot"></span></div>
         <ul class="setlist">
           <li><span>Sound<small>music and effects</small></span><button class="ghost" id="sndMenu" aria-pressed="true">SOUND ON</button></li>
+          <li><span>Audio sync<small id="syncSub">automatic</small></span><button class="ghost" id="syncBtn">SET UP</button></li>
           <li><span>Haptics<small>a buzz on catches and crashes</small></span><button class="ghost" id="hapBtn" aria-pressed="true">HAPTICS ON</button></li>
           <li><span>Endless difficulty<small>how fast Endless gets</small></span><button class="ghost" id="levelBtn">NORMAL</button></li>
           <li><span>Flight School<small>replay the tutorial</small></span><button class="ghost" id="tutBtn">PLAY</button></li>
-          <li><span>Dev mode<small>opens every episode, test coins</small></span><button class="devsw" id="devBtn" role="switch" aria-checked="false"><span class="track"><i></i></span><span id="devLabel">OFF</span></button></li>
+          <li id="devRow" hidden><span>Dev mode<small>opens every episode, test coins</small></span><button class="devsw" id="devBtn" role="switch" aria-checked="false"><span class="track"><i></i></span><span id="devLabel">OFF</span></button></li>
         </ul>
         <p class="legend">Swipe left and right to change lanes, up to hop, down to dive. Tap to break open coins in glass. Everything is saved on this device.</p>
       </div>
@@ -422,7 +476,7 @@ body{padding:0!important}
         <div class="gspace" id="gspace" aria-hidden="true"></div>
         <div class="gcard">
           <div class="grow"><button class="ghost arrow" id="carPrev" aria-label="Previous car">‹</button>
-            <div class="gname"><b id="carName">ARROW</b><small id="carAbout"></small><span class="price" id="carPrice"></span></div>
+            <div class="gname"><b id="carName">ARROW</b><small id="carAbout"></small><span class="perk" id="carPerk"></span><span class="price" id="carPrice"></span></div>
             <button class="ghost arrow" id="carNext" aria-label="Next car">›</button></div>
           <div class="dots" id="carDots"></div>
           <button class="big" id="carAct">YOUR CAR</button>
@@ -439,7 +493,7 @@ body{padding:0!important}
           <div class="echead"><span class="n" id="ecNum">1</span><span class="nm"><b id="ecName">London 1890</b><small id="ecSub">112 BPM · saloon piano</small></span><span class="st" id="ecStars"></span></div>
           <button class="big" id="epPlay">PLAY</button>
         </div>
-        <p class="legend">3 lives, each crash costs one. <span class="gold">★★★</span> one star per life kept · <span class="pink">★</span> extra for 85% of the coins · <span class="pink">★</span> extra for every coin</p>
+        <p class="legend">3 lives, each crash costs one. <span class="gold">★★★</span> one per life kept · <span class="pink">★</span> 85% of the coins · <span class="pink">★</span> every coin. The next episode opens at ★★★ or 85% of the coins.</p>
       </div>
       <div class="menu panel" id="missions" hidden>
         <div class="phead"><button class="ghost back" id="misBack">‹ BACK</button><b>MISSIONS</b><span class="tot"><i class="coin"></i> <span id="mWallet">0</span></span></div>
@@ -464,6 +518,7 @@ body{padding:0!important}
         <h3 class="calm">PAUSED</h3>
         <button class="big" id="resume">RESUME</button>
         <div class="row2"><button class="ghost" id="restart">RESTART</button><button class="ghost" id="pauseMenu">MAIN MENU</button></div>
+        <button class="ghost" id="sndBtn" aria-pressed="true">SOUND ON</button>
       </div>
       <div class="over" id="over" hidden>
         <h3 id="overTitle">CRASHED</h3>
@@ -471,6 +526,7 @@ body{padding:0!important}
         <p class="note2" id="overNote"></p>
         <p class="note2 earn" id="overEarn"></p>
         <div class="mres" id="overMis"></div>
+        <button class="big" id="revive" hidden>REVIVE</button>
         <button class="big" id="again">FLY AGAIN</button>
         <button class="ghost" id="toMenu">MAIN MENU</button>
       </div>
@@ -520,7 +576,7 @@ body{padding:0!important}
         <li><span class="dot"></span><span class="ask">A name: Tempo Drift</span>
           <p>You drift through time (Past, Present, Future) to the tempo of the music. “Tempo” means both time and the speed of the beat.</p></li>
         <li><span class="dot"></span><span class="ask">Coins in glass: tap to break them open</span>
-          <p>Some coins now come sealed in a glass case. Tap the screen as you reach one to break it open and catch the coin. A thin ring closes in on the case to show the moment: tap right as it lands for <b>PERFECT</b> (300 points), close to it for <b>GOOD</b> (200), a little early for 100. If you don’t break it, you lose that coin and its note, but not a life. A tap with nothing to break is a <b>misfire</b> and resets your combo. The old glass walls across the lanes are gone. Later episodes have more glass coins (about 3 in episode 1, up to 20 in episode 5).</p></li>
+          <p>Some coins now come sealed in a glass case. Tap the screen as you reach one to break it open and catch the coin. A thin ring closes in on the case to show the moment: tap right as it lands for <b>PERFECT</b> (300 points), close to it for <b>GOOD</b> (200), a little early for 100. Flying into one you didn’t break is a crash and costs a life. A tap with nothing to break is a <b>misfire</b> and resets your combo. The old glass walls across the lanes are gone. Later episodes have more glass coins (about 3 in episode 1, up to 20 in episode 5).</p></li>
         <li><span class="dot"></span><span class="ask">Calmer coins</span>
           <p>No more glow around the coins: they are plain gold that catches the light, with only a slight beat and a small, quiet sparkle when you catch one. The line that links the coins is dimmer too.</p></li>
         <li><span class="dot"></span><span class="ask">A new main menu</span>
@@ -698,7 +754,7 @@ function menuStep(st,mb,at){const S=15/MENU_BPM,L=mb<2?-1:(mb-2)%16,sec=L<0?-1:L
 // plays while a menu is open (from the first tap or key press, as browsers require); fades out when a run starts
 const MM={on:false,t0:0,n:0};
 function menuMusic(){if(!A.ctx)return;const now=A.ctx.currentTime,S=15/MENU_BPM;
-  if(!(inMenu&&soundOn&&!sim&&A.ctx.state==='running')){if(MM.on){MM.on=false;A.menu.gain.cancelScheduledValues(now);A.menu.gain.setTargetAtTime(0,now,0.12);}return;}
+  if(!(inMenu&&soundOn&&!sim&&A.ctx.state==='running'&&!SYNC.on)){if(MM.on){MM.on=false;A.menu.gain.cancelScheduledValues(now);A.menu.gain.setTargetAtTime(0,now,0.12);}return;}
   if(!MM.on){MM.on=true;MM.t0=now+0.08;MM.n=0;A.menu.gain.cancelScheduledValues(now);A.menu.gain.setTargetAtTime(1,now,0.25);}
   if(MM.t0+MM.n*S<now-0.05)MM.n=Math.ceil((now-MM.t0)/S); // after a stall, carry on from now rather than catching up
   while(MM.t0+MM.n*S<now+0.15){menuStep(MM.n%16,Math.floor(MM.n/16),MM.t0+MM.n*S);MM.n++;}}
@@ -897,7 +953,10 @@ function writeSection(rng,prog,sc,style,base,dense,motifs){
     out.push(bar);}
   return out;}
 function degMidi(d,tonic,sc){return tonic+12*Math.floor(d/7)+sc[((d%7)+7)%7];}
-function buildSong(map,i){const E=EPISODES[map][i],D=DIFF[i],tk=thOf(map,i),sc=SCALES[E.scale],style=STYLE[tk],rng=mkRng(E.seed*7919);
+// each era starts harder than the last: Past runs episode settings 0 → 3, Present 0.5 → 3.5, Future 1 → 4 (in between, values blend)
+function diffAt(map,i){const L=clamp(i*0.75+MAPS.indexOf(map)*0.5,0,DIFF.length-1),a=DIFF[Math.floor(L)],b=DIFF[Math.ceil(L)],f=L-Math.floor(L),o={};
+  for(const k in a)o[k]=a[k]+(b[k]-a[k])*f;o.dense=Math.round(o.dense);return o;}
+function buildSong(map,i){const E=EPISODES[map][i],D=diffAt(map,i),tk=thOf(map,i),sc=SCALES[E.scale],style=STYLE[tk],rng=mkRng(E.seed*7919);
   // melody tonic: put the scale's third between D4 and C#5
   let mt=48+E.key;while(mt+sc[2]<62)mt+=12;
   let bt=45+((E.key-9+12)%12);
@@ -974,7 +1033,8 @@ const cv=$('cv'), screenEl=$('screen');
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'});}
 catch(err){screenEl.insertAdjacentHTML('beforeend','<div class="fail">This preview needs WebGL, which your browser has turned off. Try Safari or Chrome.</div>');throw err;}
-let prCur=Math.min(devicePixelRatio||1,2),menuLift=0,QL=clamp(+store.get("lr-ql")||0,0,3);const tmpV2=new THREE.Vector2();
+// quality starts one step better than last time, so a bad moment once doesn't stick (it steps down again if it has to)
+const PR_MAX=Math.min(devicePixelRatio||1,2);let prCur=PR_MAX,menuLift=0,QL=clamp((+store.get("lr-ql")||0)-1,0,3);const tmpV2=new THREE.Vector2();
 renderer.setPixelRatio(prCur);
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();
@@ -1647,6 +1707,9 @@ function updateParticles(dt){for(let i=0;i<PMAX;i++){const p=parts[i];if(p.age>=
 // drawn at CAR_K of model size, so the car doesn't hide the lane ahead; the body is shifted down so its middle sits on the lane center
 const CAR_K=0.72;
 const car=new THREE.Group(), carBody=new THREE.Group(); carBody.position.y=-0.27*CAR_K; carBody.scale.setScalar(CAR_K); car.add(carBody); scene.add(car);
+// the wet street reflects the city but not your own car (an upside-down twin right under it read as a second car), and it
+// redraws every other frame: the city in it moves slowly enough that nobody sees the difference, and it saves a whole scene render
+{const draw=wetMirror.onBeforeRender;let odd=false;wetMirror.onBeforeRender=function(...a){odd=!odd;if(odd&&!camSnap)return;const v=car.visible,sv=shadow.visible;car.visible=false;shadow.visible=false;draw.apply(this,a);car.visible=v;shadow.visible=sv;};}
 function extrudeSide(pts,depth,bevel){const sh=new THREE.Shape();pts.forEach(([x,y],i)=>i?sh.lineTo(x,y):sh.moveTo(x,y));
   const g=new THREE.ExtrudeGeometry(sh,{depth,bevelEnabled:true,bevelSize:bevel,bevelThickness:bevel,bevelSegments:4,steps:1,curveSegments:8});
   g.translate(0,0,-depth/2);g.rotateY(Math.PI/2);return g;}
@@ -1710,6 +1773,10 @@ const CARS={
     padDown(g,0,0.02,-0.5,0.1);bx(g,tailMat,0.28,0.03,0.02,0,0.14,0.79);lights(g,[[-0.08,0.1,-0.96],[0.08,0.1,-0.96]]);
     return{jets:[[-0.45,-0.02,0.1],[0.45,-0.02,0.1],[0,-0.02,-0.5]],exhaust:[[-0.3,0.1,0.8],[0.3,0.1,0.8]]};}},
 };
+// each car you buy plays a little differently: one small perk each, none of them needed to finish an episode
+const PERKS={arrow:{say:'No perk · the all-rounder'},bubble:{mag:1.6,say:'Perk: magnets last 60% longer'},retro:{reach:0.78,say:'Perk: wider coin pickup'},
+  spinner:{startShield:true,say:'Perk: starts every run with a shield'},manta:{coin:1.25,say:'Perk: +25% coins from every run'}};
+for(const k in CARS)CARS[k].perk={coin:1,mag:1,reach:0.62,startShield:false,...PERKS[k]};
 const CAR_KEYS=Object.keys(CARS), carCache={};
 let CARM=null;
 // shows a model (the garage can show one you don't own yet)
@@ -1826,23 +1893,24 @@ const shardMesh=new THREE.InstancedMesh(shardGeo,shardMat,SHARDS);
 shardMesh.frustumCulled=false;shardMesh.count=SHARDS;scene.add(shardMesh);const shards=[...Array(SHARDS)].map(()=>({age:9,p:new THREE.Vector3(),v:new THREE.Vector3(),r:new THREE.Euler(),w:new THREE.Vector3(),k:1}));let shardI=0;
 for(let i=0;i<SHARDS;i++){dummy.position.set(0,-99,0);dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
 const breakFlash=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xdff4ff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));breakFlash.visible=false;scene.add(breakFlash);let flashAge=9;
-function shatterFx(x,y,z,big=false){if(sim)return;const n=big?60:44;
+const SHARD_LIFE=0.95;
+function shatterFx(x,y,z,big=false){if(sim)return;const n=big?36:24; // fewer, bigger-feeling pieces keep the lane readable
   for(let i=0;i<n;i++){const s=shards[shardI++%SHARDS];s.age=0;
     // pieces start on the case's front and sides and fly outward from its middle; the world carries them past the car
     const ox=(rand()-0.5)*1.1,oy=(rand()-0.5)*1.1;s.p.set(x+ox,y+oy,z+(rand()-0.5)*0.5);const out=2.5+rand()*4;
-    s.v.set(ox*out+(rand()-0.5)*1.5,oy*out+rand()*2.2,SPEED*(0.85+rand()*0.2)+(rand()-0.3)*4);s.r.set(rand()*6,rand()*6,rand()*6);s.w.set((rand()-0.5)*18,(rand()-0.5)*18,(rand()-0.5)*18);s.k=0.12+Math.pow(rand(),2)*0.32;}
+    s.v.set(ox*out+(rand()-0.5)*1.5,oy*out+rand()*2.2,SPEED*(0.85+rand()*0.2)+(rand()-0.3)*4);s.r.set(rand()*6,rand()*6,rand()*6);s.w.set((rand()-0.5)*18,(rand()-0.5)*18,(rand()-0.5)*18);s.k=0.09+Math.pow(rand(),2)*0.24;}
   for(let i=0;i<10;i++)emit(x+(rand()-0.5)*0.9,y+(rand()-0.5)*0.9,z,(rand()-0.5)*5,(rand()-0.3)*4,SPEED*0.8,0.35,0.05,0.02,0.9,[1.6,1.8,2]);
   breakFlash.position.set(x,y,z+0.2);breakFlash.visible=true;flashAge=0;
   // the sound of breaking glass: a crack, a hiss of fragments and a scatter of tinkles that falls away
   if(A.ctx&&audioOn){const at=A.ctx.currentTime;kick(at,0.35);nz(at,{type:'highpass',freq:3500,dur:0.18,g:0.26});nz(at+0.02,{type:'bandpass',freq:6500,q:0.8,dur:0.45,g:0.1,verb:0.5});
     for(let i=0;i<12;i++){const d=Math.pow(rand(),1.6)*0.45;tone(at+d,2600+rand()*4200,{type:'sine',dur:0.12+rand()*0.2,g:0.035*(1-d*1.6),cut:11000,out:A.master});}}}
-function pulseShardUpdate(dt){for(const P of pulses){if(P.age>=0.35){P.m.visible=false;continue;}P.age+=dt;const a=P.age/0.35;P.m.position.set(P.x,P.y,-0.6-a*PULSE_RANGE);P.m.scale.setScalar(1+a*1.2);
-    P.m.material.opacity=(1-a)*0.8;P.m.material.color.set(P.hit?0xbfe8ff:0x8aa8ff).multiplyScalar(1.6);}
+function pulseShardUpdate(dt){for(const P of pulses){if(P.age>=0.35){P.m.visible=false;continue;}P.age+=dt;const a=P.age/0.35;P.m.position.set(P.x,P.y,-0.6-a*PULSE_RANGE);P.m.scale.setScalar(1+a*0.7);
+    P.m.material.opacity=(1-a)*(P.hit?0.6:0.35);P.m.material.color.set(P.hit?0xbfe8ff:0x8aa8ff).multiplyScalar(1.6);}
   if(flashAge<0.18){flashAge+=dt;const a=flashAge/0.18;breakFlash.material.opacity=(1-a)*0.7;breakFlash.scale.setScalar(1.4+a*1.8);breakFlash.position.z+=SPEED*dt;}else breakFlash.visible=false;
   // shards are only drawn while some are flying
-  let alive=0;for(let i=0;i<SHARDS;i++){const s=shards[i];if(s.age>1.4)continue;alive++;s.age+=dt;s.v.y-=11*dt;s.p.addScaledVector(s.v,dt);s.r.x+=s.w.x*dt;s.r.y+=s.w.y*dt;s.r.z+=s.w.z*dt;
+  let alive=0;for(let i=0;i<SHARDS;i++){const s=shards[i];if(s.age>SHARD_LIFE)continue;alive++;s.age+=dt;s.v.y-=11*dt;s.p.addScaledVector(s.v,dt);s.r.x+=s.w.x*dt;s.r.y+=s.w.y*dt;s.r.z+=s.w.z*dt;
     if(s.p.y<ROAD_Y+0.03){s.p.y=ROAD_Y+0.03;s.v.y*=-0.25;s.v.x*=0.6;s.w.multiplyScalar(0.5);}
-    dummy.position.copy(s.age>1.4?tmpV.set(0,-99,0):s.p);dummy.rotation.copy(s.r);dummy.scale.setScalar(s.k);dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
+    dummy.position.copy(s.age>SHARD_LIFE?tmpV.set(0,-99,0):s.p);dummy.rotation.copy(s.r);dummy.scale.setScalar(s.k);dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
   dummy.rotation.set(0,0,0);dummy.scale.set(1,1,1);shardMesh.visible=alive>0;if(alive)shardMesh.instanceMatrix.needsUpdate=true;}
 const SPARKS=18;
 const bursts=[...Array(10)].map(()=>{const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(SPARKS*3),3));
@@ -1912,7 +1980,7 @@ function smoothDamp(cur,target,vel,st,dt){const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+
 // a run starts on the next bar line, after the song's intro; an episode's course is the same on every try
 function resetRun(){tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
   score=0;combo=0;streak16=0;shields=MAX_SHIELDS;invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
-  cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;magnetT=0;x2T=0;shieldOn=false;run={coins:0,hits:0,lost:0,paid:false,mDone:[]};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
+  cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
   grand=mkRng(SONG.ep>=0?SONG.seed*31+7:(runSeed=(runSeed*69069+1)>>>0));
   gateT=SONG.len===Infinity?Infinity:(songBar0+SONG.len-2)*BAR;
   if(!melodyOn)setMelody(true,0);hud();}
@@ -1921,10 +1989,12 @@ const hz=h=>-(h.time-t)*SPEED*KINDS[h.kind].rel;
 let mission=()=>{};
 // traffic is never placed on the path between the coins around it (checked over the whole time the vehicle overlaps the car),
 // and never on the skyway in those lanes, because the car always comes back to it
+const ACCENT=[1.15,0.15,1.7,0.15,1.15,0.15,1.7,0.15];
 function placeHazards(b){if(SONG.tut){tutHazards(b);return;}if(b<runBar+1)return;const B=SONG.bar(b-songBar0);if(!B||(SONG.ep>=0&&!B.mel.length))return;
   const p=SONG.ep>=0?SONG.diff.hz+(B.sec==='B'?0.06:0):Math.min(0.5,0.16+0.05*(b-runBar));
   const w=Math.max(...TH.kindList.map(k=>(KINDS[k].len/2+0.9)/(SPEED*KINDS[k].rel)))+0.06;
-  for(let e=0;e<8;e++){if(grand()>p)continue;const time=(b*8+e)*EIGHTH,t0=time-w,t1=time+w;
+  // traffic arrives on the music's accents: mostly the backbeat (beats 2 and 4), then the downbeats, rarely between beats
+  for(let e=0;e<8;e++){if(grand()>Math.min(1,p*ACCENT[e]))continue;const time=(b*8+e)*EIGHTH,t0=time-w,t1=time+w;
     let prev=null,next=null;const inside=[];for(const n of nodes){if(n.time<t0)prev=n;else if(n.time<=t1)inside.push(n);else{next=n;break;}}
     if(!prev||!next)continue;const span=[prev,...inside,next];
     const c0=Math.min(...span.map(n=>n.col)),c1=Math.max(...span.map(n=>n.col)),r0=Math.min(HOME,...span.map(n=>n.row)),r1=Math.max(HOME,...span.map(n=>n.row));
@@ -1980,9 +2050,10 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
       // after the last coin and about a bar after the last glass one
       const gp=SONG.ep>=0?SONG.diff.glass:0.2,glass=fix?!!fix.glass:!pu&&!SONG.tut&&row===HOME&&!!last&&last.row===HOME&&col===last.col&&gap0>=0.3&&time-lastGlassT>=BAR*0.9&&grand()<gp*1.5;
       if(glass){lastGlassT=time;if(sim)sim.stats.glass++;}
-      const n={id:nid++,step,time,col,row,note,len,state:0,skip:hsh(nid,42)<0.05,runStart:cont?last.runStart:time,wait:fix&&fix.wait,pu,glass,cracked:false};nodes.push(n);last=n;});}
+      const n={id:nid++,step,time,col,row,note,len,state:0,skip:hsh(nid,42)<0.05,runStart:cont?last.runStart:time,wait:fix&&fix.wait,pu,glass,cracked:false,
+        mv:!!last&&(col!==last.col||(row!==last.row&&row!==HOME))};nodes.push(n);last=n;});}
   placeHazards(bar-1);bar++;}}
-const scoreEl=$('score'),comboEl=$('combo'),melEl=$('mel'),modeEl=$('mode'),shieldEl=$('shields'),flashEl=$('flash'),popsEl=$('pops'),progEl=$('prog'),progBar=$('progBar'),shLabel=$('shLabel'),puHud=$('puHud');
+const epLabelEl=$('epLabel'),scoreEl=$('score'),comboEl=$('combo'),melEl=$('mel'),modeEl=$('mode'),shieldEl=$('shields'),flashEl=$('flash'),popsEl=$('pops'),progEl=$('prog'),progBar=$('progBar'),shLabel=$('shLabel'),puHud=$('puHud');
 function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}`:'',x2T>0?`2× ${Math.ceil(x2T)}`:'',shieldOn?'SHIELD':''].filter(Boolean).join('<br>');if(puHud.innerHTML!==ph)puHud.innerHTML=ph;scoreEl.textContent=score.toLocaleString('en-US');comboEl.textContent=combo>1?`COMBO ×${combo}`:'';
   // in episodes the shields are your lives, and each one is a star
   const ep=SONG.ep>=0,sh=clamp(shields,0,MAX_SHIELDS);shieldEl.parentElement.style.visibility=SONG.tut?'hidden':'';shLabel.textContent=ep?'LIVES':'SHIELD';shieldEl.classList.toggle('lives',ep);
@@ -1991,15 +2062,21 @@ function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}`:
   let msg=inMenu?'':t<hintUntil?'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS':'';
   // flight school: the lesson for the coming bar (it shows a beat early)
   if(SONG.tut&&!inMenu){msg='';for(let k=Math.floor((t+BEAT)/BAR)-songBar0;k>=0;k--){const B=SONG.bar(k);if(B&&B.say){msg=B.say;break;}}}
-  modeEl.classList.toggle('tutor',!!SONG.tut&&!inMenu);
+  modeEl.classList.toggle('tutor',!!SONG.tut&&!inMenu);epLabelEl.classList.toggle('fade',!inMenu&&t>runBar*BAR+BAR);
   if(modeEl.textContent!==msg)modeEl.textContent=msg;}
-function pop(text,cls=''){if(inMenu||over||sim)return;const d=document.createElement('div');d.className='pop '+cls;d.textContent=text;popsEl.prepend(d);
-  while(popsEl.children.length>3)popsEl.lastChild.remove();setTimeout(()=>d.remove(),950);}
+// one call-out at a time: a new one replaces the current one unless the current one matters more
+// (3: countdown, crash, finish · 2: power-ups, shields, missions · 1: everything else)
+let popPri=0,popUntil=0;
+function pop(text,cls='',pri=1){if(inMenu||over||sim)return;const now=performance.now();if(now<popUntil&&pri<popPri)return;popPri=pri;popUntil=now+700;
+  popsEl.textContent='';const d=document.createElement('div');d.className='pop '+cls;d.textContent=text;popsEl.append(d);setTimeout(()=>d.remove(),950);}
+// timing grades sit just above the car, small, where the eyes already are
+const judgeEl=$('judge');let judgeT=0;
+function judge(text,cls=''){if(inMenu||over||sim)return;judgeEl.textContent=text;judgeEl.className='judge on '+cls;void judgeEl.offsetWidth;judgeEl.classList.add('go');judgeT=0.6;}
 // left/right change lane; up hops off the skyway and down dives under it, for one beat (longer while the swipe is held);
 // the opposite swipe ends a hop early, the same swipe again re-fires the thrusters
 function move(dx,dy){if(inMenu||over||paused||respawn>0.45)return false;userAt=t;const pc=cs.col,pr=cs.row;if(dx&&(cs.col+dx<0||cs.col+dx>NL-1))edgeBump(dx);cs.col=clamp(cs.col+dx,0,NL-1);
   if(dy){if(cs.row===HOME){cs.row=HOME+dy;vt=HANG;if(sim)sim.stats.hops++;}else if(cs.row===HOME+dy)vt=HANG;else{cs.row=HOME;vt=0;}}
-  if(cs.col!==pc||cs.row!==pr){dashFx(cs.col-pc,cs.row-pr);haptic(cs.row!==pr?'hop':'tick');}if(dy&&cs.row===HOME+dy)jetFx(dy);
+  if(cs.col!==pc||cs.row!==pr){cs.moveT=t;dashFx(cs.col-pc,cs.row-pr);haptic(cs.row!==pr?'hop':'tick');}if(dy&&cs.row===HOME+dy)jetFx(dy);
   if(tutHold&&tutOk(tutHold))releaseHold();return true;}
 // (a tap lesson ends when the pane breaks, checked every frame in update)
 // flight school: hold everything still (music too) until the player makes the move the coin teaches
@@ -2007,20 +2084,19 @@ const tutOk=w=>w.wait==='tap'?w.cracked:w.wait==='up'||w.wait==='down'?cs.row===
 const TUT_MOVE={tap:['◎','TAP THE SCREEN','0','0'],right:['→','SWIPE RIGHT','14px','0'],left:['←','SWIPE LEFT','-14px','0'],up:['↑','SWIPE UP','0','-14px'],down:['↓','SWIPE DOWN','0','14px']};
 function holdFor(w){tutHold=w;const[a,txt,dx,dy]=TUT_MOVE[w.wait],el=$('tut');$('tutArrow').textContent=a;$('tutText').textContent=txt;
   // a lane lesson puts the prompt over the lane to tap
-  const lane=w.wait==='left'||w.wait==='right',px=lane?(tmpV.set(LX[w.col],LY[w.row],-(w.time-t)*SPEED).project(camera).x+1)*50:50;el.style.left=clamp(px,20,80)+'%';
   el.style.setProperty('--dx',dx);el.style.setProperty('--dy',dy);el.hidden=false;tutShown.add(w.wait);}
 function releaseHold(){tutHold.waited=true;tutHold=null;$('tut').hidden=true;needSync=true;}
-const PULSE_RANGE=28,TAP_EARLY=0.45,TAP_LATE=0.12;let pulseCD=0,glassHint=0;
+const PULSE_RANGE=28,TAP_EARLY=0.45,TAP_LATE=0.12,MOVE_LEAD=0.1,MOVE_PERFECT=0.07,MOVE_GOOD=0.15;let pulseCD=0,glassHint=0;
 function pulseFire(){if(over||paused||respawn>0.45||t<pulseCD)return false;pulseCD=t+0.12;
   // the nearest coin in glass in your lane, from a moment before you reach it until just after
   const early=SONG.tut?1.7:TAP_EARLY,g=nodes.find(n=>n.glass&&!n.cracked&&n.state===0&&n.col===cs.col&&Math.abs(LY[n.row]-cs.y)<0.9&&n.time-t<early&&n.time-t>-TAP_LATE);
   // a pulse with nothing to break is a misfire: it breaks the combo, so tapping all the time doesn't pay
-  pulseFx(!!g);if(!g){if(!sim&&!inMenu)whoosh();if(!inMenu&&!SONG.tut&&combo>0){combo=0;pop('MISFIRE · COMBO LOST');}return false;}
+  pulseFx(!!g);if(!g){if(!sim&&!inMenu)whoosh();if(!inMenu&&!SONG.tut&&combo>0){combo=0;judge('MISFIRE','red');}return false;}
   // timing: right as you reach the coin is PERFECT, close to it GOOD
-  const d=Math.abs(t-g.time),judge=d<0.07?'PERFECT':d<0.14?'GOOD':'';
-  g.cracked=true;shatterFx(LX[g.col],LY[g.row],-(g.time-t)*SPEED);const pts=(judge==='PERFECT'?300:judge==='GOOD'?200:100)*(x2T>0?2:1);
-  if(!inMenu){score+=pts;pop((judge||'BROKEN')+' +'+pts,judge==='PERFECT'?'gold':'');mission('shatter',1);if(judge==='PERFECT')mission('perfect',1);}
-  if(sim){sim.stats.shatters++;if(judge==='PERFECT')sim.stats.perfects++;}haptic('tick');
+  const d=Math.abs(t-g.time),grade=d<0.07?'PERFECT':d<0.14?'GOOD':'';
+  g.cracked=true;shatterFx(LX[g.col],LY[g.row],-(g.time-t)*SPEED);const pts=(grade==='PERFECT'?300:grade==='GOOD'?200:100)*(x2T>0?2:1);
+  if(!inMenu){score+=pts;judge((grade||'BROKEN')+' +'+pts,grade==='PERFECT'?'gold':'');mission('shatter',1);if(grade==='PERFECT')mission('perfect',1);}
+  if(sim){sim.stats.shatters++;if(grade==='PERFECT')sim.stats.perfects++;}haptic('tick');
   if(tutHold&&tutOk(tutHold))releaseHold();return true;}
 // running into a coin still in glass: a dull knock, and the coin is lost
 function glassBonk(){if(sim||!A.ctx||!audioOn)return;const at=A.ctx.currentTime;tone(at,midi(50),{type:'triangle',dur:0.12,g:0.12,cut:1200});nz(at,{type:'bandpass',freq:1800,q:3,dur:0.08,g:0.1});haptic('bump');}
@@ -2034,24 +2110,32 @@ function dashFx(dx,dy){whoosh();if(sim)return;const sc=TH.smoke;
 // thrusters fire down for a hop; for a dive the lift cuts out and the pods go dark
 function jetFx(dir){jetT=0.3;if(sim||dir<0)return;const c=TH.pods;
   for(let i=0;i<16;i++){carPt(CARM.jets[i%CARM.jets.length],tmpV);emit(tmpV.x,tmpV.y-0.05,tmpV.z,(rand()-0.5)*0.7,-5-rand()*3,SPEED*0.5,0.32,0.1,0.5,0.55,c);}}
-function setMelody(on,at){melodyOn=on;melEl.textContent=on?'♪ MELODY ON':'♪ MELODY LOST · HIT THE NEXT COIN';melEl.classList.toggle('lost',!on);
+function setMelody(on,at){melodyOn=on;melEl.textContent='♪ MELODY LOST · CATCH THE NEXT COIN';melEl.hidden=on||inMenu;
   if(audioOn&&A.ctx){const g=A.mel.gain;g.cancelScheduledValues(A.ctx.currentTime);g.setTargetAtTime(on?1:0,Math.max(A.ctx.currentTime,at),on?0.012:0.035);}}
-function playLead(at,note,len){const L=LEADS[SONG.V.lead]||LEADS.pluck;L.f(at,midi(note),Math.max(L.min,len*EIGHTH*L.k));}
+function playLead(at,note,len,out){const L=LEADS[SONG.V.lead]||LEADS.pluck,keep=A.mel;if(out)A.mel=out;L.f(at,midi(note),Math.max(L.min,len*EIGHTH*L.k));A.mel=keep;}
+/* audio delay: the time from scheduling a sound to hearing it (Bluetooth headphones add 0.15-0.25 s). The game clock t runs that
+   much behind the audio clock, so what you see and what you hear line up, and taps and swipes are judged against the beat you hear.
+   A tap-along test in Settings measures it (speaker, headphones and touch screen together); without one, the browser's estimate is used */
+let audLat=0;const calGet=()=>{const v=store.get('lr-cal');return v===null||v===''||isNaN(+v)?null:+v;};
+function measureLat(){const c=calGet();audLat=c!==null?clamp(c/1000,0,0.5):A.ctx?clamp((A.ctx.outputLatency||0)+(A.ctx.baseLatency||0),0,0.5):0;}
+// with a long delay, a coin's note is booked ahead (if the car is lined up for it) so it still sounds on the beat; a miss silences it
+function preLead(n){if(n.pre||audLat<0.03||!audioOn||!A.ctx||sim||inMenu)return;const at=offset+n.time;if(at>A.ctx.currentTime+0.1||at<A.ctx.currentTime)return;
+  if(cs.col!==n.col||cs.row!==n.row||respawn>0)return;const g=A.ctx.createGain();g.connect(A.mel);n.pre=g;playLead(at,n.note,n.len,g);}
 function playBacking(st,sb,at){const B=SONG.bar(sb);if(!B)return;
   if(B.sec==='E'){if(st===0){const[r,tri]=B.chord;kick(at,1.1);nz(at,{type:'highpass',freq:5000,dur:1.8,g:0.2,verb:0.6});
     tri.forEach(iv=>tone(at,midi(r+12+iv),{dur:BAR*1.2,g:0.045,cut:1800,attack:0.01,detune:10}));tone(at,midi(r-12),{type:'sine',dur:BAR,g:0.3,cut:400});}return;}
   TH.backing(st,at,S16,B,SONG.V,B.sec==='I'?B.lvl:0,sb);}
-function powerUp(k){if(k==='magnet')magnetT=10;else if(k==='x2')x2T=12;else shieldOn=true;if(sim){sim.stats.power++;return;}
-  if(!inMenu){pop({magnet:'MAGNET!',x2:'DOUBLE SCORE!',shield:'SHIELD!'}[k],'gold');mission('power',1);haptic('buy');}if(A.ctx&&audioOn)chime();}
-function crash(h){if(shieldOn&&!inMenu){shieldOn=false;h.state=1;invuln=1.2;fx(LX[h.col],LY[h.row],new THREE.Color(0x8ff6ff).multiplyScalar(2.5),true);if(!sim){pop('SHIELD SAVED YOU','gold');haptic('bump');}return;}
+function powerUp(k){if(k==='magnet')magnetT=10*CARS[selCar].perk.mag;else if(k==='x2')x2T=12;else shieldOn=true;if(sim){sim.stats.power++;return;}
+  if(!inMenu){pop({magnet:'MAGNET!',x2:'DOUBLE SCORE!',shield:'SHIELD!'}[k],'gold',2);mission('power',1);haptic('buy');}if(A.ctx&&audioOn)chime();}
+function crash(h){if(shieldOn&&!inMenu){shieldOn=false;h.state=1;invuln=1.2;fx(LX[h.col],LY[h.row],new THREE.Color(0x8ff6ff).multiplyScalar(2.5),true);if(!sim){pop('SHIELD SAVED YOU','gold',2);haptic('bump');}return;}
   h.state=1;combo=0;streak16=0;if(sim){sim.stats.crashes++;const ck=h.over?"block":h.kind==="glass"?"glass":"traffic";sim.stats.crashBy=sim.stats.crashBy||{};sim.stats.crashBy[ck]=(sim.stats.crashBy[ck]||0)+1;}
   const x=LX[h.col],y=LY[h.row];fx(x,y,new THREE.Color(0xff3d4f).multiplyScalar(2.5),true);
   if(!sim)for(let i=0;i<34;i++){const a=rand()*Math.PI*2,s=1+rand()*3.5,g=0.75+rand()*0.25;emit(x+(rand()-0.5)*0.6,y+(rand()-0.5)*0.4,-0.5-rand(),Math.cos(a)*s,Math.sin(a)*s*0.7+0.6,SPEED*0.3+rand()*2,0.8+rand()*0.5,0.5,1.6+rand()*0.9,0.6,[g,g,g]);}
   if(melodyOn)setMelody(false,0);
   if(inMenu)return;
   if(!SONG.tut)shields--;run.lost++;respawn=RESPAWN;invuln=RESPAWN+0.9;cs.row=HOME;vt=0;holdV=false;
-  if(!sim){flashEl.classList.remove('on');void flashEl.offsetWidth;flashEl.classList.add('on');}crashSound();haptic('crash');pop(SONG.ep>=0?'CRASH!  −1 ★':'CRASH!','red');
-  if(shields<=0&&!sim)setTimeout(gameOver,700);}
+  if(!sim){flashEl.classList.remove('on');void flashEl.offsetWidth;flashEl.classList.add('on');}crashSound();haptic('crash');pop(SONG.ep>=0?'CRASH!  −1 ★':'CRASH!','red',3);
+  if(shields<=0&&!sim){over=true;setTimeout(()=>gameOver('lives'),700);}}
 
 /* ---------- saves: stars and bests per episode, top five Infinite runs per map (this device only) ---------- */
 const readJ=k=>{try{return JSON.parse(store.get(k)||'null');}catch(e){return null;}};
@@ -2060,7 +2144,9 @@ const epSave=(m,i)=>{const r=readJ(`lr-ep-${m}-${i}`)||{stars:0,score:0,pct:0};i
 const infList=m=>readJ(`lr-inf-${m}`)||[];
 // dev mode (the switch at the top of the menu) opens every episode on every map
 const devOn=()=>store.get('lr-dev')==='1';
-const unlocked=(m,i)=>i===0||devOn()||epSave(m,i-1).stars>0;
+const ERA_NEED=8,eraOpen=m=>{const k=MAPS.indexOf(m);return k<=0||devOn()||mapStars(MAPS[k-1])>=ERA_NEED;};
+const epPassed=(m,i)=>{const r=epSave(m,i);return r.stars>=3||r.pct>=85;};
+const unlocked=(m,i)=>devOn()||(eraOpen(m)&&(i===0||epPassed(m,i-1)));
 const mapStars=m=>[0,1,2,3,4].reduce((s,i)=>s+epSave(m,i).stars,0);
 // stars: one for each of the three lives you keep, plus two extra: 85% of the coins, and every coin
 function starsOf(lost,hits,coins){const base=Math.max(0,MAX_SHIELDS-lost),extra=(hits>=0.85*coins)+(hits>=coins);return{base,extra,total:base+extra};}
@@ -2075,18 +2161,21 @@ function recordEp(st,pct){const old=epSave(key,EP),best=score>old.score,more=st.
 const STAR_PAY=25, wallet={get:()=>Math.max(0,+store.get('lr-coins')||0),add(n){store.set('lr-coins',String(wallet.get()+n));}};
 const owns=k=>!CARS[k].price||store.get('lr-unlockcars')==='1'||(readJ('lr-cars')||[]).includes(k);
 let selCar=CARS[store.get('lr-car')]&&owns(store.get('lr-car'))?store.get('lr-car'):'arrow';showCar(selCar);
-function payRun(bonus=0){if(run.paid||inMenu||sim)return 0;run.paid=true;const n=run.hits+bonus;wallet.add(n);return n;}
+function payRun(bonus=0){if(inMenu||sim)return 0;const n=Math.round((run.hits-(run.paidHits||0))*CARS[selCar].perk.coin)+bonus;run.paidHits=run.hits;wallet.add(n);return n;}
 const earnText=(n,why)=>`+${n.toLocaleString('en-US')} coins${why} · you have ${wallet.get().toLocaleString('en-US')}`;
+// missions ask for something on purpose (timing, clean runs, stars), not just for playing
 const MISSION_POOL=[
-  {id:'coins',goals:[150,400,900],say:n=>`Catch ${n} coins`},{id:'shatter',goals:[5,15,35],say:n=>`Break ${n} coins out of glass`},
-  {id:'perfect',goals:[3,10,25],say:n=>`Get ${n} PERFECT glass breaks`},{id:'over',goals:[3,10,25],say:n=>`Hop over ${n} roadblocks`},
-  {id:'power',goals:[2,6,12],say:n=>`Collect ${n} power-ups`},{id:'clean',goals:[1,2,4],say:n=>n>1?`Finish ${n} episodes without crashing`:'Finish an episode without crashing'},
-  {id:'combo',goals:[25,50,90],say:n=>`Reach a ${n}-coin combo`,max:true},{id:'runs',goals:[3,8,15],say:n=>`Play ${n} runs`}];
-function missionState(){let m=readJ('lr-missions');if(!m||!m.active){m={active:[0,1,2].map(i=>({id:MISSION_POOL[i].id,tier:0,prog:0})),next:3};store.set('lr-missions',JSON.stringify(m));}return m;}
+  {id:'onbeat',goals:[15,40,90],say:n=>`Make ${n} moves on the beat`},{id:'perfect',goals:[4,12,30],say:n=>`Get ${n} PERFECT glass breaks`},
+  {id:'clean',goals:[1,2,4],say:n=>n>1?`Finish ${n} episodes without crashing`:'Finish an episode without crashing'},
+  {id:'combo',goals:[30,60,100],say:n=>`Reach a ${n}-coin combo`,max:true},{id:'stars3',goals:[1,3,6],say:n=>n>1?`Earn ★★★ or more in ${n} episodes`:'Earn ★★★ or more in an episode'},
+  {id:'over',goals:[4,12,30],say:n=>`Hop over ${n} roadblocks`},{id:'shatter',goals:[8,20,45],say:n=>`Break ${n} coins out of glass`},
+  {id:'coins',goals:[300,800,1800],say:n=>`Catch ${n} coins`},{id:'power',goals:[3,8,15],say:n=>`Collect ${n} power-ups`}];
+function missionState(){let m=readJ('lr-missions');if(m&&m.active&&m.active.some(a=>!MISSION_POOL.some(p=>p.id===a.id)))m=null; // from an older version
+  if(!m||!m.active){m={active:[0,1,2].map(i=>({id:MISSION_POOL[i].id,tier:0,prog:0})),next:3};store.set('lr-missions',JSON.stringify(m));}return m;}
 const mGoal=a=>MISSION_POOL.find(p=>p.id===a.id).goals[Math.min(a.tier,2)], mReward=a=>100+a.tier*100;
 mission=(id,n)=>{if(sim||inMenu)return;const m=missionState();let ch=false;
   for(const a of m.active)if(a.id===id){const P=MISSION_POOL.find(p=>p.id===id);a.prog=P.max?Math.max(a.prog,n):a.prog+n;ch=true;
-    if(a.prog>=mGoal(a)){wallet.add(mReward(a));run.mDone&&run.mDone.push({say:P.say(mGoal(a)),rw:mReward(a)});pop(`MISSION DONE +${mReward(a)}`,'gold');haptic('win');
+    if(a.prog>=mGoal(a)){wallet.add(mReward(a));run.mDone&&run.mDone.push({say:P.say(mGoal(a)),rw:mReward(a)});pop(`MISSION DONE +${mReward(a)}`,'gold',2);haptic('win');
       // the next mission: the next kind in the list not already active, one tier harder each time round
       let k=m.next;for(let i=0;i<MISSION_POOL.length;i++){const P2=MISSION_POOL[(k+i)%MISSION_POOL.length];if(!m.active.some(x=>x!==a&&x.id===P2.id)){a.id=P2.id;m.next=k+i+1;break;}}
       a.tier=Math.min(2,Math.floor(m.next/MISSION_POOL.length)+(a.tier>0?1:0));a.prog=0;}}
@@ -2102,26 +2191,40 @@ function renderMissions(){const m=missionState(),l=$('mlist');l.textContent='';$
     li.querySelector('b').textContent=P.say(g);l.append(li);}
   const d=readJ('lr-daily')||{streak:0};$('dailyNote').textContent=`Come back each day for a gift: 100 coins, then 50 more for every day in a row (up to 400). Your streak: ${d.streak||0} day${d.streak===1?'':'s'}.`;}
 // a daily gift the first time the game opens each day; it grows with a streak of days in a row
-function dailyGift(){const day=new Date().toISOString().slice(0,10),d=readJ('lr-daily')||{day:'',streak:0};if(d.day===day)return;
-  const y=new Date(Date.now()-864e5).toISOString().slice(0,10),streak=d.day===y?d.streak+1:1,gift=Math.min(400,50+50*streak);
-  wallet.add(gift);store.set('lr-daily',JSON.stringify({day,streak}));renderMenu();const tt=$('toast');tt.textContent=`DAILY GIFT · DAY ${streak} · +${gift} COINS`;tt.hidden=false;setTimeout(()=>tt.hidden=true,4200);}
+// it waits as a card on the main menu (after the intro) until you tap CLAIM, so it can't be missed
+const giftToday=()=>{const day=new Date().toISOString().slice(0,10),d=readJ('lr-daily')||{day:'',streak:0};if(d.day===day)return null;
+  const y=new Date(Date.now()-864e5).toISOString().slice(0,10),streak=d.day===y?d.streak+1:1;return{day,streak,gift:Math.min(400,50+50*streak)};};
+function dailyGift(){const g=giftToday();if(!g||intro.on||!inMenu||$('menu').hidden)return;
+  $('giftDay').textContent=`DAY ${g.streak}${g.streak>1?' IN A ROW':''}`;$('giftAmt').textContent=`+${g.gift}`;
+  $('giftNext').textContent=g.gift<400?`Come back tomorrow for +${Math.min(400,g.gift+50)}`:'Top gift every day while your streak lasts';$('gift').hidden=false;$('giftClaim').focus({preventScroll:true});}
+$('giftClaim').addEventListener('click',()=>{const g=giftToday();$('gift').hidden=true;if(!g)return;wallet.add(g.gift);store.set('lr-daily',JSON.stringify({day:g.day,streak:g.streak}));renderMenu();chime();haptic('buy');
+  const tt=$('toast');tt.textContent=`+${g.gift} COINS · YOU HAVE ${wallet.get().toLocaleString('en-US')}`;tt.hidden=false;setTimeout(()=>tt.hidden=true,2400);});
 function recordInf(){const list=infList(key);list.push({s:score,l:LEVEL,d:today()});list.sort((a,b)=>b.s-a.s);
   const rank=list.findIndex(e=>e.s===score)+1;store.set(`lr-inf-${key}`,JSON.stringify(list.slice(0,5)));return rank;}
 
-function gameOver(){if(inMenu||over)return;over=true;audioOn=false;screenEl.classList.add('is-over');$('over').hidden=false;
-  $('overTitle').textContent=SONG.ep>=0?'OUT OF LIVES':'CRASHED';
+const REVIVE_COST=200,CLEAR_MIN=0.5;
+function gameOver(why='lives'){if(inMenu||!$('over').hidden)return;over=true;paused=true;countEnd=0;audioOn=false;screenEl.classList.add('is-over');$('over').hidden=false;
+  $('overTitle').textContent=why==='coins'?'TOO FEW COINS':SONG.ep>=0?'OUT OF LIVES':'CRASHED';
+  // one paid revive per episode run, while the song still has a way to go
+  const rv=$('revive'),can=SONG.ep>=0&&why==='lives'&&!run.revives&&t<gateT-BAR;rv.hidden=!can;$('again').className=can&&wallet.get()>=REVIVE_COST?'ghost':'big';
+  if(can){const w=wallet.get();rv.disabled=w<REVIVE_COST;rv.innerHTML=w>=REVIVE_COST?`REVIVE · <i class="coin"></i> ${REVIVE_COST}`:`REVIVE · NEED ${REVIVE_COST-w} MORE <i class="coin"></i>`;}
   if(SONG.ep>=0){const prog=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1);
     $('ovA').textContent='SONG';$('finalScore').textContent=Math.round(prog*100)+'%';$('ovB').textContent='COINS';$('best').textContent=Math.round(100*run.hits/Math.max(1,run.coins))+'%';
-    $('overNote').textContent='Three crashes end the episode. The course is the same every try, so you can learn it.';$('again').textContent='TRY AGAIN';$('toMenu').textContent='EPISODES';}
+    $('overNote').textContent=why==='coins'?`Catch at least ${CLEAR_MIN*100}% of the coins to finish an episode. The course is the same every try.`:'Three crashes end the episode. The course is the same every try, so you can learn it.';$('again').textContent='TRY AGAIN';$('toMenu').textContent='EPISODES';}
   else{const rank=recordInf(),best=infList(key)[0].s;
     $('ovA').textContent='SCORE';$('finalScore').textContent=score.toLocaleString('en-US');$('ovB').textContent='BEST';$('best').textContent=best.toLocaleString('en-US');
     $('overNote').textContent=rank===1&&score>0?'NEW HIGH SCORE':rank<=5?`#${rank} on your ${MAPINFO[key].name} board`:'';$('again').textContent='FLY AGAIN';$('toMenu').textContent='MAIN MENU';}
   const got=payRun();$('overEarn').textContent=earnText(got,'');resMissions('overMis');
-  $('again').focus({preventScroll:true});}
-function episodeClear(){if(inMenu||over)return;over=true;
+  (rv.hidden||rv.disabled?$('again'):rv).focus({preventScroll:true});}
+// back in the air with one life: a 3-2-1, then the song carries on from where you crashed
+function revive(){if(!over||run.revives||wallet.get()<REVIVE_COST)return;wallet.add(-REVIVE_COST);run.revives++;
+  shields=1;invuln=RESPAWN+2;respawn=0;over=false;$('over').hidden=true;screenEl.classList.remove('is-over');hud();
+  if(initAudio()){audioOn=true;A.ctx.resume().catch(()=>{});}countEnd=performance.now()+1500;pop('3','big',3);setTimeout(()=>pop('2','big',3),500);setTimeout(()=>pop('1','big',3),1000);}
+function episodeClear(){if(inMenu||over)return;
   const pct=run.hits/Math.max(1,run.coins),st=starsOf(run.lost,run.hits,run.coins);
-  if(sim){sim.result={stars:st.total,base:st.base,extra:st.extra,pct};return;}
-  if(run.lost===0)mission('clean',1);
+  if(sim){over=true;sim.result={stars:st.total,base:st.base,extra:st.extra,pct};return;}
+  if(pct<CLEAR_MIN){gameOver('coins');return;}over=true;
+  if(run.lost===0)mission('clean',1);if(st.total>=3)mission('stars3',1);
   audioOn=false;haptic('win');const r=recordEp(st,Math.floor(pct*100)),got=payRun(r.newStars*STAR_PAY);
   screenEl.classList.add('is-over');$('clear').hidden=false;$('clearStars').hidden=$('starKey').hidden=false;
   $('clearEarn').textContent=earnText(got,r.newStars?` (${r.newStars*STAR_PAY} for new stars)`:'');resMissions('clearMis');
@@ -2171,17 +2274,18 @@ function autopilot(){{const g=nextGlass();if(g&&g.col===cs.col&&g.time-t<0.02)pu
   if(cs.row!==HOME&&nx.row===cs.row&&nx.col===cs.col)vt=Math.max(vt,nx.time-t+0.15);}
 
 function update(dt){
-  // flight school slows the world down (it never stops) while it shows a move for the first time
-  if(tutHold){t+=dt*SLOWMO;needSync=true;}
-  else if(audioOn&&A.ctx&&!sim){if(A.ctx.state==='running'){if(needSync){offset=A.ctx.currentTime-t;n16=Math.ceil(t/S16);needSync=false;}t=A.ctx.currentTime-offset;}
+  // flight school slows the world down while it shows a move for the first time, then waits, frozen just short of the coin,
+  // until you make that move (so a lesson can't slip past without being learned)
+  if(tutHold){const lead=tutHold.time-t,stop=tutHold.wait==='tap'?0.22:0.34;if(lead>stop)t+=Math.min(dt*SLOWMO,lead-stop);needSync=true;}
+  else if(audioOn&&A.ctx&&!sim){if(A.ctx.state==='running'){if(needSync){offset=A.ctx.currentTime-t-audLat;n16=Math.ceil(t/S16);needSync=false;}t=A.ctx.currentTime-offset-audLat;}
     else{t+=dt;needSync=true;A.ctx.resume().catch(()=>{});}} // if the phone stalls the audio clock, keep time ourselves
   else t+=dt;
   dt=clamp(t-tPrev,0,0.1);tPrev=t;
   // each move is taught once: the first time a coin needs it, the prompt shows and the world slows until the move is made
   if(SONG.tut&&!inMenu&&!over){if(!tutHold){const w=nodes.find(n=>n.state===0&&n.wait&&!n.waited);if(w&&w.time-t<(w.wait==='tap'?1.5:0.9)){if(tutOk(w)||tutShown.has(w.wait))w.waited=true;else holdFor(w);}}
-    if(tutHold&&(tutOk(tutHold)||tutHold.state!==0))releaseHold();}
+    if(tutHold&&tutOk(tutHold))releaseHold();}
   dist+=SPEED*dt; wrapZ=garage?52:10;if(garage){cs.col=MID;cs.row=HOME;vt=0;nodes=[];hazards=[];}else spawn(); invuln=Math.max(0,invuln-dt); respawn=Math.max(0,respawn-dt); rollT=Math.max(0,rollT-dt); jetT=Math.max(0,jetT-dt);
-  if(!inMenu&&!sim){const first=runBar*BAR,bl=Math.ceil((first-t)/BEAT);if(bl!==lastCount&&bl>=0&&bl<=3){lastCount=bl;pop(bl===0?'GO!':String(bl),bl===0?'gold big':'big');}}
+  if(!inMenu&&!sim){const first=runBar*BAR,bl=Math.ceil((first-t)/BEAT);if(bl!==lastCount&&bl>=0&&bl<=3){lastCount=bl;pop(bl===0?'GO!':String(bl),bl===0?'gold big':'big',3);}}
   // the skyway pulls the car back once the hop is over (holding the swipe no longer keeps it up)
   if(cs.row!==HOME){vt-=dt;if(vt<=0){cs.row=HOME;vt=0;}}
   if(sim){sim.stats.air=cs.row!==HOME?sim.stats.air+dt:0;sim.stats.airMax=Math.max(sim.stats.airMax,+sim.stats.air.toFixed(2));}
@@ -2189,29 +2293,33 @@ function update(dt){
   [cs.x,cs.vx]=smoothDamp(cs.x,LX[cs.col],cs.vx,0.11,dt);[cs.y,cs.vy]=smoothDamp(cs.y,LY[cs.row],cs.vy,0.11,dt);
   const mult=x2T>0?2:1;magnetT=Math.max(0,magnetT-dt);x2T=Math.max(0,x2T-dt);
   for(const n of nodes){if(n.state)continue;
-    if(respawn>0.45){if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;}continue;} // coins during a crash don't count
-    const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:0.62)&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
+    if(respawn>0.45){if(n.pre&&A.ctx){n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);n.pre=null;}if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;}continue;} // coins during a crash don't count
+    const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:CARS[selCar].perk.reach)&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
     if(near&&t>=n.time-0.05&&!(n.glass&&!n.cracked)){n.state=1;lastJudged=n.time;combo++;streak16++;if(!inMenu){run.hits++;mission('coins',1);mission('combo',combo);}if(n.pu)powerUp(n.pu);if(sim)sim.stats.hits++;score+=Math.round(100*(1+Math.min(combo,8)*0.25))*mult;fx(LX[n.col],LY[n.row],COIN_METAL[n.row].clone().multiplyScalar(0.55),false,n.row);
+      // a coin you had to move for is graded on when you moved: the swipe that lands on the note (the car needs ~0.1 s to get there) is PERFECT
+      if(n.mv&&!inMenu&&!SONG.tut&&cs.moveT!==undefined){const d=cs.moveT-(n.time-MOVE_LEAD),g=Math.abs(d)<MOVE_PERFECT?2:Math.abs(d)<MOVE_GOOD?1:0;run.moves++;
+        if(g){run.onBeat++;score+=(g===2?150:75)*mult;mission('onbeat',1);judge(g===2?'PERFECT':'GOOD',g===2?'gold':'cyan');}else judge(d<0?'EARLY':'LATE','dim');}
+      if(sim&&n.mv&&cs.moveT!==undefined){const d=cs.moveT-(n.time-MOVE_LEAD);sim.stats.moves=(sim.stats.moves||0)+1;if(Math.abs(d)<MOVE_GOOD)sim.stats.onBeat=(sim.stats.onBeat||0)+1;}
       // a coin up there (or down there) ends the hop: the car drops straight back to the skyway
       if(n.row!==HOME)vt=DROP_TAIL;
-      if(combo%8===0){rollT=0.65;pop('AILERON ROLL!','gold');}
       // in Infinite, a streak of 16 coins earns a shield back
-      if(streak16>=16){streak16=0;if(shields<MAX_SHIELDS&&SONG.ep<0){shields++;pop('SHIELD +1','gold');}}
-      const at=audioOn&&A.ctx?Math.max(A.ctx.currentTime,offset+n.time):0;if(!melodyOn)setMelody(true,at);if(audioOn&&A.ctx&&!sim)playLead(at,n.note,n.len);}
-    else if(t>n.time+(n.glass&&!n.cracked?TAP_LATE:0.08)){n.state=2;lastJudged=n.time;combo=0;streak16=0;if(n.glass&&!n.cracked&&near&&!inMenu){n.cracked=true;shatterFx(LX[n.col],LY[n.row],0,true);if(invuln<=0){if(glassHint++<2)pop('TAP TO BREAK THE GLASS');crash({state:0,col:n.col,row:n.row,kind:'glass'});}}if(melodyOn)setMelody(false,0);
+      if(streak16>=16){streak16=0;if(shields<MAX_SHIELDS&&SONG.ep<0){shields++;pop('SHIELD +1','gold',2);}}
+      const at=audioOn&&A.ctx?Math.max(A.ctx.currentTime,offset+n.time):0;if(!melodyOn)setMelody(true,at);if(audioOn&&A.ctx&&!sim&&!n.pre)playLead(at,n.note,n.len);}
+    else if(t>n.time+(n.glass&&!n.cracked?TAP_LATE:0.08)){n.state=2;lastJudged=n.time;combo=0;streak16=0;if(n.pre&&A.ctx)n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);if(n.glass&&!n.cracked&&near&&!inMenu){n.cracked=true;shatterFx(LX[n.col],LY[n.row],0,true);if(invuln<=0){if(glassHint++<2)pop('TAP TO BREAK THE GLASS','',2);crash({state:0,col:n.col,row:n.row,kind:'glass'});}}if(melodyOn)setMelody(false,0);
       if(sim){sim.stats.misses++;const pv=sim.prevCoin;sim.stats.missLog.push([+(pv?n.time-pv.time:0).toFixed(2),pv?pv.row:-1,n.row,pv?n.col-pv.col:0,n.runStart===n.time?'start':'run',cs.row,+vt.toFixed(2)]);}}
     if(sim&&n.state)sim.prevCoin=n;}
   const rowGap=LY[1]-LY[0];
   for(const h of hazards){if(h.state)continue;const z=hz(h),reach=KINDS[h.kind].len/2+0.9;if(z<-reach)continue;
-    if(z>reach){h.state=2;if(h.over&&!inMenu&&!over)mission('over',1);if(h.near&&!inMenu&&!over){score+=50*mult;if(sim)sim.stats.nearMiss++;pop((h.over?'CLEARED':'NEAR MISS')+' +'+50*mult);}continue;}
+    if(z>reach){h.state=2;if(h.over&&!inMenu&&!over)mission('over',1);if(h.near&&!inMenu&&!over){score+=50*mult;if(sim)sim.stats.nearMiss++;}continue;}
     const dx=Math.abs(cs.x-LX[h.col]),dy=Math.abs(cs.y-LY[h.row]);
     if(invuln<=0&&dx<0.75&&dy<(h.over?0.45:0.8)){crash(h);continue;}
     if((dx<1.9&&dy<0.5)||(dx<0.5&&dy<rowGap+0.3))h.near=true;}
   nodes=nodes.filter(n=>n.time>t-1);hazards=hazards.filter(h=>hz(h)<14);
   if(tutHold&&audioOn&&A.ctx&&!sim)while(n16*S16<t+0.03){const at=A.ctx.currentTime+(n16*S16-t)/SLOWMO;playBacking(n16%16,Math.floor(n16/16)-songBar0,Math.max(at,A.ctx.currentTime));n16++;}
-  if(audioOn&&A.ctx&&!sim&&!needSync)while(n16*S16<t+0.12){const at=offset+n16*S16;if(at>=A.ctx.currentTime-0.01)playBacking(n16%16,Math.floor(n16/16)-songBar0,at);n16++;}
+  if(audioOn&&A.ctx&&!sim&&!needSync){for(const n of nodes)if(n.state===0&&!n.pre&&!(n.glass&&!n.cracked))preLead(n);}
+  if(audioOn&&A.ctx&&!sim&&!needSync)while(n16*S16<t+audLat+0.12){const at=offset+n16*S16;if(at>=A.ctx.currentTime-0.01)playBacking(n16%16,Math.floor(n16/16)-songBar0,at);n16++;}
   // episodes end at the finish gate; the clear screen comes up with the last chord
-  if((SONG.ep>=0||SONG.tut)&&!inMenu&&!over){if(!finished&&t>gateT){finished=true;pop('FINISH!','gold big');}if(t>gateT+BAR+0.15)(SONG.tut?tutorialDone:episodeClear)();}
+  if((SONG.ep>=0||SONG.tut)&&!inMenu&&!over){if(!finished&&t>gateT){finished=true;pop('FINISH!','gold big',3);}if(t>gateT+BAR+0.15)(SONG.tut?tutorialDone:episodeClear)();}
   melLevel+=((melodyOn?1:0.3)-melLevel)*Math.min(1,dt*5);
   hud();
 }
@@ -2219,6 +2327,7 @@ function fx(x,y,col,big,row){if(sim)return;const r=fxRings.find(r=>r.age>0.5)||f
   const b=bursts.find(b=>b.age>0.6)||bursts[0];b.age=0;b.origin.set(x,y,0);b.p.visible=true;b.p.material.color.copy(col);b.p.material.size=big?0.22:0.06;
   b.vel.forEach(v=>v.set(rand()-0.5,rand()-0.5,(rand()-0.5)*0.6).normalize().multiplyScalar((big?4:2.5)+rand()*3));}
 
+const PLAY_CAM={h:3.4,lookY:-2.2,shift:0.12};
 const camTarget=new THREE.Vector3(), lookTarget=new THREE.Vector3(), tmpV=new THREE.Vector3(), tmpC=new THREE.Color();
 let exhaustAcc=0, jetAcc=0, camSnap=false;
 function render(dt){
@@ -2255,13 +2364,17 @@ function render(dt){
     landRing.position.set(cs.x,SKY_Y+0.02,0.1);landRing.scale.setScalar(1.2-urge*0.4+pulse*0.08);ringMat.color.copy(tetherMat.color);}
   // steady camera: glides after the car, never rolls or shakes; the view widens at speed
   const k=camSnap?1:1-Math.exp(-dt*4);
-  camTarget.set(cs.x*0.7,cs.y*0.45+TH.cam.h,TH.cam.z);lookTarget.set(cs.x*0.6,cs.y*0.4,-14);
+  // in a run the camera sits higher and looks further down the road, and the picture is shifted so the car rides low on the
+  // screen (about 3/4 of the way down) with the horizon at about 40%: more than twice the road ahead of the old framing.
+  // The menu keeps its own framing; the two blend as a run starts or ends
+  const g=1-menuLift;camTarget.set(cs.x*0.7,cs.y*0.45+TH.cam.h+(PLAY_CAM.h-TH.cam.h)*g,TH.cam.z);lookTarget.set(cs.x*0.6,cs.y*0.4+PLAY_CAM.lookY*g,-14);
   // garage: a slow showroom turn around the car (drag to turn it), or the view you get in a run; the turn is narrower at the sides, clear of the buildings
   const show=garage&&gView==='show';if(show){const a=gAng+t*0.3;const sa=Math.sin(a);camTarget.set(car.position.x+sa*3.3,car.position.y+1.2+Math.abs(sa)*0.9,car.position.z+Math.cos(a)*4.8);lookTarget.set(car.position.x,car.position.y-0.55,car.position.z);}
   cam.pos.lerp(camTarget,k);cam.look.lerp(lookTarget,k);camera.position.copy(cam.pos);camera.lookAt(cam.look);
   // on the main menu the picture slides down so the car flies in the open middle of the screen, above the menu sheet
   menuLift+=((inMenu&&!garage&&!$('menu').hidden?1:0)-menuLift)*(camSnap?1:1-Math.exp(-dt*5));
-  if(menuLift>0.002){renderer.getSize(tmpV2);camera.setViewOffset(tmpV2.x,tmpV2.y,0,tmpV2.y*0.2*menuLift,tmpV2.x,tmpV2.y);}else if(camera.view&&camera.view.enabled)camera.clearViewOffset();
+  const vo=show?0:0.2*menuLift-PLAY_CAM.shift*(1-menuLift);
+  if(Math.abs(vo)>0.001){renderer.getSize(tmpV2);camera.setViewOffset(tmpV2.x,tmpV2.y,0,tmpV2.y*vo,tmpV2.x,tmpV2.y);}else if(camera.view&&camera.view.enabled)camera.clearViewOffset();
   const fovT=show?58:TH.fov;fovNow+=(fovT-fovNow)*(camSnap?1:Math.min(1,dt*5));camSnap=false;
   if(Math.abs(camera.fov-fovNow)>0.01){camera.fov=fovNow;camera.updateProjectionMatrix();}
   pMat.uniforms.scale.value=renderer.domElement.clientHeight/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2)));
@@ -2278,11 +2391,12 @@ function render(dt){
     else if(nx!==px)pushPt(px,py,pz+(z-pz)*0.55,tmpC.copy(ROWC[n.row]));
     pushPt(nx,ny,z,ROWC[n.row]);px=nx;py=ny;pz=z;prow=n.row;}
   path.visible=pts.length>=6&&respawn<=0;if(path.visible){while(pts.length<PATH_PTS*3){pts.push(...pts.slice(-3));cols.push(0,0,0);}pathGeo.setPositions(pts.slice(0,PATH_PTS*3));pathGeo.setColors(cols.slice(0,PATH_PTS*3));}
+  if(judgeT>0){judgeT-=dt;tmpV.set(car.position.x,car.position.y+0.9,car.position.z).project(camera);judgeEl.style.left=(tmpV.x+1)*50+'%';judgeEl.style.top=(1-tmpV.y)*50+'%';}
   aim.position.set(cs.x,cs.y,0);aim.visible=false;shieldBubble.visible=shieldOn&&!garage;if(shieldOn)shieldBubble.material.opacity=0.1+pulse*0.08;pulseShardUpdate(dt);
   if(CARM.tick)CARM.tick(t,dt);
   const lined=up[0]&&up[0].col===cs.col&&up[0].row===cs.row;aimMat.color.copy(ROWC[hl]).lerp(new THREE.Color(1,1,1),lined?0.2:0.6).multiplyScalar(lined?2:0.9);
   const live=new Set();let si=0,pi=0;
-  for(const n of nodes){if(n.state===1||n.state===3)continue;const z=-(n.time-t)*SPEED;if(z<-FAR||z>8)continue;
+  for(const n of nodes){if(n.state===1||n.state===3)continue;const z=-(n.time-t)*SPEED;if(z<-FAR||z>(n.state===2?0.5:8))continue;
     let p=pool.find(p=>p.node===n)||pool.find(p=>!p.node);if(!p)continue;p.node=n;live.add(p);
     p.g.visible=true;p.g.position.set(LX[n.col],LY[n.row],z);
     p.gem.rotation.y=p.edge.rotation.y=t*2+n.id;p.ring.rotation.z=t*1.5+n.id;p.coin.rotation.y=t*3.2+n.id;
@@ -2387,7 +2501,7 @@ function introFrame(now){if(!intro.t0)intro.t0=now;const T=(now-intro.t0)/1000;i
   renderPass.scene=iScene;renderPass.camera=iCam;const keep=[bloom.strength,bloom.radius,bloom.threshold,blurPass.uniforms.strength.value,renderer.toneMappingExposure];
   [bloom.strength,bloom.radius,bloom.threshold]=[0.7,0.5,0.82];blurPass.uniforms.strength.value=0;renderer.toneMappingExposure=1;composer.render();
   [bloom.strength,bloom.radius,bloom.threshold,blurPass.uniforms.strength.value,renderer.toneMappingExposure]=keep;renderPass.scene=scene;renderPass.camera=camera;}
-function endIntro(){if(!intro.on)return;intro.on=false;screenEl.classList.remove('in-intro');$('intro').hidden=true;prev=performance.now();}
+function endIntro(){if(!intro.on)return;intro.on=false;screenEl.classList.remove('in-intro');$('intro').hidden=true;prev=performance.now();dailyGift();}
 if(intro.on){screenEl.classList.add('in-intro');$('intro').hidden=false;}else $('intro').hidden=true;
 $('intro').addEventListener('click',endIntro);addEventListener('keydown',e=>{if(intro.on)endIntro();},{capture:true});
 
@@ -2397,15 +2511,16 @@ function resize(){const r=cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.w
   pathMat.resolution.set(w,h);aimMat.resolution.set(w,h);if(typeof iCam!=='undefined'){iCam.aspect=w/h;iCam.updateProjectionMatrix();}}
 new ResizeObserver(resize).observe(cv);resize();
 let running=!reduce,visible=true;
-const PANELS=['menu','eps','board','garage','missions','settings','changes'];
+const PANELS=['menu','eps','board','garage','missions','settings','changes','sync'];
 function showPanel(id){for(const p of PANELS)$(p).hidden=p!==id;}
 const MUSIC_WORD={old:'swing',sunset:'pop',rain:'industrial'};
 // the episode PLAY starts: Flight School first, then the first one not yet cleared, else the one with the fewest stars
 function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[m];
-  for(let i=0;i<E.length;i++)if(unlocked(m,i)&&!epSave(m,i).stars)return i;
+  for(let i=0;i<E.length;i++)if(unlocked(m,i)&&!epPassed(m,i))return i;
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, what changed
 const CHANGELOG=[
+ ['18','Play Test','24 Oct 2026',['Moves are graded on the beat: swipe as the note lands for PERFECT, close for GOOD (with bonus points).','Traffic arrives on the music’s accents, mostly beats 2 and 4.','Audio sync in Settings: tap along to line up sound and screen (for Bluetooth headphones).','A lower camera that shows more road ahead.','One call-out at a time; the timing grade sits just above the car.','The next episode opens at ★★★ or 85% of the coins; an episode needs half the coins to clear.','Eras get harder in turn, and the Present and Future open with 8 stars in the era before.','Car perks, and a revive for 200 coins when you run out of lives.','Missions ask for timing, clean runs and stars.','Flight School waits until you make each move.','The daily gift is a card you claim on the main menu.','Bigger buttons; sound moved into the pause menu.','Graphics quality steps back up when the phone has room, and a steady 30 fps no longer counts as slow.','Wet streets: fainter reflections, and the car no longer shows upside down in them.']],
  ['17.2','Change Log','23 Oct 2026',['This change log, from the ✦ button at the top of the main menu.']],
  ['17.1','One Lane at a Time','23 Oct 2026',['One swipe always moves exactly one lane, however far your finger goes.','A coin two lanes over takes two swipes, and the course leaves time for both.','Flight School: “Two lanes over? Swipe twice.”']],
  ['17','World Map','23 Oct 2026',['EPISODES opens a world map of the era’s five cities and the route you fly: a parchment chart (Past), a night map (Present), a hologram (Future).','Breaking glass bursts into shards, with a flash and the sound of breaking glass.','Flying into glass you didn’t break is a crash and costs a life.','Up and down signs stand upright in the coin’s lane, pointing to the level to go to.','Coins take their level’s color: blue below, gold on the skyway, rose above.','Roadblocks stand still; only traffic moves.','Every tap gets its own pulse ring.','Result screens show the missions you finished and how close you are on the rest.']],
@@ -2436,6 +2551,10 @@ function renderMenu(){const E=EPISODES[key],nx=nextEpisode(key),b=infList(key)[0
   $('menu').style.setProperty('--era',k);
   const city=n=>n.replace(/\s\d{4}$/,'');$('eraSub').textContent=`${city(E[0].name)} → ${city(E[E.length-1].name)}`;$('eraMus').textContent=`${MAPINFO[key].era} · ${MUSIC_WORD[key]} music`;
   $('playSub').textContent=nx<0?'Flight School · learn the moves':`Episode ${nx+1} · ${E[nx].name}${epSave(key,nx).stars?' · '+'★'.repeat(epSave(key,nx).stars):''}`;
+  // a later era opens once you have enough stars in the one before it
+  const open=eraOpen(key),prevEra=MAPINFO[MAPS[MAPS.indexOf(key)-1]]?.name,need=open?0:ERA_NEED-mapStars(MAPS[MAPS.indexOf(key)-1]);
+  $('start').disabled=$('modeInf').disabled=!open&&nx>=0;$('start').querySelector('.pl').textContent=!open&&nx>=0?'🔒 LOCKED':'▶ PLAY';
+  if(!open&&nx>=0)$('playSub').textContent=`Earn ${need} more ★ in the ${prevEra} to open`;
   $('epsSub').textContent=`★ ${mapStars(key)}/25`;$('infSub').textContent=b?`best ${b.s.toLocaleString('en-US')}`:'no best yet';
   $('starTot').textContent=`★ ${MAPS.reduce((a,m)=>a+mapStars(m),0)}/75`;$('walletN').textContent=wallet.get().toLocaleString('en-US');
   // a dot on MISSIONS when one is more than half done
@@ -2505,7 +2624,7 @@ function renderEps(){const m=key,E=EPISODES[m],M=drawWorld(m),pins=$('epPins'),s
     b.querySelector('.sts').textContent=sv.stars?'★'.repeat(sv.stars):'';b.addEventListener('click',()=>{if(epSel===i&&open){EP=i;startRun();return;}epSel=i;renderEps();});pins.append(b);});
   // the chosen episode: its music, best result and PLAY
   const e=E[epSel],sv=epSave(m,epSel),open=unlocked(m,epSel);$('ecNum').textContent=open?epSel+1:'🔒';$('ecName').textContent=e.name;
-  $('ecSub').textContent=open?`${e.bpm} BPM · ${LEAD_NAMES[e.V.lead]}${sv.score?' · best '+sv.score.toLocaleString('en-US'):''}`:`Clear episode ${epSel} to open`;
+  $('ecSub').textContent=open?`${e.bpm} BPM · ${LEAD_NAMES[e.V.lead]}${sv.score?' · best '+sv.score.toLocaleString('en-US'):''}`:!eraOpen(m)?`Earn ${ERA_NEED}★ in the ${MAPINFO[MAPS[MAPS.indexOf(m)-1]].name} to open`:`Get ★★★ or 85% of the coins in episode ${epSel} to open`;
   const st=$('ecStars');st.textContent='';if(open&&sv.stars)st.append(starsEl(sv.base,sv.extra));
   const pb=$('epPlay');pb.disabled=!open;pb.textContent=open?(sv.stars?`PLAY AGAIN · EPISODE ${epSel+1}`:`PLAY EPISODE ${epSel+1}`):'LOCKED';}
 $('epPlay').addEventListener('click',()=>{if(!unlocked(key,epSel))return;EP=epSel;startRun();});
@@ -2529,12 +2648,12 @@ function openMenu(panel='menu'){inMenu=true;over=false;paused=false;countEnd=0;f
   screenEl.classList.add('in-menu');audioOn=false;if(A.ctx&&A.ctx.state!=='running')A.ctx.resume().catch(()=>{});
   if(SONG.ep>=0||SONG.tut){setSong(loopSong(key));resetRun();}
   const wasG=garage;garage=panel==='garage';if(garage){gIdx=CAR_KEYS.indexOf(selCar);renderGarage();for(const r of fxRings){r.age=9;r.m.visible=false;}for(const b of bursts){b.age=9;b.p.visible=false;}}else{showCar(selCar);if(wasG)resetRun();}
-  renderMenu();showPanel(panel);if(panel==='eps'){epSel=-1;renderEps();}if(panel==='board')renderBoard();
+  renderMenu();showPanel(panel);if(panel==='menu')dailyGift();if(panel==='eps'){epSel=-1;renderEps();}if(panel==='board')renderBoard();
   if(panel==='missions')renderMissions();if(panel==='changes')renderLog();
-  ({menu:$('start'),eps:$('epsBack'),board:$('boardBack'),garage:$('garageBack'),missions:$('misBack'),settings:$('setBack'),changes:$('logBack')})[panel].focus({preventScroll:true});}
+  ({menu:$('start'),eps:$('epsBack'),board:$('boardBack'),garage:$('garageBack'),missions:$('misBack'),settings:$('setBack'),changes:$('logBack'),sync:$('syncPad')})[panel].focus({preventScroll:true});if(panel==='settings'||panel==='sync')renderSync();}
 // garage: flip through the cars (any can be looked at), buy one with coins, choose which one you fly
 function renderGarage(){const k=CAR_KEYS[gIdx],C=CARS[k],own=owns(k),w=wallet.get(),act=$('carAct');showCar(k);
-  $('carName').textContent=C.name.toUpperCase();$('carAbout').textContent=C.about;$('gWallet').textContent=w.toLocaleString('en-US');
+  $('carName').textContent=C.name.toUpperCase();$('carAbout').textContent=C.about;$('carPerk').textContent=C.perk.say;$('gWallet').textContent=w.toLocaleString('en-US');
   $('carPrice').textContent=own?(C.price?'OWNED':'FREE · OWNED'):`${C.price.toLocaleString('en-US')} coins`;
   act.disabled=k===selCar||(!own&&w<C.price);
   act.textContent=k===selCar?'✓ YOUR CAR':own?'FLY THIS CAR':w>=C.price?`BUY FOR ${C.price.toLocaleString('en-US')} COINS`:`NEED ${(C.price-w).toLocaleString('en-US')} MORE COINS`;
@@ -2542,17 +2661,17 @@ function renderGarage(){const k=CAR_KEYS[gIdx],C=CARS[k],own=owns(k),w=wallet.ge
     if(i===gIdx)d.setAttribute('aria-current','true');d.addEventListener('click',()=>{gIdx=i;renderGarage();});dots.append(d);});
   $('carView').textContent=gView==='show'?'IN-GAME VIEW':'SHOWROOM VIEW';renderDev();}
 function chime(){if(!A.ctx||!soundOn)return;const at=A.ctx.currentTime+0.02;[76,79,84].forEach((n,i)=>tone(at+i*0.09,midi(n),{type:'triangle',dur:0.5,g:0.1,cut:5000,out:A.master}));}
-function startRun(){mission('runs',1);running=true;over=false;paused=false;countEnd=0;garage=false;showCar(selCar);for(const id of['over','pause','clear'])$(id).hidden=true;screenEl.classList.remove('is-over','is-paused');
+function startRun(){running=true;over=false;paused=false;countEnd=0;garage=false;showCar(selCar);for(const id of['over','pause','clear'])$(id).hidden=true;screenEl.classList.remove('is-over','is-paused');
   if(soundOn)unlockIOS();
   setSong(MODE==='ep'?(EP<0?tutSong(key):buildSong(key,EP)):loopSong(key));
   t=Math.ceil(t/BAR)*BAR-0.05;tPrev=t; // the song starts on a bar line
-  if(initAudio()){A.ctx.resume().catch(()=>{});audioOn=true;needSync=false;offset=A.ctx.currentTime-t;A.mel.gain.cancelScheduledValues(A.ctx.currentTime);A.mel.gain.setValueAtTime(1,A.ctx.currentTime);}
+  if(initAudio()){A.ctx.resume().catch(()=>{});audioOn=true;needSync=false;measureLat();offset=A.ctx.currentTime-t-audLat;A.mel.gain.cancelScheduledValues(A.ctx.currentTime);A.mel.gain.setValueAtTime(1,A.ctx.currentTime);}
   inMenu=false;userAt=t;hintUntil=t+10;showPanel(null);screenEl.classList.remove('in-menu');resetRun();
   $('epLabel').textContent=MODE==='ep'?(EP<0?'FLIGHT SCHOOL':`EPISODE ${EP+1} · ${SONG.name.toUpperCase()}`):`INFINITE · ${LEVEL.toUpperCase()}`;}
 // leaving the app pauses the run; resuming counts in for a moment, then re-syncs the music clock
 function pauseGame(){if(inMenu||over||paused)return;paused=true;countEnd=0;holdV=false;$('pause').hidden=false;screenEl.classList.add('is-paused');if(A.ctx&&A.ctx.state==='running')A.ctx.suspend().catch(()=>{});}
 function resumeGame(){if(!paused||countEnd)return;if(soundOn)unlockIOS();if(A.ctx)A.ctx.resume().catch(()=>{});$('pause').hidden=true;screenEl.classList.remove('is-paused');
-  countEnd=performance.now()+1500;pop('3','big');setTimeout(()=>pop('2','big'),500);setTimeout(()=>pop('1','big'),1000);}
+  countEnd=performance.now()+1500;pop('3','big',3);setTimeout(()=>pop('2','big',3),500);setTimeout(()=>pop('1','big',3),1000);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pauseGame();if(inMenu&&A.ctx)A.ctx.suspend().catch(()=>{});}
   else if(inMenu&&A.ctx&&soundOn)A.ctx.resume().catch(()=>{});});
 // browsers only allow sound after a tap or key press, so the first one starts the menu music
@@ -2575,9 +2694,11 @@ $('epsBack').addEventListener('click',()=>openMenu('menu'));
 function renderDev(){const on=devOn();$('devBtn').setAttribute('aria-checked',String(on));$('devLabel').textContent=on?'ON':'OFF';
   $('carCoins').hidden=!on;$('carRow').classList.toggle('one',!on);}
 $('devBtn').addEventListener('click',()=>{store.set('lr-dev',devOn()?'0':'1');renderDev();renderMenu();});renderDev();
+// dev mode is for testing, so it stays out of sight: seven taps on the SETTINGS title show it (it also shows while it's on)
+{let n=0,at=0;$('devRow').hidden=!devOn();$('setTitle').addEventListener('click',()=>{const now=performance.now();n=now-at<600?n+1:1;at=now;if(n>=7){$('devRow').hidden=false;n=0;}});}
 $('boardBtn').addEventListener('click',()=>{boardMap=key;openMenu('board');});$('boardBack').addEventListener('click',()=>openMenu('menu'));
 document.querySelectorAll('#boardTabs .tab').forEach(b=>b.addEventListener('click',()=>{boardMap=b.dataset.map;renderBoard();}));
-$('again').addEventListener('click',startRun);$('toMenu').addEventListener('click',()=>openMenu(MODE==='ep'?'eps':'menu'));
+$('again').addEventListener('click',startRun);$('revive').addEventListener('click',revive);$('toMenu').addEventListener('click',()=>openMenu(MODE==='ep'?'eps':'menu'));
 $('nextEp').addEventListener('click',()=>{EP=Math.min(4,EP+1);startRun();});$('retryEp').addEventListener('click',startRun);$('clearMenu').addEventListener('click',()=>openMenu('eps'));
 $('pauseBtn').addEventListener('click',pauseGame);$('resume').addEventListener('click',resumeGame);$('restart').addEventListener('click',()=>{payRun();startRun();});
 $('pauseMenu').addEventListener('click',()=>{payRun();openMenu('menu');});
@@ -2603,6 +2724,26 @@ function toggleSound(){soundOn=!soundOn;if(soundOn){unlockIOS();if(A.ctx&&!pause
 $('sndBtn').addEventListener('click',toggleSound);$('sndMenu').addEventListener('click',toggleSound);applySound();
 function applyHaptics(){$('hapBtn').textContent=hapticsOn?'HAPTICS ON':'HAPTICS OFF';$('hapBtn').setAttribute('aria-pressed',String(hapticsOn));store.set('lr-haptics',hapticsOn?'on':'off');}
 $('hapBtn').addEventListener('click',()=>{hapticsOn=!hapticsOn;applyHaptics();haptic('tick');});applyHaptics();
+// audio sync: 12 clicks at 100 BPM; the delay is the middle value of (tap - click) over the last 8
+function renderSync(){const c=calGet();$('syncSub').textContent=c===null?'automatic':`${c} ms, set by you`;$('syncVal').textContent=c===null?'AUTO':`${c} ms`;}
+const SYNC={on:false,clicks:[],taps:[]};
+function syncClick(at,accent){tone(at,midi(accent?88:81),{type:'square',dur:0.05,g:0.12,cut:6000,attack:0.001,out:A.master});kick(at,0.35);}
+function syncStart(){if(!initAudio())return;unlockIOS();A.ctx.resume().catch(()=>{});const t0=A.ctx.currentTime+0.6;SYNC.on=true;SYNC.taps=[];SYNC.clicks=[...Array(12)].map((_,i)=>t0+i*0.6);
+  SYNC.clicks.forEach((at,i)=>syncClick(at,i%4===0));$('syncBig').textContent='TAP';$('syncCount').textContent='on every click';$('syncNote').textContent='';
+  setTimeout(syncEnd,(SYNC.clicks[11]-A.ctx.currentTime+0.7)*1000);}
+function syncEnd(){SYNC.on=false;$('syncBig').textContent='AGAIN';$('syncCount').textContent='12 clicks · about 8 seconds';
+  const d=[];for(const tp of SYNC.taps){let best=null;SYNC.clicks.forEach((c,i)=>{const x=tp-c;if(i>=4&&x>-0.25&&x<0.5&&(best===null||Math.abs(x)<Math.abs(best)))best=x;});if(best!==null)d.push(best);}
+  if(d.length<5){$('syncNote').textContent='Not enough taps. Tap the pad on every click.';return;}
+  d.sort((a,b)=>a-b);const med=d[d.length>>1],spread=d[Math.floor(d.length*0.8)]-d[Math.floor(d.length*0.2)];
+  if(spread>0.09){$('syncNote').textContent='Your taps were uneven. Try again, tapping right on each click.';return;}
+  store.set('lr-cal',String(Math.round(clamp(med,0,0.5)*1000)));renderSync();$('syncNote').textContent='Saved. Fine-tune with the buttons if it still feels off.';}
+$('syncPad').addEventListener('pointerdown',e=>{e.preventDefault();if(!SYNC.on){syncStart();return;}SYNC.taps.push(A.ctx.currentTime);const p=$('syncPad');p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),90);
+  const n=SYNC.taps.length;$('syncCount').textContent=n<=4?'warming up…':`${Math.min(8,n-4)} of 8`;});
+$('syncPad').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();$('syncPad').dispatchEvent(new PointerEvent('pointerdown'));}});
+const nudgeCal=d=>{const c=calGet()??Math.round(audLat*1000);store.set('lr-cal',String(clamp(c+d,0,500)));renderSync();$('syncNote').textContent='Saved.';};
+$('syncMinus').addEventListener('click',()=>nudgeCal(-10));$('syncPlus').addEventListener('click',()=>nudgeCal(10));
+$('syncAuto').addEventListener('click',()=>{store.set('lr-cal','');renderSync();$('syncNote').textContent='Using the browser’s own estimate.';});
+$('syncBtn').addEventListener('click',()=>openMenu('sync'));$('syncBack').addEventListener('click',()=>{SYNC.on=false;openMenu('settings');});renderSync();
 // swipe left or right to change lane, up or down to hop or dive (a hop lasts one note); a tap fires the pulse.
 // Swipes fire as soon as the finger has moved far enough
 let ptr=null,heldKey=null;
@@ -2634,7 +2775,7 @@ window.__lrSim=(o={})=>{const save={key,LEVEL,MODE,EP};
   LEVEL=save.LEVEL;MODE=save.MODE;EP=save.EP;applyTheme(save.key,false);openMenu();
   const hitRate=+(s.hits/Math.max(1,s.hits+s.misses+s.skipped)).toFixed(3);
   // the sim plays on through every crash; a real run ends at the third, so that counts as not passing
-  const passed=!!res&&s.crashes<MAX_SHIELDS;
+  const passed=!!res&&s.crashes<MAX_SHIELDS&&res.pct>=CLEAR_MIN;
   return{...cfg,...s,seconds:+songT.toFixed(1),hitRate,passed,stars:passed?res.stars:0,extra:res?res.extra:0,swipesPerMin:+(s.swipes/songT*60).toFixed(1)};};
 
 window.__lrDebug={crash(){if(!inMenu&&!over)crash({state:0,col:cs.col,row:cs.row,kind:TH.kinds(cs.row)});},state:()=>({t,cs:{...cs},vt,respawn,invuln,key,MODE,EP,song:SONG.name,pads:pads.count,stems:stems.count,padCol:pads.instanceColor&&[...pads.instanceColor.array.slice(0,3)],hz:hazards.length,nodes:nodes.length}),
@@ -2653,23 +2794,31 @@ window.__lrDebug={crash(){if(!inMenu&&!over)crash({state:0,col:cs.col,row:cs.row
   garageAngle(a){gAng=a;},
   music:()=>({on:MM.on,ctx:A.ctx?A.ctx.state:null,gain:A.menu?+A.menu.gain.value.toFixed(2):null}),look:()=>({bg:LOOK.bg,deco:LOOK.deco,moonR:skyU.moonR.value,moonDir:skyU.moonDir.value.toArray(),stars:skyU.stars.value,sea:skyU.sea.value,backdrop:backdrop.visible}),
   hop(dy){move(0,dy);},hold(v){holdV=v;},endSoon(){gateT=t+0.3;},auto(v){demo=v;},
+  carY(){tmpV.copy(car.position).project(camera);return +((1-tmpV.y)/2).toFixed(3);},horizonY(){tmpV.set(0,ROAD_Y,-90).project(camera);return +((1-tmpV.y)/2).toFixed(3);},
   // step until something worth a screenshot is on screen: the car up, the car down, or a block coming up under coins
   seek(kind,max=40){const ok={hop:()=>cs.row===2&&cs.y>1.2,dive:()=>cs.row===0&&cs.y<-1.2,
       over:()=>hazards.some(h=>h.over&&hz(h)>-16&&hz(h)<-7),flash:()=>bdFlash>0.5,glass:()=>nodes.some(n=>n.glass&&!n.cracked&&-(n.time-t)*SPEED>-10&&-(n.time-t)*SPEED<-4),pickup:()=>nodes.some(n=>n.pu&&n.state===0&&-(n.time-t)*SPEED>-12&&-(n.time-t)*SPEED<-5),overNear:()=>hazards.some(h=>h.over&&hz(h)>-5&&hz(h)<-3.5),pad:()=>nodes.some(n=>n.runStart===n.time&&n.row!==HOME&&n.state===0&&-(n.time-PAD_LEAD-t)*SPEED>-14&&-(n.time-PAD_LEAD-t)*SPEED<-6)}[kind];
     for(let i=0;i<max*30;i++){update(1/30);if(ok()){camSnap=true;render(1/30);render(1/30);return true;}}render(1/30);return false;},song:(m,i)=>{const S=buildSong(m,i);return{name:S.name,bpm:S.bpm,len:S.len,bars:S.bars.map(b=>({sec:b.sec,chord:b.chord,mel:b.mel}))};}};
 applyTheme(key,false);renderMenu();dailyGift();
-let prev=performance.now(),frAcc=0,frN=0;
-function applyWet(){const w=!!LOOK.wet&&QL<2;wetMirror.visible=w;road.material.transparent=w;road.material.opacity=w?0.55:1;road.material.roughness=LOOK.wet?(w?0.3:0.45):0.85;road.material.needsUpdate=true;}
+let prev=performance.now(),frAcc=0,frN=0,frSq=0,frBase=1/60,frSlow=0,frFast=0,frLockUp=0;
+function applyWet(){const w=!!LOOK.wet&&QL<2;wetMirror.visible=w;road.material.transparent=w;road.material.opacity=w?0.74:1;road.material.roughness=LOOK.wet?(w?0.3:0.45):0.85;road.material.needsUpdate=true;}
 function setQL(q,persist){QL=q;if(persist)store.set('lr-ql',String(q));sunLight.castShadow=QL<1;
   if(QL>=3&&prCur>0.75){prCur=0.75;resize();}applyWet();}
 setQL(QL,false);update(0);render(0);
 function frame(now){if(intro.on){introFrame(now);requestAnimationFrame(frame);return;}
   const dt=Math.min(0.05,(now-prev)/1000);prev=now;menuMusic();
-  if(paused&&countEnd&&now>=countEnd){paused=false;countEnd=0;if(A.ctx&&audioOn){offset=A.ctx.currentTime-t;n16=Math.ceil(t/S16);needSync=false;}}
+  if(paused&&countEnd&&now>=countEnd){paused=false;countEnd=0;if(A.ctx&&audioOn){offset=A.ctx.currentTime-t-audLat;n16=Math.ceil(t/S16);needSync=false;}}
   if(running&&(visible||audioOn)){if(!paused)update(dt);render(paused?0:tutHold?dt*SLOWMO:dt);
     // if the phone can't keep up, lower the resolution a step at a time, then turn off the shadows, then the wet-street mirror,
-    // then drop below full resolution. The phone remembers the level it settled on
-    frAcc+=dt;frN++;if(frAcc>2){if(frAcc/frN>0.024&&!sim){if(prCur>1){prCur=Math.max(1,prCur-0.25);resize();}else if(QL<3)setQL(QL+1,true);}frAcc=0;frN=0;}}
+    // then drop below full resolution; with room to spare it steps back up. Frame times are compared with the screen's own
+    // refresh rate (a steady 30 fps, as in Low Power Mode, is the screen, not a struggle), only during a run, and only after
+    // 6 s of trouble, so one hiccup (a notification, a loading moment) changes nothing
+    frAcc+=dt;frSq+=dt*dt;frN++;if(frAcc>2){const m=frAcc/frN,sd=Math.sqrt(Math.max(0,frSq/frN-m*m)),play=!inMenu&&!over&&!paused&&!sim;
+      if(sd<m*0.12&&m>frBase*1.25)frBase=m;else if(m<frBase*0.9)frBase=Math.max(1/125,m);
+      if(play){if(m>frBase*1.4){frFast=0;if(++frSlow>=3){frSlow=0;frLockUp=performance.now()+20000;if(prCur>1){prCur=Math.max(1,prCur-0.25);resize();}else if(QL<3)setQL(QL+1,true);}}
+        else if(m<frBase*1.12){frSlow=0;if(++frFast>=5&&performance.now()>frLockUp){frFast=0;if(QL>0){setQL(QL-1,true);if(QL<3&&prCur<1){prCur=1;resize();}}else if(prCur<PR_MAX){prCur=Math.min(PR_MAX,prCur+0.25);resize();}}}
+        else{frSlow=0;frFast=0;}}
+      frAcc=0;frSq=0;frN=0;}}
   requestAnimationFrame(frame);}
 requestAnimationFrame(frame);
 </script>
