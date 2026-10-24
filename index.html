@@ -1361,7 +1361,7 @@ const backdrop=new THREE.Mesh(planeGeo,bdMat);backdrop.scale.set(BD_W,BD_H,1);ba
 const backdropRear=new THREE.Mesh(planeGeo,bdMat);backdropRear.scale.set(BD_W,BD_H,1);backdropRear.rotation.y=Math.PI;backdropRear.renderOrder=-1;backdropRear.frustumCulled=false;scene.add(backdropRear);
 let bdFlash=0, bdKey='';
 // a spot on the backdrop canvas, in the world (for set pieces that sit on it)
-const bdAt=(px,py,v)=>v.set(camera.position.x+(px/BDW-0.5)*BD_W,camera.position.y-1.5+BD_TOP-py/BDH*BD_H,camera.position.z-BD_Z+3);
+const bdAt=(px,py,v)=>v.set(camera.position.x+(px/BDW-0.5)*BD_W,camera.position.y-1.5-bdDrop()+BD_TOP-py/BDH*BD_H,camera.position.z-BD_Z+3);
 const rgbOf=h=>`${h>>16&255},${h>>8&255},${h&255}`;
 const PT={
   grad(g,stops,y0=0,y1=BDH){const gr=g.createLinearGradient(0,y0,0,y1);for(const[o,c]of stops)gr.addColorStop(o,c);g.fillStyle=gr;g.fillRect(0,y0,BDW,y1-y0);},
@@ -1669,7 +1669,11 @@ const beamGeo=(r,seg=24)=>{const g=new THREE.ConeGeometry(r,1,seg,1,true);g.tran
     const beam=new THREE.Mesh(beamGeo(2.2,20),glowMat({color:new THREE.Color(0x9fc0ff),opacity:0.05,side:THREE.DoubleSide,fog:true}));beam.scale.set(1,8,1);g.add(b,r,u,beam);grp.add(g);return{g,r,u,beam};});
   deco('police',grp,()=>{dr.forEach((d,i)=>{const z=((i*31+dist*0.35)%93)-88;d.g.position.set([-2.6,2.4,0][i]+Math.sin(t*0.6+i)*0.8,7.2+i*0.5+Math.sin(t*1.3+i)*0.2,z);
     const on=Math.floor(t*6+i)%2;d.r.material.opacity=on?1:0.15;d.u.material.opacity=on?0.15:1;d.beam.rotation.set(Math.sin(t*0.7+i)*0.35,0,Math.cos(t*0.5+i*2)*0.35);});});}
-function backdropUpdate(dt,pulse){backdrop.position.set(camera.position.x,camera.position.y-1.5+BD_TOP-BD_H/2,camera.position.z-BD_Z);
+// the painted horizon was set for the menu camera; the run camera sits higher, which drops the far end of the street lower in
+// view. The backdrop goes down by the same angle (the extra height, scaled from the street's far end ~207 units away out to the
+// backdrop), so the street still runs straight into the painted city instead of stopping short of it
+let camLift=0;const bdDrop=()=>camLift*BD_Z/160; // (slightly more than the ~207-unit geometry gives: the street's last stretch is lost in fog)
+function backdropUpdate(dt,pulse){backdrop.position.set(camera.position.x,camera.position.y-1.5-bdDrop()+BD_TOP-BD_H/2,camera.position.z-BD_Z);
   backdropRear.visible=garage&&backdrop.visible;if(backdropRear.visible)backdropRear.position.set(camera.position.x,backdrop.position.y,camera.position.z+BD_Z);
   bdFlash=Math.max(0,bdFlash-dt*6);bdMat.color.setScalar((LOOK.bdK||1)*(1+bdFlash));
   for(const k in DECO)if(DECO[k].g.visible)DECO[k].up(dt,pulse);
@@ -2370,6 +2374,7 @@ function render(dt){
   const g=1-menuLift;camTarget.set(cs.x*0.7,cs.y*0.45+TH.cam.h+(PLAY_CAM.h-TH.cam.h)*g,TH.cam.z);lookTarget.set(cs.x*0.6,cs.y*0.4+PLAY_CAM.lookY*g,-14);
   // garage: a slow showroom turn around the car (drag to turn it), or the view you get in a run; the turn is narrower at the sides, clear of the buildings
   const show=garage&&gView==='show';if(show){const a=gAng+t*0.3;const sa=Math.sin(a);camTarget.set(car.position.x+sa*3.3,car.position.y+1.2+Math.abs(sa)*0.9,car.position.z+Math.cos(a)*4.8);lookTarget.set(car.position.x,car.position.y-0.55,car.position.z);}
+  camLift+=((show?0:(PLAY_CAM.h-TH.cam.h)*g)-camLift)*k;
   cam.pos.lerp(camTarget,k);cam.look.lerp(lookTarget,k);camera.position.copy(cam.pos);camera.lookAt(cam.look);
   // on the main menu the picture slides down so the car flies in the open middle of the screen, above the menu sheet
   menuLift+=((inMenu&&!garage&&!$('menu').hidden?1:0)-menuLift)*(camSnap?1:1-Math.exp(-dt*5));
@@ -2695,7 +2700,7 @@ function renderDev(){const on=devOn();$('devBtn').setAttribute('aria-checked',St
   $('carCoins').hidden=!on;$('carRow').classList.toggle('one',!on);}
 $('devBtn').addEventListener('click',()=>{store.set('lr-dev',devOn()?'0':'1');renderDev();renderMenu();});renderDev();
 // dev mode is for testing, so it stays out of sight: seven taps on the SETTINGS title show it (it also shows while it's on)
-{let n=0,at=0;$('devRow').hidden=!devOn();$('setTitle').addEventListener('click',()=>{const now=performance.now();n=now-at<600?n+1:1;at=now;if(n>=7){$('devRow').hidden=false;n=0;}});}
+{let n=0,at=0;$('devRow').hidden=!devOn();$('setTitle').addEventListener('click',()=>{const now=performance.now();n=now-at<1200?n+1:1;at=now;if(n>=7){$('devRow').hidden=false;n=0;}});}
 $('boardBtn').addEventListener('click',()=>{boardMap=key;openMenu('board');});$('boardBack').addEventListener('click',()=>openMenu('menu'));
 document.querySelectorAll('#boardTabs .tab').forEach(b=>b.addEventListener('click',()=>{boardMap=b.dataset.map;renderBoard();}));
 $('again').addEventListener('click',startRun);$('revive').addEventListener('click',revive);$('toMenu').addEventListener('click',()=>openMenu(MODE==='ep'?'eps':'menu'));
