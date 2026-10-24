@@ -1674,7 +1674,7 @@ const beamGeo=(r,seg=24)=>{const g=new THREE.ConeGeometry(r,1,seg,1,true);g.tran
 // backdrop), so the street still runs straight into the painted city instead of stopping short of it
 // BD_SINK lowers the skyline in every view (the street's last stretch fades into fog short of the painted horizon); the
 // lift term adds more as the run camera rises. The backdrop is drawn behind everything, so too low only hides its base
-const BD_SINK=2.2;let camLift=0;const bdDrop=()=>BD_SINK+camLift*BD_Z/140;
+const BD_SINK=4.4;let camLift=0;const bdDrop=()=>BD_SINK+camLift*BD_Z/70;
 function backdropUpdate(dt,pulse){backdrop.position.set(camera.position.x,camera.position.y-1.5-bdDrop()+BD_TOP-BD_H/2,camera.position.z-BD_Z);
   backdropRear.visible=garage&&backdrop.visible;if(backdropRear.visible)backdropRear.position.set(camera.position.x,backdrop.position.y,camera.position.z+BD_Z);
   bdFlash=Math.max(0,bdFlash-dt*6);bdMat.color.setScalar((LOOK.bdK||1)*(1+bdFlash));
