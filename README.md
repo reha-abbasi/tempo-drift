@@ -23,6 +23,24 @@ and its scene/script files are plain text, so two people can work on it in git w
 - Auto-pause when the app goes to the background, safe-area margins for the iPhone notch, haptic buzz on crash
 - Placeholder art made from simple shapes, plus generated chiptune music and sound effects, all meant to be replaced
 
+## Do I need to download Godot?
+
+**Just to play or test the game: no.** Open the web preview in any phone or computer browser:
+https://claude.ai/artifact/HmgViG5EE7wUr46QJXHNBE (ask Reha to share it with you).
+It shows the latest version merged into `main`, after someone republishes it (see *Updating the shared web preview* below).
+
+**To change the code and see your change working,** something has to turn the code into a playable game.
+That's Godot's job, but it doesn't have to run on your computer:
+
+| Option | Need to download? | Good for | Status |
+|---|---|---|---|
+| **A. Godot on your computer** (recommended for regular work) | Yes, free, about 100 MB, no installer: unzip and run | Fastest: press F5 and see a change in seconds | Ready, see below |
+| **B. Auto-preview on GitHub.** GitHub builds the game for every pull request and posts a link to play that version | No. You can even edit code on the GitHub website | Testing a change without Godot or Claude | Not set up yet. Needs a free Netlify or Cloudflare Pages account. Preview links are public but random |
+| **C. Claude in the cloud** (claude.ai/code). Ask it to *"update the web preview"* and Claude downloads Godot onto its own cloud machine | No | Updating the shared preview link | Needs a Claude plan and edit access to the preview. Not tested yet |
+| **D. GitHub Codespaces.** A cloud computer in your browser with everything installed | No | Full setup without installing anything | Not set up yet. Free for about 60 hours a month. More technical |
+
+Ask Claude to set up B, C or D when you want one.
+
 ## How to play it on your computer
 
 1. Download **Godot 4.7.2 (standard, not .NET)** from https://godotengine.org/download/archive/4.7.2-stable/
