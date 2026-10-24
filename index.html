@@ -295,7 +295,7 @@ tr:last-child td{border-bottom:0}
 .setlist li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;background:rgba(20,16,30,.8);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;font:600 14px var(--display)}
 .setlist li small{display:block;font:400 10.5px var(--mono);color:var(--muted);margin-top:2px}
 .setlist .ghost{min-width:112px;font-size:12px;padding:8px 10px}
-.setlist .devsw{position:static}
+.setlist .devsw{position:static;min-height:44px;padding:0 12px 0 8px}
 /* the episode map: the era's cities on a world map in that era's style, joined by the route you fly */
 #eps{gap:9px}
 .eratitle{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0}
@@ -467,7 +467,7 @@ body{padding:0!important}
           <li><span>Haptics<small>a buzz on catches and crashes</small></span><button class="ghost" id="hapBtn" aria-pressed="true">HAPTICS ON</button></li>
           <li><span>Endless difficulty<small>how fast Endless gets</small></span><button class="ghost" id="levelBtn">NORMAL</button></li>
           <li><span>Flight School<small>replay the tutorial</small></span><button class="ghost" id="tutBtn">PLAY</button></li>
-          <li id="devRow" hidden><span>Dev mode<small>opens every episode, test coins</small></span><button class="devsw" id="devBtn" role="switch" aria-checked="false"><span class="track"><i></i></span><span id="devLabel">OFF</span></button></li>
+          <li id="devRow" hidden><span>Dev mode<small>opens every era and episode, test coins in the Garage</small></span><button class="devsw" id="devBtn" role="switch" aria-checked="false"><span class="track"><i></i></span><span id="devLabel">OFF</span></button></li>
         </ul>
         <p class="legend">Swipe left and right to change lanes, up to hop, down to dive. Tap to break open coins in glass. Everything is saved on this device.</p>
       </div>
@@ -2331,7 +2331,7 @@ function fx(x,y,col,big,row){if(sim)return;const r=fxRings.find(r=>r.age>0.5)||f
   const b=bursts.find(b=>b.age>0.6)||bursts[0];b.age=0;b.origin.set(x,y,0);b.p.visible=true;b.p.material.color.copy(col);b.p.material.size=big?0.22:0.06;
   b.vel.forEach(v=>v.set(rand()-0.5,rand()-0.5,(rand()-0.5)*0.6).normalize().multiplyScalar((big?4:2.5)+rand()*3));}
 
-const PLAY_CAM={h:3.4,lookY:-2.2,shift:0.12};
+const PLAY_CAM={h:2.0,lookY:-0.7,shift:0.07};
 const camTarget=new THREE.Vector3(), lookTarget=new THREE.Vector3(), tmpV=new THREE.Vector3(), tmpC=new THREE.Color();
 let exhaustAcc=0, jetAcc=0, camSnap=false;
 function render(dt){
@@ -2368,8 +2368,9 @@ function render(dt){
     landRing.position.set(cs.x,SKY_Y+0.02,0.1);landRing.scale.setScalar(1.2-urge*0.4+pulse*0.08);ringMat.color.copy(tetherMat.color);}
   // steady camera: glides after the car, never rolls or shakes; the view widens at speed
   const k=camSnap?1:1-Math.exp(-dt*4);
-  // in a run the camera sits higher and looks further down the road, and the picture is shifted so the car rides low on the
-  // screen (about 3/4 of the way down) with the horizon at about 40%: more than twice the road ahead of the old framing.
+  // in a run the camera sits a little higher and looks a little further down the road, and the picture is shifted so the car
+  // rides lower on the screen (about 69% down instead of 61%), showing ~40% more road ahead. Kept modest so the street still
+  // meets the painted skyline at the horizon.
   // The menu keeps its own framing; the two blend as a run starts or ends
   const g=1-menuLift;camTarget.set(cs.x*0.7,cs.y*0.45+TH.cam.h+(PLAY_CAM.h-TH.cam.h)*g,TH.cam.z);lookTarget.set(cs.x*0.6,cs.y*0.4+PLAY_CAM.lookY*g,-14);
   // garage: a slow showroom turn around the car (drag to turn it), or the view you get in a run; the turn is narrower at the sides, clear of the buildings
@@ -2700,7 +2701,9 @@ function renderDev(){const on=devOn();$('devBtn').setAttribute('aria-checked',St
   $('carCoins').hidden=!on;$('carRow').classList.toggle('one',!on);}
 $('devBtn').addEventListener('click',()=>{store.set('lr-dev',devOn()?'0':'1');renderDev();renderMenu();});renderDev();
 // dev mode is for testing, so it stays out of sight: seven taps on the SETTINGS title show it (it also shows while it's on)
-{let n=0,at=0;$('devRow').hidden=!devOn();$('setTitle').addEventListener('click',()=>{const now=performance.now();n=now-at<1200?n+1:1;at=now;if(n>=7){$('devRow').hidden=false;n=0;}});}
+// TEST_BUILD shows the switch outright (this build is for play-testing); a player build sets it to false
+const TEST_BUILD=true;
+{let n=0,at=0;$('devRow').hidden=!TEST_BUILD&&!devOn();$('setTitle').addEventListener('click',()=>{const now=performance.now();n=now-at<1200?n+1:1;at=now;if(n>=7){$('devRow').hidden=false;n=0;}});}
 $('boardBtn').addEventListener('click',()=>{boardMap=key;openMenu('board');});$('boardBack').addEventListener('click',()=>openMenu('menu'));
 document.querySelectorAll('#boardTabs .tab').forEach(b=>b.addEventListener('click',()=>{boardMap=b.dataset.map;renderBoard();}));
 $('again').addEventListener('click',startRun);$('revive').addEventListener('click',revive);$('toMenu').addEventListener('click',()=>openMenu(MODE==='ep'?'eps':'menu'));
