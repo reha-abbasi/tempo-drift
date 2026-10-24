@@ -2350,7 +2350,9 @@ const intro={on:!reduce,t0:0};
   // light spilling under the door until it opens
   intro.spill=add(new THREE.PlaneGeometry(0.9,0.02),new THREE.MeshBasicMaterial({color:new THREE.Color(1.6,1.2,0.8)}),0,0.012,0.09);
   // the room: walls, a rug, a TV on a cabinet, a lamp, a plant, a poster
-  add(new THREE.BoxGeometry(4.6,3.2,5),new THREE.MeshStandardMaterial({map:wallpaper,roughness:0.9,side:THREE.BackSide}),0,1.6,-2.6);
+  // (the box's bottom face is left undrawn: it would sit exactly on the plank floor and the two would flicker)
+  {const rw=new THREE.MeshStandardMaterial({map:wallpaper,roughness:0.9,side:THREE.BackSide}),none=new THREE.MeshBasicMaterial({visible:false});
+  add(new THREE.BoxGeometry(4.6,3.2,5),[rw,rw,rw,none,rw,rw],0,1.6,-2.6);}
   const rug=canvasTex(128,128,(g,w)=>{g.fillStyle='#7a2e3a';g.fillRect(0,0,w,w);g.strokeStyle='#e8c38a';g.lineWidth=5;g.strokeRect(10,10,w-20,w-20);g.strokeRect(24,24,w-48,w-48);});
   add(new THREE.PlaneGeometry(2.4,1.6),new THREE.MeshStandardMaterial({map:rug,roughness:0.95}),0,0.005,-2.8).rotation.x=-Math.PI/2;
   add(new RoundedBoxGeometry(1.9,0.5,0.45,3,0.05),wood,0,0.25,-4.75);
