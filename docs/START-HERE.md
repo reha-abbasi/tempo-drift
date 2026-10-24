@@ -43,7 +43,8 @@ The rest of this page is for when you want to understand or do things yourself.
 | `shaders/` | Small effects that colour the ground and the building windows. |
 | `assets/` | Sounds and music (later: 3D models, images). |
 | `tests/` | Automatic checks that the game still works after a change. |
-| `tools/` | Helper scripts: make sounds, take screenshots, **build the web preview**. |
+| `web/` | **The current game, Tempo Drift** (a web page), and its iPhone version. See its README. |
+| `tools/` | Helper scripts: make sounds, take screenshots, **build the web preview**, **build the iPhone version**. |
 | `docs/` | This guide and the screenshots shown on GitHub. |
 | `export/`, `build/` | Made by the computer when you export. Never saved to GitHub, safe to delete. |
 | `.godot/` | Godot's own cache. Never saved to GitHub, safe to delete. |
@@ -52,6 +53,9 @@ Files at the top level: `project.godot` (the file you open in Godot), `export_pr
 `icon.svg` (placeholder app icon), `README.md` (the main project page on GitHub), `.gitignore` (tells git which files to skip).
 
 ## Common jobs, step by step
+
+**Play Tempo Drift on an iPhone:** open https://reha-abbasi.github.io/tempo-drift/ in Safari, tap Share, then
+**Add to Home Screen**. Details and how to update it: [`web/README.md`](../web/README.md).
 
 **Play the game:** open Godot, *Import*, pick `project.godot`, press **F5**.
 

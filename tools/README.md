@@ -49,3 +49,13 @@ So `web_artifact.py` cuts the engine file into three pieces (`index.part0.wasm`,
 None of this changes the game itself.
 
 `build/` and `export/` are made fresh every time and are never saved to GitHub, so it's safe to delete them.
+
+## The iPhone version of Tempo Drift
+
+- `make_phone.py` turns `web/game.html` into the full-screen iPhone version in `web/app/` (icon, offline support).
+- `publish_phone.sh` copies `web/app/` to the public project that serves https://reha-abbasi.github.io/tempo-drift/.
+
+```
+python3 tools/make_phone.py web/game.html web/app
+tools/publish_phone.sh
+```
