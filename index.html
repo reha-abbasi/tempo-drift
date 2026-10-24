@@ -1972,7 +1972,7 @@ const shardMesh=new THREE.InstancedMesh(shardGeo,shardMat,SHARDS);
 shardMesh.frustumCulled=false;shardMesh.count=SHARDS;scene.add(shardMesh);const shards=[...Array(SHARDS)].map(()=>({age:9,p:new THREE.Vector3(),v:new THREE.Vector3(),r:new THREE.Euler(),w:new THREE.Vector3(),k:1}));let shardI=0;
 for(let i=0;i<SHARDS;i++){dummy.position.set(0,-99,0);dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
 const breakFlash=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xdff4ff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));breakFlash.visible=false;scene.add(breakFlash);let flashAge=9;
-const SHARD_LIFE=0.6;
+const SHARD_LIFE=0.95;
 function shatterFx(x,y,z,big=false){if(sim)return;const n=(big?36:24)>>(fxLow?1:0); // fewer, bigger-feeling pieces keep the lane readable
   for(let i=0;i<n;i++){const s=shards[shardI++%SHARDS];s.age=0;
     // pieces start on the case's front and sides and fly outward from its middle; the world carries them past the car
@@ -1987,10 +1987,10 @@ function pulseShardUpdate(dt){for(const P of pulses){if(P.age>=0.35){P.m.visible
     P.m.material.opacity=(1-a)*(P.hit?0.6:0.35);P.m.material.color.set(P.hit?0xbfe8ff:0x8aa8ff).multiplyScalar(1.6);}
   if(flashAge<0.18){flashAge+=dt;const a=flashAge/0.18;breakFlash.material.opacity=(1-a)*0.7;breakFlash.scale.setScalar(1.4+a*1.8);breakFlash.position.z+=SPEED*dt;}else breakFlash.visible=false;
   // shards are only drawn while some are flying
-  // a shard that has flown past the car is gone (near the camera they'd be big flat blades over the view)
-  let alive=0;for(let i=0;i<SHARDS;i++){const s=shards[i];if(s.age<=SHARD_LIFE&&s.p.z>1.2)s.age=9;if(s.age>SHARD_LIFE)continue;alive++;s.age+=dt;s.v.y-=11*dt;s.p.addScaledVector(s.v,dt);s.r.x+=s.w.x*dt;s.r.y+=s.w.y*dt;s.r.z+=s.w.z*dt;
+  // pieces shrink away as they fly past the car (near the camera they'd be big flat blades over the view), and a finished piece is moved out of sight
+  let alive=0;for(let i=0;i<SHARDS;i++){const s=shards[i];if(s.age>SHARD_LIFE)continue;if(s.p.z>4.5)s.age=SHARD_LIFE+dt;alive++;s.age+=dt;s.v.y-=11*dt;s.p.addScaledVector(s.v,dt);s.r.x+=s.w.x*dt;s.r.y+=s.w.y*dt;s.r.z+=s.w.z*dt;
     if(s.p.y<ROAD_Y+0.03){s.p.y=ROAD_Y+0.03;s.v.y*=-0.25;s.v.x*=0.6;s.w.multiplyScalar(0.5);}
-    dummy.position.copy(s.age>SHARD_LIFE?tmpV.set(0,-99,0):s.p);dummy.rotation.copy(s.r);dummy.scale.setScalar(s.k*(1-0.6*Math.min(1,s.age/SHARD_LIFE)));dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
+    dummy.position.copy(s.age>SHARD_LIFE?tmpV.set(0,-99,0):s.p);dummy.rotation.copy(s.r);dummy.scale.setScalar(s.k*(1-0.5*Math.min(1,s.age/SHARD_LIFE))*clamp((4.5-s.p.z)/3.5,0,1));dummy.updateMatrix();shardMesh.setMatrixAt(i,dummy.matrix);}
   dummy.rotation.set(0,0,0);dummy.scale.set(1,1,1);shardMesh.visible=alive>0;if(alive)shardMesh.instanceMatrix.needsUpdate=true;}
 const SPARKS=18;
 const bursts=[...Array(10)].map(()=>{const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(SPARKS*3),3));
