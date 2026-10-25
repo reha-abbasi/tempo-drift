@@ -6,7 +6,6 @@ It replaced the first Godot draft, which stays in the rest of the project for a 
 | File | What it is |
 |---|---|
 | `game.html` | **The game.** One file with everything in it. The same page as the claude.ai preview (game screen + notes). Edit this one. |
-| `pilot-lineup.html` | Ten pilot styles to choose from (open it in a browser). |
 | `app/` | **The iPhone version**, made from `game.html`: only the game, full screen, with an app icon, and it keeps working offline. Don't edit by hand; rebuild it. |
 
 ## Play it on an iPhone
