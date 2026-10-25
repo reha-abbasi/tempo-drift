@@ -1035,6 +1035,20 @@ function writeSection(rng,prog,sc,style,base,dense,motifs){
     for(let j=2;j<bar.length;j++)if(bar[j][1]===bar[j-1][1]&&bar[j][1]===bar[j-2][1])bar[j][1]+=bar[j][1]<hi?1:-1;
     out.push(bar);}
   return out;}
+// more notes: long notes are split, the new note stepping toward the next pitch (or a neighbour note), more often in harder
+// episodes; the hardest also get quick sixteenth-note pairs (not in swing, where they'd fight the swung beat)
+function densify(mel,rng,L,style){const f=0.72+0.07*L,f16=style!=='swing'&&L>=2?(L-1.5)*0.13:0;
+  return mel.map(bar=>{const out=[];bar.forEach(([on,d,len],j)=>{const nx=j+1<bar.length?bar[j+1][1]:d;let o=on,l=len,cur=d,p=f;
+      // split from the front, keeping two eighths before the next note so there's still time to change lane there
+      const stp=()=>nx===cur?(rng()<0.5?1:-1):Math.sign(nx-cur);
+      // (the second note of a sixteenth pair, and the extra note in a short split, are music only: they play with the melody but
+      // have no coin, so coins keep the room a lane change needs)
+      while(l>=3&&rng()<p){if(f16&&l>=4&&rng()<f16*1.4){out.push([o,cur,0.5]);cur+=stp();out.push([o+0.5,cur,0.5,null,1]);}else out.push([o,cur,1]);o+=1;l-=1;cur+=stp();p*=0.7;}
+      if(l===2&&rng()<0.5+0.1*L){out.push([o,cur,1]);cur+=stp();out.push([o+1,cur,1,null,1]);return;}
+      out.push([o,cur,l]);});
+    // no pitch three times in a row
+    for(let j=2;j<out.length;j++)if(out[j][1]===out[j-1][1]&&out[j][1]===out[j-2][1])out[j][1]+=1;
+    return out;});}
 function degMidi(d,tonic,sc){return tonic+12*Math.floor(d/7)+sc[((d%7)+7)%7];}
 // each era starts harder than the last: Past runs episode settings 0 → 3, Present 0.5 → 3.5, Future 1 → 4 (in between, values blend)
 function diffAt(map,i){const L=clamp(i*0.75+MAPS.indexOf(map)*0.5,0,DIFF.length-1),a=DIFF[Math.floor(L)],b=DIFF[Math.ceil(L)],f=L-Math.floor(L),o={};
@@ -1047,13 +1061,13 @@ function buildSong(map,i){const E=EPISODES[map][i],D=diffAt(map,i),tk=thOf(map,i
     if(style!=='swing')return[r,[0,third,fifth]];const sev=(sc[(deg+6)%7]-sc[deg%7]+12)%12;return[r,[0,third,fifth,(deg%7===0||deg%7===3)&&third===4&&E.scale!=='hijaz'?9:sev]];};
   const sec={},bases={A:2,B:4,C:3};
   // fast songs get fewer notes per bar, so there's still time to move between coins
-  for(const k of['A','B','C'])if(E[k])sec[k]={prog:E[k],mel:writeSection(rng,E[k],sc,style,bases[k],E.bpm>=126?Math.min(D.dense,6):D.dense)};
+  for(const k of['A','B','C'])if(E[k])sec[k]={prog:E[k],mel:densify(writeSection(rng,E[k],sc,style,bases[k],E.bpm>=126?Math.min(D.dense,6):D.dense),rng,D.L,style)};
   // about a minute per song, a little longer each episode: slower songs get fewer sections
   const barT=240/E.bpm,intro=barT>2.2?1:2,nSec=clamp(Math.round(([58,62,66,70,74][i]/barT-intro-2)/4),5,9);
   let form=FORMS[i].slice(0,nSec).map(s=>s==='C'&&!sec.C?'B':s);if(form[form.length-1]!=='B')form.push('B');
   const bars=[];
   for(let k=0;k<intro;k++)bars.push({sec:'I',chord:chordOf(E.A[0]),mel:[],lvl:k===intro-1&&intro>1?2:1});
-  for(const s of form)for(let b=0;b<4;b++)bars.push({sec:s,chord:chordOf(sec[s].prog[b]),mel:sec[s].mel[b].map(([on,d,len])=>[on,degMidi(d,mt,sc),len]),lvl:0});
+  for(const s of form)for(let b=0;b<4;b++)bars.push({sec:s,chord:chordOf(sec[s].prog[b]),mel:sec[s].mel[b].map(([on,d,len,fx,gh])=>gh?[on,degMidi(d,mt,sc),len,null,1]:[on,degMidi(d,mt,sc),len]),lvl:0});
   bars.push({sec:'O',chord:chordOf(0),mel:[],lvl:0},{sec:'E',chord:chordOf(0),mel:[],lvl:0});
   // which notes sit above / below the skyway: the highest and lowest ones in this song
   return{map,th:tk,ep:i,name:E.name,bpm:E.bpm,V:E.V,seed:E.seed,diff:D,look:E.look||{},intro,len:bars.length,swing:style==='swing'?0.3:0,
@@ -2070,7 +2084,7 @@ const cs={x:0,y:LY[HOME],vx:0,vy:0,col:MID,row:HOME};
 const cam={pos:new THREE.Vector3(0,1.5,7.2),look:new THREE.Vector3(0,-0.5,-14)};
 function smoothDamp(cur,target,vel,st,dt){const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+0.235*x*x*x),ch=cur-target,tmp=(vel+w*ch)*dt;return[target+(ch+tmp)*e,(vel-w*tmp)*e];}
 // a run starts on the next bar line, after the song's intro; an episode's course is the same on every try
-function resetRun(){resetCollect();tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
+function resetRun(){resetCollect();ghosts=[];tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
   score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;flow=0;odT=0;odN=0;maxCombo=0;J={c:0,m:0,gl:0};lastHurt=-9;band=1;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
   cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;laneN=0;laneT0=runBar*BAR;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
   grand=mkRng(SONG.ep>=0?SONG.seed*31+7:(runSeed=(runSeed*69069+1)>>>0));
@@ -2112,7 +2126,8 @@ function tutHazards(b){const B=SONG.bar(b-songBar0);if(!B)return;
   if(rn.length){const kind=TH.hop,hw=(KINDS[kind].len/2+0.9)/(SPEED*KINDS[kind].rel),lo=rn[0].time-0.07+hw,hi=rn[rn.length-1].time+DROP_TAIL-0.02-hw;
     hazards.push({time:(lo+hi)/2,col:rn[0].col,row:HOME,state:0,id:nid++,kind,near:false,over:true});}}
 // lane changes a minute each episode asks for (Past, Present, Future; episodes 1 to 5)
-const LANE_RATE={old:[12,16,20,24,28],sunset:[18,22,26,30,34],rain:[22,26,30,34,38]};let laneN=0,laneT0=0;
+let ghosts=[];
+const LANE_RATE={old:[14,20,26,32,38],sunset:[20,26,32,38,44],rain:[24,30,36,42,48]};let laneN=0,laneT0=0;
 const laneRate=()=>SONG.ep>=0&&!SONG.tut&&LANE_RATE[SONG.map]?LANE_RATE[SONG.map][SONG.ep]:0;
 function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
   if(B&&B.mel.length){let last=nodes[nodes.length-1]||null;
@@ -2122,7 +2137,7 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
     const laneDue=laneRate()?laneRate()/60*(bar*BAR-laneT0)-laneN:0;
     const lastOff=nodes.findLast(n=>n.row!==HOME),quiet=!SONG.tut&&pHi>pLo&&laneDue<1.5&&(!lastOff||bar*BAR-lastOff.time>BAR*(SONG.ep>=0?2.5-0.2*SONG.ep:2));
     let nudged=false;
-    B.mel.forEach(([e,note,len,fix],i)=>{const step=bar*8+e,time=tOf(step);let row=SONG.row(note),col=last?last.col:MID;
+    B.mel.forEach(([e,note,len,fix,gh],i)=>{const step=bar*8+e,time=tOf(step);if(gh){ghosts.push({time,note,len});if(sim)sim.stats.ghosts=(sim.stats.ghosts||0)+1;return;}let row=SONG.row(note),col=last?last.col:MID;
       // the time to the next note, so a hop or dive only goes to a coin that leaves room to drop back before it
       const nx=i+1<B.mel.length?B.mel[i+1][0]+bar*8:nb&&nb.mel.length?nb.mel[0][0]+bar*8+8:null,ahead=nx===null?9:tOf(nx)-time;
       if(quiet&&!nudged&&!fix&&row===HOME&&ahead>=ONE_NOTE&&(note===pHi||note===pLo)){row=note===pHi?HOME+1:HOME-1;nudged=true;}
@@ -2491,7 +2506,10 @@ function update(dt){
     if((dx<1.9&&dy<0.5)||(dx<0.5&&dy<rowGap+0.3))h.near=true;}
   nodes=nodes.filter(n=>n.time>t-1);hazards=hazards.filter(h=>hz(h)<14);
   if(tutHold&&audioOn&&A.ctx&&!sim)while(n16*S16<t+0.03){const at=A.ctx.currentTime+(n16*S16-t)/SLOWMO;playBacking(n16%16,Math.floor(n16/16)-songBar0,Math.max(at,A.ctx.currentTime));n16++;}
-  if(audioOn&&A.ctx&&!sim&&!needSync){for(const n of nodes)if(n.state===0&&!n.pre&&!(n.glass&&!n.cracked))preLead(n);}
+  if(audioOn&&A.ctx&&!sim&&!needSync){for(const n of nodes)if(n.state===0&&!n.pre&&!(n.glass&&!n.cracked))preLead(n);
+    // the melody's in-between notes (no coin) play on time while the melody is on
+    const now=A.ctx.currentTime;for(const g of ghosts){if(g.done)continue;const at=offset+g.time;if(at>now+0.1)break;g.done=true;if(melodyOn&&at>=now-0.03&&respawn<=0)playLead(Math.max(at,now),g.note,g.len);}
+    if(ghosts.length>64&&ghosts[32].done)ghosts=ghosts.filter(g=>!g.done);}
   if(audioOn&&A.ctx&&!sim&&!needSync)while(n16*S16<t+audLat+0.12){const at=offset+n16*S16;if(at>=A.ctx.currentTime-0.01)playBacking(n16%16,Math.floor(n16/16)-songBar0,at);n16++;}
   // episodes end at the finish gate; the clear screen comes up with the last chord
   if((SONG.ep>=0||SONG.tut)&&!inMenu&&!over){if(!finished&&t>gateT){finished=true;pop('FINISH!','gold big',3);}if(t>gateT+BAR+0.15)(SONG.tut?tutorialDone:episodeClear)();}
@@ -2627,7 +2645,8 @@ function render(dt){
     else if(n.row!==prow){const zl=Math.max(z,pz-0.3*SPEED);if(zl<pz-0.3&&zl>z){pushPt(px,ny,zl,ROWC[n.row]);}}
     else if(nx!==px)pushPt(px,py,pz+(z-pz)*0.55,tmpC.copy(ROWC[n.row]));
     pushPt(nx,ny,z,ROWC[n.row]);px=nx;py=ny;pz=z;prow=n.row;}
-  path.visible=pts.length>=6&&respawn<=0;if(path.visible){while(pts.length<PATH_PTS*3){pts.push(...pts.slice(-3));cols.push(0,0,0);}pathGeo.setPositions(pts.slice(0,PATH_PTS*3));pathGeo.setColors(cols.slice(0,PATH_PTS*3));}
+  // (the guide line through the coins ahead was removed: you read the coins themselves)
+  path.visible=false;if(path.visible){while(pts.length<PATH_PTS*3){pts.push(...pts.slice(-3));cols.push(0,0,0);}pathGeo.setPositions(pts.slice(0,PATH_PTS*3));pathGeo.setColors(cols.slice(0,PATH_PTS*3));}
   if(judgeT>0){judgeT-=dt;tmpV.set(car.position.x,car.position.y+0.9,car.position.z).project(camera);judgeEl.style.left=(tmpV.x+1)*50+'%';judgeEl.style.top=(1-tmpV.y)*50+'%';}
   aim.position.set(cs.x,cs.y,0);aim.visible=false;shieldBubble.visible=shieldOn&&!garage;if(shieldOn)shieldBubble.material.opacity=0.1+pulse*0.08;pulseShardUpdate(dt);collectUpdate(dt);
   if(CARM.tick)CARM.tick(t,dt);
@@ -2765,6 +2784,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, what changed
 const CHANGELOG=[
+ ['22','More Notes','25 Oct 2026',['Busier melodies: about 1.3 to 1.7 times as many notes in the Past and Present and about twice as many in the Future, the most in the hardest episodes, with quick sixteenth-note runs in the Present and Future.','More coins too, up to about 60% more, and more lane changes: about 12 to 35 a minute in the Past, 18 to 39 in the Present, 20 to 44 in the Future, rising every episode.','Some in-between notes are music only (no coin), so there is always time for the next lane change.','The guide line that showed the way to the next coins is gone: you read the coins themselves.']],
  ['21.2','Lane Ladder','25 Oct 2026',['Every episode asks for more lane changes than the one before, and each era starts higher than the last: about 10 to 25 a minute in the Past, 19 to 31 in the Present, 20 to 33 in the Future.','Before, it depended on each song: some late episodes had fewer lane changes than early ones (Past episode 5 had 10 a minute, the Future stayed at about 14).','Coins are still never closer than you can reach, and there are still no diagonal moves.']],
  ['21.1','Gold Rush','25 Oct 2026',['Coins no longer grow when you catch them: a caught coin heads straight for the coin counter and collapses quickly into it.','A trail of gold sparkles follows each coin, and a burst of little stars pops out of the counter as it lands.']],
  ['21','Magnet Catch','25 Oct 2026',['Coins you’re about to catch are pulled in toward the car and grow as they come, with fine gold particles streaming along the pull. With the Magnet power-up, coins from the other lanes swoop in too.','A caught coin pops, then arcs up into a new coin counter at the top of the screen and shrinks into it; the counter bumps and glints as each one lands.','Each catch leaves a twinkle of gold star glints around the car, a few more on a long combo, and a soft glow on the car.','Reduce effects keeps it lighter. How coins are caught hasn’t changed.']],
