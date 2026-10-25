@@ -2127,9 +2127,9 @@ const pool=[...Array(48)].map(()=>{const g=new THREE.Group();
   const shell=new THREE.Group(),frameM=new THREE.LineBasicMaterial({color:0xbfe6ff,transparent:true}),cueM=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,depthWrite:false,side:THREE.DoubleSide});
   shell.add(new THREE.Mesh(caseGeo,glassPaneMat),new THREE.LineSegments(caseEdge,frameM));const cue=new THREE.Mesh(cueGeo,cueM);shell.add(cue);shell.visible=false;
   const add=o=>new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,...o});
-  const gate=new THREE.Group(),gateM=add({}),gateDiscM=add({opacity:0.5}),arrowM=add({map:chevTex}),arrow=new THREE.Mesh(gateArrowGeo,arrowM);
-  gate.add(new THREE.Mesh(gateRingGeo,gateM),new THREE.Mesh(gateDiscGeo,gateDiscM),arrow);gate.visible=false;
-  g.add(halo,gem,edge,ring,coin,shell,gate);g.visible=false;scene.add(g);return{g,gem,edge,ring,coin,mat,metal,halo,pick,shell,frameM,cue,cueM,gate,gateM,gateDiscM,arrow,arrowM,node:null};});
+  const gate=new THREE.Group(),gateM=add({}),gateDiscM=add({opacity:0.5}),arrowM=add({map:chevTex}),arrow=new THREE.Mesh(gateArrowGeo,arrowM),gateCueM=add({}),gateCue=new THREE.Mesh(gateRingGeo,gateCueM);
+  gate.add(new THREE.Mesh(gateRingGeo,gateM),new THREE.Mesh(gateDiscGeo,gateDiscM),arrow,gateCue);gate.visible=false;
+  g.add(halo,gem,edge,ring,coin,shell,gate);g.visible=false;scene.add(g);return{g,gem,edge,ring,coin,mat,metal,halo,pick,shell,frameM,cue,cueM,gate,gateM,gateDiscM,arrow,arrowM,gateCue,gateCueM,node:null};});
 
 /* ---------- traffic & hazards: all drive forward at about half your speed ---------- */
 const M={yellow:new THREE.MeshStandardMaterial({color:0xf2b705,metalness:0.45,roughness:0.32}),white:new THREE.MeshStandardMaterial({color:0xeceef2,metalness:0.2,roughness:0.4}),
@@ -2299,7 +2299,7 @@ const cam={pos:new THREE.Vector3(0,1.5,7.2),look:new THREE.Vector3(0,-0.5,-14)};
 function smoothDamp(cur,target,vel,st,dt){const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+0.235*x*x*x),ch=cur-target,tmp=(vel+w*ch)*dt;return[target+(ch+tmp)*e,(vel-w*tmp)*e];}
 // a run starts on the next bar line, after the song's intro; an episode's course is the same on every try
 function resetRun(){resetCollect();ghosts=[];tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
-  score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;form=2;formV=2;rescue=0;deliverAt=Infinity;formAnim={kind:'',t0:-9,from:2};formAudio(2,undefined,true);flow=0;odT=0;odN=0;maxCombo=0;J={c:0,m:0,gl:0};lastHurt=-9;band=1;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
+  score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;form=2;formV=2;rescue=0;deliverAt=Infinity;formAnim={kind:'',t0:-9,from:2};formAudio(2,undefined,true);flow=0;odT=0;odN=0;maxCombo=0;J={c:0,m:0,gl:0,ex:0,gd:0,ok:0};lastHurt=-9;band=1;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
   cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;laneN=0;hopN=0;laneT0=runBar*BAR;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
   grand=mkRng(SONG.ep>=0?SONG.seed*31+7:(runSeed=(runSeed*69069+1)>>>0));
   gateT=SONG.len===Infinity?Infinity:(songBar0+SONG.len-2)*BAR;
@@ -2421,7 +2421,7 @@ function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}s`
   flowBar.style.width=(odT>0?odT/(OD_BARS*BAR)*100:flow)+'%';const m='×'+tier();if(multEl.textContent!==m){multEl.textContent=m;multEl.classList.remove('up');void multEl.offsetWidth;multEl.classList.add('up');}
   progEl.hidden=SONG.ep<0&&!SONG.tut;if(!progEl.hidden)progBar.style.width=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100+'%';
   // the first few episodes open with the rules of the run instead of the controls
-  let msg=inMenu?'':t<hintUntil?(runTip?(NOTE_MODE?'EVERY NOTE IS A MOVE: SWIPE INTO THE RINGS':'2 LIVES: CAR, THEN JETPACK · CATCH COINS TO GET YOUR CAR BACK'):(NOTE_MODE?'SWIPE ← → LANES · ↑ HOP · ↓ DIVE':'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS')):'';
+  let msg=inMenu?'':t<hintUntil?(runTip?(NOTE_MODE?'EVERY NOTE IS A MOVE · SWIPE AS THE RING CLOSES':'2 LIVES: CAR, THEN JETPACK · CATCH COINS TO GET YOUR CAR BACK'):(NOTE_MODE?'SWIPE ← → LANES · ↑ HOP · ↓ DIVE':'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS')):'';
   // flight school: the lesson for the coming bar (it shows a beat early)
   // (a lesson owns its own bar; a message about the band or overdrive fills the bars in between)
   if(SONG.tut&&!inMenu){msg='';const cur=Math.floor((t+BEAT)/BAR)-songBar0;for(let k=cur;k>=0;k--){const B=SONG.bar(k);if(B&&B.say){msg=B.say;if(k<cur&&t<tutMsg.until)msg=tutMsg.text;break;}}}
@@ -2539,7 +2539,11 @@ function riserTo(bt){if(!A.ctx||!audioOn)return;const at=A.ctx.currentTime,end=o
   v.gain.setValueAtTime(0.0001,at);v.gain.exponentialRampToValueAtTime(0.13,at+dur);v.gain.linearRampToValueAtTime(0,at+dur+0.05);
   const sN=A.ctx.createBufferSource();sN.buffer=A.noise;sN.loop=true;const f=A.ctx.createBiquadFilter();f.type='highpass';f.frequency.setValueAtTime(1500,at);f.frequency.exponentialRampToValueAtTime(9000,at+dur);
   sN.connect(f);f.connect(v);v.connect(A.master);sN.start(at);sN.stop(at+dur+0.1);}
-let sync=SYNC_START,flow=0,odT=0,odN=0,maxCombo=0,J={c:0,m:0,gl:0},lastHurt=-9;
+let sync=SYNC_START,flow=0,odT=0,odN=0,maxCombo=0,J={c:0,m:0,gl:0,ex:0,gd:0,ok:0},lastHurt=-9;
+// note mode grades each move by how long before its note you made it (seconds): just before is EXCELLENT (the car takes about
+// 0.1 s to get there), a little earlier (or just in time) GOOD, waiting in the lane long before OK. The cue ring closes at MOVE_BEST
+const MOVE_BEST=0.12,CUE_T=0.6,TIMING={ex:{say:'EXCELLENT',pts:300,cls:'gold'},gd:{say:'GOOD',pts:200,cls:'cyan'},ok:{say:'OK',pts:100,cls:'dim'}};
+const moveGrade=e=>e>0.36?'ok':e>0.2||e<0.05?'gd':'ex';
 // later episodes (and later eras) make misses and crashes cost more Sync: x0.8 in the first Past episode up to x1.4
 const syncK=()=>SONG.diff?0.8+0.15*(SONG.diff.L??0):1;
 const tier=()=>odT>0?8:1+Math.min(3,Math.floor(flow/30));
@@ -2552,8 +2556,9 @@ function bandAt(){if(inMenu)return 2;if(odT>0)return 4;const cap=[3,3,4][form];c
 const bandLevel=()=>band>=2?0:2;
 // every coin is either caught or missed: a catch scores 100 x the multiplier (150 for one broken out of glass), tops up Sync and
 // builds Flow; a miss drains Sync and knocks Flow back
-function judgeCoin(g,glass=false,lost=false){if(over&&!sim)return;J[g]++;if(g!=='m'){maxCombo=Math.max(maxCombo,combo);if(glass)J.gl++;
-    score+=(glass?150:100)*scoreMult();rescueGain(glass?RESCUE_GLASS:RESCUE_PER);
+function judgeCoin(g,glass=false,lost=false,tg=''){if(over&&!sim)return;J[g]++;if(g!=='m'){maxCombo=Math.max(maxCombo,combo);if(glass)J.gl++;
+    if(tg){J[tg]++;judge(TIMING[tg].say,TIMING[tg].cls);if(sim)sim.stats[tg]=(sim.stats[tg]||0)+1;}
+    score+=(glass?150:tg?TIMING[tg].pts:100)*scoreMult();rescueGain(glass?RESCUE_GLASS:RESCUE_PER);
     if(!SONG.tut)sync=Math.min(100,sync+1.5);
     if(odT<=0){const t0=tier();flow=Math.min(100,flow+3*(SONG.tut?1.6:1));if(flow>=100)startOverdrive();else if(tier()>t0)tierUp(tier());}
     if(combo>0&&combo%50===0)pop(`${combo} COMBO`,'gold',1);}
@@ -2684,7 +2689,7 @@ function countUp(el,to,fmt,ms=900){if(fxLow){el.textContent=fmt(to);return;}cons
 function noteChips(id,chips,text){const el=$(id);el.textContent='';const row=document.createElement('span');row.className='chips';
   for(const c of chips.filter(Boolean)){const b=document.createElement('b');b.textContent=c;row.append(b);}if(row.childElementCount)el.append(row);el.append(text);}
 function showJudgements(id='clearJud'){const el=$(id);el.textContent='';el.hidden=false;
-  for(const[k,name,v]of[['p','CAUGHT',J.c],['m','MISSED',J.m],['g','GLASS',J.gl],['o','CRASHES',run.lost]]){const d=document.createElement('div');d.className=k;d.innerHTML='<b></b><small></small>';d.querySelector('b').textContent=v;d.querySelector('small').textContent=name;el.append(d);}}
+  for(const[k,name,v]of NOTE_MODE&&!SONG.tut?[['p','EXCELLENT',J.ex],['g','GOOD',J.gd],['o','OK',J.ok],['m','MISSED',J.m]]:[['p','CAUGHT',J.c],['m','MISSED',J.m],['g','GLASS',J.gl],['o','CRASHES',run.lost]]){const d=document.createElement('div');d.className=k;d.innerHTML='<b></b><small></small>';d.querySelector('b').textContent=v;d.querySelector('small').textContent=name;el.append(d);}}
 function episodeClear(){if(inMenu||over)return;
   const acc=accuracy(),clean=run.lost===0,gr=gradeOf(acc,clean),stars=starsFor(gr);
   if(sim){over=true;sim.result={stars,grade:gr,acc};return;}
@@ -2739,7 +2744,7 @@ function humanStep(){const b=sim.bot;if(respawn>0.45){holdV=false;return;}
 // the menu backdrop flies itself
 function autopilot(){{const g=nextGlass();if(g&&g.col===cs.col&&g.time-t<0.02)pulseFire();}const nx=nodes.find(n=>n.state===0&&!(n.skip&&inMenu)&&n.time>t-0.05);if(!nx||respawn>=0.45)return;
   // it lands back on the skyway late, as a person would (letting the hop run out), so it never drops onto a block it's clearing
-  if(nx.time-t<(nx.row===HOME&&cs.row!==HOME?0.2:0.5)&&(nx.col!==cs.col||nx.row!==cs.row)){const dx=nx.col-cs.col,dy=nx.row-cs.row;cs.col=nx.col;cs.row=nx.row;vt=HANG;dashFx(Math.sign(dx),Math.sign(dy));if(dy>0&&cs.row!==HOME)jetFx(1);}
+  if(nx.time-t<(nx.row===HOME&&cs.row!==HOME?0.2:0.5)&&(nx.col!==cs.col||nx.row!==cs.row)){const dx=nx.col-cs.col,dy=nx.row-cs.row;cs.col=nx.col;cs.row=nx.row;cs.moveT=t;vt=HANG;dashFx(Math.sign(dx),Math.sign(dy));if(dy>0&&cs.row!==HOME)jetFx(1);}
   if(cs.row!==HOME&&nx.row===cs.row&&nx.col===cs.col)vt=Math.max(vt,nx.time-t+0.15);}
 
 function update(dt){
@@ -2768,7 +2773,7 @@ function update(dt){
     if(respawn>0.45){if(n.pre&&A.ctx){n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);n.pre=null;}if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;if(!inMenu)judgeCoin('m',false,true);}continue;} // coins during a crash are lost (no extra penalty)
     const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:reachNow())&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
     if(near&&t>=n.time-0.05&&!(n.glass&&!n.cracked)){n.state=1;lastJudged=n.time;combo++;if(!inMenu){run.hits++;mission('coins',1);mission('combo',combo);}if(n.pu)powerUp(n.pu);if(sim)sim.stats.hits++;collectFx(n);
-      if(!inMenu)judgeCoin('c',n.glass);
+      if(!inMenu)judgeCoin('c',n.glass,false,NOTE_MODE&&!SONG.tut&&n.mv?moveGrade(n.time-(cs.moveT??-9)):'');
       // a coin up there (or down there) ends the hop: the car drops straight back to the skyway
       if(n.row!==HOME)vt=DROP_TAIL;
       const at=audioOn&&A.ctx?Math.max(A.ctx.currentTime,offset+n.time):0;if(!melodyOn)setMelody(true,at);if(audioOn&&A.ctx&&!sim&&!n.pre)playLead(at,n.note,n.len);}
@@ -2975,7 +2980,10 @@ function render(dt){
     p.gate.visible=NOTE_MODE&&!n.pu;if(p.gate.visible){const lead=n.time-t,nr=clamp(1-lead/1.4,0,1),c=ROWC[n.row],nxt=n===up[0];
       p.gateM.color.copy(c).multiplyScalar(miss?0.2:1.2+nr*1.4+(nxt?pulse*0.9:0));p.gateDiscM.color.copy(c).multiplyScalar(miss?0:0.12+nr*0.22);
       p.arrow.visible=!!n.dir&&!miss;p.arrow.rotation.z={R:0,L:Math.PI,U:Math.PI/2,D:-Math.PI/2}[n.dir]||0;p.arrowM.color.setScalar(0.9+nr*1.3);
-      p.gate.scale.setScalar(nxt?1.08:1);}
+      p.gate.scale.setScalar(nxt?1.08:1);
+      // the next move's cue ring closes onto it at the best moment to swipe
+      const cl=lead-MOVE_BEST;p.gateCue.visible=nxt&&n.mv&&!miss&&cl>-0.05&&cl<CUE_T;
+      if(p.gateCue.visible){p.gateCue.scale.setScalar(1+Math.max(0,cl)/CUE_T*1.6);p.gateCueM.color.copy(c).multiplyScalar(0.5+1.8*clamp(1-cl/CUE_T,0,1));}}
     // a coin in glass: the frame lights up as you get close, and a ring closes in on the case at the moment to tap
     p.shell.visible=!!n.glass&&!n.cracked;if(p.shell.visible){const lead=n.time-t,a=clamp(1-lead/(TAP_EARLY*2.2),0,1);
       p.frameM.color.setRGB(0.75,0.9,1).multiplyScalar(miss?0.4:0.7+a*a*2.2);
