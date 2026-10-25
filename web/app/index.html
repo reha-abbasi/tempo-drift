@@ -42,7 +42,7 @@ body{font-family:var(--body);font-size:15px;line-height:1.55;
 .hud .shields b{font-weight:400;color:var(--cyan);letter-spacing:.15em}
 .hud .shields b.low{color:var(--red)}
 .hud .combo{position:absolute;left:50%;top:66px;transform:translateX(-50%);font-size:12px;letter-spacing:.1em;color:#efe9f8;white-space:nowrap}
-/* Sync (your life) top left; Flow under the score: three notches where the multiplier steps up, the multiplier beside it */
+/* lives (car, jetpack, on foot) and the rescue meter top left; Flow under the score: three notches where the multiplier steps up, the multiplier beside it */
 .hud .sync{position:absolute;left:14px;top:16px;display:flex;flex-direction:column;gap:4px}
 .hud .sync small,.hud .flow small{font:500 11px var(--mono);letter-spacing:.14em;color:#efe9f8}
 .hud .sync .bar{display:block;width:104px;height:10px;border-radius:5px;background:rgba(10,8,18,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);overflow:hidden}
@@ -84,7 +84,7 @@ body{font-family:var(--body);font-size:15px;line-height:1.55;
 .flash{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 110px 40px rgba(255,40,60,.9);background:rgba(255,30,50,.18)}
 /* iPhone browsers can't buzz on a crash, so the flash carries it: a hard red edge that lingers */
 /* overdrive: the screen edges glow in the era's colour and throb on the beat (opacity set each frame) */
-/* low Sync: a red pulse at the edges so you feel it without looking at the bar */
+/* last life (on foot): a red pulse at the edges so you feel it without looking at the icons */
 .screen.danger .flash{opacity:1;box-shadow:inset 0 0 90px 10px rgba(255,40,60,.55);background:transparent;animation:danger 0.9s ease-in-out infinite alternate}
 @keyframes danger{from{opacity:.25}to{opacity:.8}}
 .odglow{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 90px 22px var(--odc,#ff3fb4),inset 0 0 18px 4px rgba(255,255,255,.6);
@@ -439,6 +439,22 @@ tr:last-child td{border-bottom:0}
 /* the star sparkles that pop out of the coin counter as a coin lands */
 .hud .spk{position:absolute;pointer-events:none;background:radial-gradient(circle,#fff 0 22%,#ffe7a6 45%,#ffc44a 70%);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 3px rgba(255,214,120,.9))}
 @media (prefers-reduced-motion:reduce){.hud .spk{display:none}}
+/* lives: the car, the jetpack and on foot; the one you're in glows, the ones you've lost are dark. Out of the car, the rescue
+   meter fills toward getting it back */
+.hud .sync.forms{gap:3px}
+.hud .forms .fis{display:flex;align-items:center;gap:5px}
+.hud .forms .fi{display:grid;place-items:center;height:22px;padding:0 4px;border-radius:6px;color:#fff;background:rgba(10,8,18,.5);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transition:opacity .3s,color .3s,box-shadow .3s}
+.hud .forms .fi svg{height:16px;width:auto}
+.hud .forms .fi[data-f="2"] svg{height:13px}
+.hud .forms .fi.now{color:#140c06;background:linear-gradient(180deg,#ffe7a6,#ffc44a);box-shadow:0 0 12px rgba(255,196,74,.7)}
+.hud .forms .fi.lost{opacity:.28}
+.hud .forms .fi.lost svg{filter:grayscale(1)}
+.hud .forms.f0 .fi.now{background:linear-gradient(180deg,#ffb1a8,#ff5a4e);box-shadow:0 0 14px rgba(255,80,70,.8);animation:lowpulse .55s ease-in-out infinite alternate}
+.hud .forms .bar{width:96px;height:6px}
+.hud .forms .bar i{background:linear-gradient(90deg,#ffc44a,#fff0b0)}
+.hud .forms.full .bar,.hud .forms.full .rs{display:none}
+.hud .forms .rs{font:500 9px var(--mono);letter-spacing:.14em;color:#efe9f8;opacity:.8}
+.hud .forms.ready .bar i{animation:lowpulse .3s ease-in-out infinite alternate}
 </style>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#000;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -473,7 +489,7 @@ body{padding:0!important}
       <div class="hud" aria-hidden="true">
         <div class="prog" id="prog" hidden><i id="progBar"></i></div>
         <div class="score" id="score">0</div>
-        <div class="sync" id="syncHud"><small>SYNC</small><span class="bar"><i id="syncBar"></i></span></div>
+        <div class="sync forms" id="syncHud"><small id="formLabel">CAR</small><span class="fis"><i class="fi" data-f="2"><svg viewBox="0 0 64 28" aria-hidden="true"><path d="M3 18.5c0-2.6 2.4-4 6.4-4.6l7.6-6.2C19.4 5.8 22.2 5 26 5h9.6c3.6 0 6.4 1 8.8 3.2l5.2 4.8c5.4.6 11.4 2.2 11.4 5.6v1.6c0 1.2-.9 2-2 2H5c-1.2 0-2-.8-2-2z" fill="currentColor"/><circle cx="16" cy="22" r="4" fill="currentColor"/><circle cx="48" cy="22" r="4" fill="currentColor"/></svg></i><i class="fi" data-f="1"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="15" cy="5" r="3.2" fill="currentColor"/><path d="M11.5 10h7l1 8h-2.2l-.8 7h-3l-.3-7H11z" fill="currentColor"/><rect x="7" y="10" width="4" height="9" rx="1.5" fill="currentColor"/><path d="M7.5 20h3l-1.5 5z" fill="#ffb347"/></svg></i><i class="fi" data-f="0"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="17" cy="4.5" r="3" fill="currentColor"/><path d="M15.5 8.5l-4 6.5 4 3-2 7.5h2.6l2.4-8.2-2.8-2.6 2.2-3.4 2.4 3.2h4v-2.3h-2.9l-3.3-4.6z M11 15l-3.4 1.7-2.6-1.4-1 1.9 3.6 2 4.6-2.4z" fill="currentColor"/></svg></i></span><span class="bar" id="rescueBar"><i id="syncBar"></i></span><small class="rs" id="rescueLbl">RESCUE</small></div>
         <div class="flow" id="flowHud"><small>FLOW</small><span class="fbar"><i id="flowBar"></i><s style="left:30%"></s><s style="left:60%"></s><s style="left:90%"></s></span><b id="multEl">×1</b></div>
         <div class="combo" id="combo"></div>
         <div class="puh" id="puHud"></div>
@@ -628,7 +644,7 @@ body{padding:0!important}
 
   <div class="info">
     <div>
-      <div class="eyebrow">Version 21 · magnet catch (on Murat’s v20 The Band)</div>
+      <div class="eyebrow">Version 23 · bail out: car, jetpack, on foot</div>
       <h1>Tempo Drift</h1>
       <p class="lede">Rebuilt around the Golden Hour Realism style: real sunlight, shadows, reflections and textured buildings in every city. Three eras instead of four, back to three lanes, and new things to do: tap to shatter glass on the beat, grab power-ups, chase missions and a daily gift.</p>
     </div>
@@ -777,16 +793,20 @@ function buildGraph(c){ A.ctx=c; const comp=c.createDynamicsCompressor(); comp.t
   const len=c.sampleRate*2.6, ir=c.createBuffer(2,len,c.sampleRate);
   for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);}
   A.verb=c.createConvolver(); A.verb.buffer=ir; const vg=c.createGain(); vg.gain.value=0.4; A.verb.connect(vg); vg.connect(A.master);
+  // the backing band plays through two filters, so each way of flying can colour it: open in the car, airy (less bass) on the
+  // jetpack, muffled and tense on foot
+  A.backLP=c.createBiquadFilter();A.backLP.type='lowpass';A.backLP.frequency.value=20000;A.backHP=c.createBiquadFilter();A.backHP.type='highpass';A.backHP.frequency.value=20;
+  A.back=A.backLP;A.backLP.connect(A.backHP);A.backHP.connect(A.master);
   A.mel=c.createGain(); A.mel.gain.value=melodyOn?1:0; A.mel.connect(A.master); const ms=c.createGain(); ms.gain.value=0.55; A.mel.connect(ms); ms.connect(A.verb);
   // the main-menu theme has its own bus, so it can fade in and out
   A.menu=c.createGain(); A.menu.gain.value=0; A.menu.connect(A.master); const mv=c.createGain(); mv.gain.value=0.35; A.menu.connect(mv); mv.connect(A.verb);
   const b=c.createBuffer(1,c.sampleRate,c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; A.noise=b; }
-function kick(t,g=1,out=A.master){const c=A.ctx,o=c.createOscillator(),v=c.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+0.14);
+function kick(t,g=1,out=A.back||A.master){const c=A.ctx,o=c.createOscillator(),v=c.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+0.14);
   v.gain.setValueAtTime(0.95*g,t);v.gain.exponentialRampToValueAtTime(0.001,t+0.42);o.connect(v);v.connect(out);o.start(t);o.stop(t+0.45);}
-function nz(t,{type='highpass',freq=8000,q=1,dur=0.05,g=0.3,verb=0,out=A.master}={}){const c=A.ctx,s=c.createBufferSource();s.buffer=A.noise;const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;
+function nz(t,{type='highpass',freq=8000,q=1,dur=0.05,g=0.3,verb=0,out=A.back||A.master}={}){const c=A.ctx,s=c.createBufferSource();s.buffer=A.noise;const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;
   const v=c.createGain();v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(0.001,t+dur);s.connect(f);f.connect(v);v.connect(out);
   if(verb){const sg=c.createGain();sg.gain.value=verb;v.connect(sg);sg.connect(A.verb);} s.start(t,Math.random()*0.5);s.stop(t+dur+0.02);}
-function tone(t,freq,{type='sawtooth',dur=0.2,g=0.2,cut=2000,cutEnd=null,q=1,attack=0.005,detune=0,out=A.master}={}){
+function tone(t,freq,{type='sawtooth',dur=0.2,g=0.2,cut=2000,cutEnd=null,q=1,attack=0.005,detune=0,out=A.back||A.master}={}){
   const c=A.ctx,f=c.createBiquadFilter(),v=c.createGain();f.type='lowpass';f.Q.value=q;f.frequency.setValueAtTime(cut,t);
   if(cutEnd) f.frequency.exponentialRampToValueAtTime(cutEnd,t+dur);
   v.gain.setValueAtTime(0.0001,t);v.gain.linearRampToValueAtTime(g,t+attack);v.gain.exponentialRampToValueAtTime(0.001,t+dur);f.connect(v);v.connect(out);
@@ -1109,7 +1129,7 @@ const TUT=[
   {c:[[0,2,1],[4,2,2]]},
   {c:[[0,1,1],[4,1,0]]},
   {c:[[0,1,1],[4,0,1]]},
-  {say:'IN EPISODES, MISSES DRAIN YOUR SYNC BAR',c:[[0,0,1],[4,1,1]]},
+  {say:'CRASH, AND YOU EJECT: CAR → JETPACK → ON FOOT',c:[[0,0,1],[4,1,1]]},
 ];
 function tutSong(map){const tk=MAPINFO[map].th,th=THEMES[tk],bars=[];
   for(let k=0;k<2;k++)bars.push({sec:'I',chord:th.chords[0],mel:[],lvl:k+1});
@@ -1892,6 +1912,81 @@ const carPt=(p,v)=>v.set(p[0],p[1]-0.27,p[2]).multiplyScalar(CAR_K).applyEuler(c
 // the glow under the car takes the color of the row it is in
 const underMat=new THREE.MeshBasicMaterial({map:radial('255,255,255'),transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,depthWrite:false});
 const under=new THREE.Mesh(new THREE.PlaneGeometry(2.4,3.2),underMat);under.rotation.x=-Math.PI/2;under.position.y=-0.2;carBody.add(under);
+/* ---------- the pilot, the wreck and the skyway road ----------
+   The pilot rides in the car group (so it follows the lane and leans the same way). Feet are at the group's origin: on foot the
+   group sits on the skyway road; on the jetpack it is lifted so the body is centred on the lane */
+const DECK_Y=SKY_Y;let visY=0;
+const pilot=new THREE.Group();pilot.visible=false;car.add(pilot);const PL={};
+{const suit=new THREE.MeshStandardMaterial({color:0xece6da,roughness:0.55}),acc=new THREE.MeshStandardMaterial({color:0xff6a3c,roughness:0.45}),
+    dark=new THREE.MeshStandardMaterial({color:0x2c2c34,roughness:0.5,metalness:0.5}),visor=new THREE.MeshPhysicalMaterial({color:0x0e1622,metalness:0.6,roughness:0.06,clearcoat:1,emissive:0x2a6aff,emissiveIntensity:0.25});
+  const cap=(r,l,m)=>new THREE.Mesh(new THREE.CapsuleGeometry(r,l,6,12),m);
+  PL.hip=new THREE.Group();PL.hip.position.y=0.46;pilot.add(PL.hip);
+  PL.torso=new THREE.Group();PL.hip.add(PL.torso);const tb=cap(0.13,0.2,suit);tb.position.y=0.2;PL.torso.add(tb);
+  const belt=new THREE.Mesh(new THREE.CylinderGeometry(0.135,0.135,0.05,16),acc);belt.position.y=0.06;PL.torso.add(belt);
+  const stripe=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.22,0.02),acc);stripe.position.set(0,0.24,-0.128);PL.torso.add(stripe);
+  PL.head=new THREE.Group();PL.head.position.y=0.47;PL.torso.add(PL.head);PL.head.add(new THREE.Mesh(new THREE.SphereGeometry(0.115,20,14),suit));
+  const vz=new THREE.Mesh(new THREE.SphereGeometry(0.1,20,12,Math.PI*0.62,Math.PI*0.76,Math.PI*0.3,Math.PI*0.42),visor);vz.position.z=-0.03;vz.scale.set(1.08,1,1.1);PL.head.add(vz);
+  for(const sd of[-1,1]){const arm=new THREE.Group();arm.position.set(sd*0.18,0.38,0);PL.torso.add(arm);const a=cap(0.045,0.26,suit);a.position.y=-0.17;arm.add(a);
+      const glove=new THREE.Mesh(new THREE.SphereGeometry(0.05,10,8),dark);glove.position.y=-0.34;arm.add(glove);PL[sd<0?'armL':'armR']=arm;
+    const leg=new THREE.Group();leg.position.set(sd*0.075,0,0);PL.hip.add(leg);const l=cap(0.055,0.3,suit);l.position.y=-0.2;leg.add(l);
+      const boot=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.07,0.16),dark);boot.position.set(0,-0.42,-0.03);leg.add(boot);PL[sd<0?'legL':'legR']=leg;}
+  // the jetpack on the back (the camera sees the back: the pilot faces down the road, away from you)
+  PL.pack=new THREE.Group();PL.pack.position.set(0,0.22,0.15);PL.torso.add(PL.pack);PL.flames=[];
+  const fm=new THREE.MeshBasicMaterial({color:new THREE.Color(2.4,1.2,0.4),transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,depthWrite:false});
+  for(const sd of[-1,1]){const tank=new THREE.Mesh(new THREE.CapsuleGeometry(0.055,0.2,4,12),dark);tank.position.x=sd*0.07;PL.pack.add(tank);
+    const tip=new THREE.Mesh(new THREE.SphereGeometry(0.03,8,6),acc);tip.position.set(sd*0.07,0.15,0);PL.pack.add(tip);
+    const noz=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.055,0.06,12),dark);noz.position.set(sd*0.07,-0.16,0);PL.pack.add(noz);
+    const fl=new THREE.Mesh(new THREE.ConeGeometry(0.045,0.3,10,1,true),fm);fl.rotation.x=Math.PI;fl.position.set(sd*0.07,-0.34,0);PL.pack.add(fl);PL.flames.push(fl);}
+  pilot.scale.setScalar(1.2);}
+// the skyway turns into a road under you when you're on foot
+const deckTex=canvasTex(256,512,(g,w,h)=>{g.fillStyle='#2b2a30';g.fillRect(0,0,w,h);for(let i=0;i<900;i++){const v=40+Math.random()*30|0;g.fillStyle=`rgba(${v},${v},${v+6},.5)`;g.fillRect(Math.random()*w,Math.random()*h,2,2);}
+  g.fillStyle='rgba(255,226,170,.85)';for(const x of[w/3,2*w/3])for(let y=0;y<h;y+=128)g.fillRect(x-3,y,6,70);g.fillStyle='rgba(255,196,74,.95)';g.fillRect(4,0,7,h);g.fillRect(w-11,0,7,h);});
+deckTex.wrapS=deckTex.wrapT=THREE.RepeatWrapping;deckTex.repeat.set(1,24);
+const deck=new THREE.Group(),deckMat=new THREE.MeshStandardMaterial({map:deckTex,roughness:0.8,metalness:0.1,transparent:true,opacity:0});
+{const d=new THREE.Mesh(new THREE.PlaneGeometry(5.0,240),deckMat);d.rotation.x=-Math.PI/2;d.position.set(0,DECK_Y,-110);d.receiveShadow=true;deck.add(d);
+  const railM=new THREE.MeshStandardMaterial({color:0x8a8f9c,metalness:0.8,roughness:0.3,emissive:0xffb347,emissiveIntensity:0.15,transparent:true,opacity:0});deck.userData.railM=railM;
+  for(const sd of[-1,1]){const r=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.32,240),railM);r.position.set(sd*2.5,DECK_Y+0.16,-110);deck.add(r);}}
+deck.visible=false;scene.add(deck);let deckK=0;
+// police lights from behind while you're on foot
+const siren=new THREE.PointLight(0xff2030,0,14,1.4);siren.position.set(0,1.6,3.4);scene.add(siren);
+// the wreck: the car's own parts fly apart, glowing hot, with fire, smoke and a fireball
+const debris=[];
+function wreck(meshes,x,y,heat){for(const o of meshes){if(debris.length>60)break;const m=new THREE.Mesh(o.geometry,o.material.clone());o.matrixWorld.decompose(m.position,m.quaternion,m.scale);
+    if(m.material.emissive){m.material.emissive.setRGB(1,0.32,0.08);m.material.emissiveIntensity=heat;}scene.add(m);
+    const dx=m.position.x-x,dy=m.position.y-y;debris.push({m,age:0,life:1.2+rand()*0.6,v:new THREE.Vector3(dx*7+(rand()-0.5)*4,2.5+dy*5+rand()*3.5,SPEED*0.5+(rand()-0.4)*5),w:new THREE.Vector3((rand()-0.5)*12,(rand()-0.5)*12,(rand()-0.5)*12),heat});}}
+function blast(x,y,z,big){const n=big?1:0.5;fx(x,y,new THREE.Color(3,1.3,0.4),true);boom.position.set(x,y,z);boom.visible=true;boomAge=big?0:0.15;
+  for(let i=0;i<26*n;i++){const a=rand()*Math.PI*2,sp=1.5+rand()*4,h=rand();emit(x+(rand()-0.5)*0.5,y+(rand()-0.5)*0.4,z,Math.cos(a)*sp,Math.sin(a)*sp*0.7+1.2,SPEED*0.45+rand()*2,0.3+rand()*0.3,0.25,0.95+rand()*0.5,0.9,[1.5,0.55+h*0.45,0.12+h*0.12]);}
+  for(let i=0;i<22*n;i++){const a=rand()*Math.PI*2,sp=0.8+rand()*2.2,g=0.1+rand()*0.08;emit(x+(rand()-0.5)*0.8,y+(rand()-0.5)*0.5,z,Math.cos(a)*sp,Math.sin(a)*sp*0.5+1.4,SPEED*0.4+rand()*2,0.9+rand()*0.5,0.5,1.8+rand()*0.8,0.5,[g,g*0.92,g*0.88]);}
+  for(let i=0;i<26*n;i++){const a=rand()*Math.PI*2,sp=5+rand()*8;emit(x,y,z,Math.cos(a)*sp,Math.sin(a)*sp*0.8+2,SPEED*0.5+(rand()-0.5)*6,0.35+rand()*0.3,0.05,0.015,1,[2,1.5,0.6]);}
+  if(A.ctx&&audioOn){const at=A.ctx.currentTime;kick(at,1.7*n+0.3,A.master);nz(at,{type:'lowpass',freq:520,q:0.8,dur:1.4,g:0.75*n+0.2,verb:0.6,out:A.master});
+    nz(at+0.03,{type:'bandpass',freq:2400,q:0.9,dur:0.6,g:0.18,verb:0.4,out:A.master});for(let i=0;i<8;i++)nz(at+0.08+rand()*0.5,{type:'highpass',freq:3000+rand()*3000,dur:0.04,g:0.08,out:A.master});}}
+function breakCar(){CARM.g.updateMatrixWorld(true);const ms=[];CARM.g.traverse(o=>{if(o.isMesh)ms.push(o);});const x=car.position.x,y=car.position.y;
+  wreck(ms,x,y,0.7);blast(x,y,car.position.z,true);
+  // the ejector seat fires: a rising whoosh, then the jetpack lights
+  if(A.ctx&&audioOn){const at=A.ctx.currentTime+0.12;const o=A.ctx.createOscillator(),v=A.ctx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(180,at);o.frequency.exponentialRampToValueAtTime(1400,at+0.45);
+    v.gain.setValueAtTime(0.0001,at);v.gain.exponentialRampToValueAtTime(0.05,at+0.05);v.gain.exponentialRampToValueAtTime(0.0001,at+0.5);o.connect(v);v.connect(A.master);o.start(at);o.stop(at+0.55);
+    nz(at+0.5,{type:'bandpass',freq:1200,q:0.6,dur:0.8,g:0.12,out:A.master});}}
+function breakPack(){PL.pack.updateMatrixWorld(true);const ms=[];PL.pack.traverse(o=>{if(o.isMesh&&!PL.flames.includes(o))ms.push(o);});wreck(ms,car.position.x,car.position.y,0.9);
+  blast(car.position.x,car.position.y+0.2,car.position.z,false);}
+const boom=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffa040,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));boom.visible=false;scene.add(boom);let boomAge=9;
+function debrisUpdate(dt){if(boomAge<0.4){boomAge+=dt;const a=boomAge/0.4;boom.scale.setScalar(1.6+a*2.6);boom.material.opacity=(1-a)*0.55;boom.position.z+=SPEED*0.4*dt;}else boom.visible=false;for(let i=debris.length-1;i>=0;i--){const d=debris[i];d.age+=dt;d.v.y-=11*dt;d.m.position.addScaledVector(d.v,dt);
+    if(d.m.position.y<ROAD_Y+0.05){d.m.position.y=ROAD_Y+0.05;d.v.y*=-0.3;d.v.x*=0.6;d.w.multiplyScalar(0.6);}
+    d.m.rotation.x+=d.w.x*dt;d.m.rotation.y+=d.w.y*dt;d.m.rotation.z+=d.w.z*dt;if(d.m.material.emissive)d.m.material.emissiveIntensity=d.heat*Math.max(0,1-d.age/0.9);
+    if(d.age>d.life-0.3)d.m.scale.multiplyScalar(Math.max(0.01,1-dt/0.3*1.2));
+    if(d.age>=d.life||d.m.position.z>camera.position.z+2){scene.remove(d.m);d.m.material.dispose();debris.splice(i,1);}}}
+// how the pilot moves in each form: steps land on the beat on foot; the jetpack leans into the flight
+function posePilot(dt,lift){const P=PL,run=formV===0,ph=t/BEAT*Math.PI,fa=t-formAnim.t0;
+  P.pack.visible=formV>=1||(formAnim.kind==='deliver'&&formAnim.from===0&&fa>0.25);
+  if(run){const jump=clamp((cs.y-LY[HOME])/1.2,0,1),slide=clamp((LY[HOME]-cs.y)/1.0,0,1),sw=Math.sin(ph)*(1-jump)*(1-slide);
+    P.legL.rotation.x=sw*0.95-jump*0.9+slide*1.3;P.legR.rotation.x=-sw*0.95-jump*0.5+slide*1.1;P.armL.rotation.x=-sw*0.8-jump*2.2+slide*0.6;P.armR.rotation.x=sw*0.8-jump*2.2+slide*0.6;
+    P.armL.rotation.z=-0.12-jump*0.3;P.armR.rotation.z=0.12+jump*0.3;
+    P.hip.position.y=0.46+Math.abs(Math.cos(ph))*0.05*(1-jump)*(1-slide)-slide*0.3;P.hip.rotation.x=0;P.torso.rotation.x=-0.18-jump*0.2+slide*1.25;P.head.rotation.x=slide*-0.9;
+    pilot.position.y=0;pilot.rotation.x=0;}
+  else{// on the jetpack: leaning forward, legs trailing a little, hands near the throttle
+    const up=clamp(lift/1.2,-1,1);P.torso.rotation.x=-0.42-up*0.15;P.hip.rotation.x=-0.1;P.head.rotation.x=0.3;P.hip.position.y=0.46;
+    P.legL.rotation.x=0.35+Math.sin(t*3.1)*0.06;P.legR.rotation.x=0.5+Math.sin(t*3.1+1)*0.06;P.armL.rotation.x=-0.5;P.armR.rotation.x=-0.5;P.armL.rotation.z=-0.25;P.armR.rotation.z=0.25;
+    pilot.position.y=-0.45;pilot.rotation.x=0;
+    for(const f of P.flames){const k=(0.75+rand()*0.35)*(up>0.15?1.6:up<-0.15?0.6:1);f.scale.set(1,k,1);f.position.y=-0.16-0.15*k;}}}
 const shieldBubble=new THREE.Mesh(new THREE.SphereGeometry(1.25,32,20),new THREE.MeshBasicMaterial({color:0x6ad8ff,transparent:true,opacity:0.12,blending:THREE.AdditiveBlending,depthWrite:false}));shieldBubble.scale.set(1,0.7,1.3);shieldBubble.visible=false;carBody.add(shieldBubble);
 const carLight=new THREE.PointLight(0xffb347,4,7,1.6);carLight.position.set(0,-0.3,-1.5);carBody.add(carLight);
 const shadow=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.6),new THREE.MeshBasicMaterial({map:radial('0,0,0',0.9),transparent:true,depthWrite:false}));
@@ -2085,8 +2180,8 @@ const cam={pos:new THREE.Vector3(0,1.5,7.2),look:new THREE.Vector3(0,-0.5,-14)};
 function smoothDamp(cur,target,vel,st,dt){const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+0.235*x*x*x),ch=cur-target,tmp=(vel+w*ch)*dt;return[target+(ch+tmp)*e,(vel-w*tmp)*e];}
 // a run starts on the next bar line, after the song's intro; an episode's course is the same on every try
 function resetRun(){resetCollect();ghosts=[];tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
-  score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;flow=0;odT=0;odN=0;maxCombo=0;J={c:0,m:0,gl:0};lastHurt=-9;band=1;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
-  cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;laneN=0;laneT0=runBar*BAR;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
+  score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;form=2;formV=2;rescue=0;deliverAt=Infinity;formAnim={kind:'',t0:-9,from:2};formAudio(2,undefined,true);flow=0;odT=0;odN=0;maxCombo=0;J={c:0,m:0,gl:0};lastHurt=-9;band=1;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
+  cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;laneN=0;hopN=0;laneT0=runBar*BAR;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
   grand=mkRng(SONG.ep>=0?SONG.seed*31+7:(runSeed=(runSeed*69069+1)>>>0));
   gateT=SONG.len===Infinity?Infinity:(songBar0+SONG.len-2)*BAR;
   if(!melodyOn)setMelody(true,0);hud();}
@@ -2116,7 +2211,7 @@ function placeHazards(b){if(SONG.tut){tutHazards(b);return;}if(b<runBar+1)return
     const lo=a.time-0.07+hw,hi=z.time+DROP_TAIL-0.02-hw;if(lo>hi||rn.some((n,j)=>j&&n.time-rn[j-1].time>0.7)||grand()>overP)continue;
     // later episodes put the block earlier in that window, so a late hop clips it
     const time=lo+(hi-lo)*(0.5-(SONG.ep>=0?SONG.diff.bias:0)*0.5);if(hazards.some(h=>h.col===a.col&&Math.abs(h.time-time)<0.6))continue;
-    hazards.push({time,col:a.col,row:HOME,state:0,id:nid++,kind,near:false,over:true});if(sim)sim.stats.overs++;}
+    hazards.push({time,col:a.col,row:HOME,state:0,id:nid++,kind,near:false,over:true,under:a.row===0});if(sim)sim.stats.overs++;}
 }
 // flight school's traffic and its block (under the run of coins, in the middle of the safe window)
 function tutHazards(b){const B=SONG.bar(b-songBar0);if(!B)return;
@@ -2124,9 +2219,12 @@ function tutHazards(b){const B=SONG.bar(b-songBar0);if(!B)return;
   for(const[e,col]of B.cars||[])hazards.push({time:(b*8+e)*EIGHTH,col,row:HOME,state:0,id:nid++,kind:TH.kinds(HOME),near:false});
   const rn=B.over?nodes.filter(n=>n.step>=b*8&&n.step<b*8+8&&n.row!==HOME):[];
   if(rn.length){const kind=TH.hop,hw=(KINDS[kind].len/2+0.9)/(SPEED*KINDS[kind].rel),lo=rn[0].time-0.07+hw,hi=rn[rn.length-1].time+DROP_TAIL-0.02-hw;
-    hazards.push({time:(lo+hi)/2,col:rn[0].col,row:HOME,state:0,id:nid++,kind,near:false,over:true});}}
+    hazards.push({time:(lo+hi)/2,col:rn[0].col,row:HOME,state:0,id:nid++,kind,near:false,over:true,under:rn[0].row===0});}}
 // lane changes a minute each episode asks for (Past, Present, Future; episodes 1 to 5)
-let ghosts=[];
+let ghosts=[],hopN=0;
+// hops and dives a minute each episode asks for
+const HOP_RATE={old:[9,11,13,15,17],sunset:[10,12,14,16,18],rain:[11,13,15,17,19]};
+const hopRate=()=>SONG.ep>=0&&!SONG.tut&&HOP_RATE[SONG.map]?HOP_RATE[SONG.map][SONG.ep]:0;
 const LANE_RATE={old:[14,20,26,32,38],sunset:[20,26,32,38,44],rain:[24,30,36,42,48]};let laneN=0,laneT0=0;
 const laneRate=()=>SONG.ep>=0&&!SONG.tut&&LANE_RATE[SONG.map]?LANE_RATE[SONG.map][SONG.ep]:0;
 function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
@@ -2135,14 +2233,22 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
     // when the tune hasn't sent the car up or down for a while, the bar's highest note becomes a hop (or its lowest a dive)
     // (unless the episode is behind on lane changes: then those coins are kept for changing lanes)
     const laneDue=laneRate()?laneRate()/60*(bar*BAR-laneT0)-laneN:0;
-    const lastOff=nodes.findLast(n=>n.row!==HOME),quiet=!SONG.tut&&pHi>pLo&&laneDue<1.5&&(!lastOff||bar*BAR-lastOff.time>BAR*(SONG.ep>=0?2.5-0.2*SONG.ep:2));
+    const lastOff=nodes.findLast(n=>n.row!==HOME),quiet=!SONG.tut&&pHi>pLo&&laneDue<3&&(!lastOff||bar*BAR-lastOff.time>BAR*(SONG.ep>=0?2.5-0.2*SONG.ep:2));
     let nudged=false;
     B.mel.forEach(([e,note,len,fix,gh],i)=>{const step=bar*8+e,time=tOf(step);if(gh){ghosts.push({time,note,len});if(sim)sim.stats.ghosts=(sim.stats.ghosts||0)+1;return;}let row=SONG.row(note),col=last?last.col:MID;
       // the time to the next note, so a hop or dive only goes to a coin that leaves room to drop back before it
-      const nx=i+1<B.mel.length?B.mel[i+1][0]+bar*8:nb&&nb.mel.length?nb.mel[0][0]+bar*8+8:null,ahead=nx===null?9:tOf(nx)-time;
+      // (music-only notes don't count: they're not coins)
+      let j=i+1;while(j<B.mel.length&&B.mel[j][4])j++;const nbFirst=nb?nb.mel.find(m=>!m[4]):null;
+      let nx=j<B.mel.length?B.mel[j][0]+bar*8:nbFirst?nbFirst[0]+bar*8+8:null,ahead=nx===null?9:tOf(nx)-time;
+      // hops keep pace too, rising each episode: behind on them, a high or low note becomes a hop (or dive), and if the next coin
+      // is too close to drop back for, that coin turns into a music-only note to make room (the tune doesn't change)
+      const HR=hopRate();if(HR&&!fix&&last&&last.row===HOME){const hd=HR/60*(time-laneT0)-hopN;
+        if(row===HOME&&hd>1&&!nudged&&(note===pHi||note===pLo)&&pHi>pLo){row=note===pHi?HOME+1:HOME-1;nudged=true;}
+        if(row!==HOME&&ahead<ONE_NOTE&&hd>0.3&&j<B.mel.length){B.mel[j][4]=1;let k=j+1;while(k<B.mel.length&&B.mel[k][4])k++;
+          nx=k<B.mel.length?B.mel[k][0]+bar*8:nbFirst?nbFirst[0]+bar*8+8:null;ahead=nx===null?9:tOf(nx)-time;}}
       if(quiet&&!nudged&&!fix&&row===HOME&&ahead>=ONE_NOTE&&(note===pHi||note===pLo)){row=note===pHi?HOME+1:HOME-1;nudged=true;}
       // well behind on lane changes, a high or low note sometimes stays on the skyway so it can change lane instead
-      if(!fix&&row!==HOME&&laneRate()&&laneRate()/60*(time-laneT0)-laneN>2.5&&grand()<0.5)row=HOME;
+      if(!fix&&row!==HOME&&laneRate()&&laneRate()/60*(time-laneT0)-laneN>4&&grand()<0.3)row=HOME;
       if(fix){col=fix.col;row=fix.row;}
       else if(last){const gap=time-last.time;
         // never straight from low to high: through the skyway first
@@ -2165,6 +2271,7 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
         let dc=col-last.col;const dr=Math.abs(row-last.row);while(dc&&gap<need(Math.abs(dc),dr))dc-=Math.sign(dc);col=last.col+dc;
         if(gap<need(Math.abs(dc),dr)){col=last.col;if(gap<need(0,dr)&&last.row===HOME)row=last.row;}
         if(col!==last.col)laneN++;
+        if(row!==HOME)hopN++;
         if(sim){const a=Math.abs(col-last.col),b=Math.abs(row-last.row);sim.stats.swipesNeeded+=(a?1:0)+b;sim.stats.laneCh=(sim.stats.laneCh||0)+(a?1:0);sim.stats.laneSteps=(sim.stats.laneSteps||0)+a;sim.stats.wantCh=(sim.stats.wantCh||0)+(want!==last.col&&row===HOME&&last.row===HOME?1:0);if((a||b)&&gap<need(a,b))sim.stats.tooFast++;}}
       if(sim){sim.stats.coins++;if(row!==HOME&&last&&last.row!==HOME)sim.stats.offRuns++;if(row!==HOME)sim.stats.offCoins=(sim.stats.offCoins||0)+1;}if(!inMenu)run.coins++;
       const cont=last&&row!==HOME&&row===last.row&&col===last.col,gap0=last?time-last.time:9;
@@ -2176,14 +2283,16 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
       const n={id:nid++,step,time,col,row,note,len,state:0,skip:hsh(nid,42)<0.05,runStart:cont?last.runStart:time,wait:fix&&fix.wait,pu,glass,cracked:false,
         mv:!!last&&(col!==last.col||(row!==last.row&&row!==HOME))};nodes.push(n);last=n;});}
   placeHazards(bar-1);bar++;}}
-const odGlow=$('odGlow'),syncHud=$('syncHud'),syncBar=$('syncBar'),flowBar=$('flowBar'),multEl=$('multEl'),epLabelEl=$('epLabel'),scoreEl=$('score'),comboEl=$('combo'),melEl=$('mel'),modeEl=$('mode'),flashEl=$('flash'),popsEl=$('pops'),progEl=$('prog'),progBar=$('progBar'),puHud=$('puHud');
+let hudForm=-1;const odGlow=$('odGlow'),syncHud=$('syncHud'),syncBar=$('syncBar'),flowBar=$('flowBar'),multEl=$('multEl'),epLabelEl=$('epLabel'),scoreEl=$('score'),comboEl=$('combo'),melEl=$('mel'),modeEl=$('mode'),flashEl=$('flash'),popsEl=$('pops'),progEl=$('prog'),progBar=$('progBar'),puHud=$('puHud');
 function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}s`:'',x2T>0?`2× SCORE ${Math.ceil(x2T)}s`:'',shieldOn?'SHIELD ON':''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');if(puHud.innerHTML!==ph)puHud.innerHTML=ph;scoreEl.textContent=score.toLocaleString('en-US');comboEl.textContent=combo>=5?`${combo} COMBO`:'';
-  syncHud.classList.toggle('tutor',!!SONG.tut);syncBar.style.width=sync+'%';syncHud.classList.toggle('low',sync<30);screenEl.classList.toggle('danger',!inMenu&&!over&&!SONG.tut&&sync<25&&!fxLow);
+  syncHud.classList.toggle('tutor',!!SONG.tut);syncBar.style.width=(deliverAt<Infinity?100:rescue)+'%';syncHud.classList.toggle('full',form>=2);syncHud.classList.toggle('ready',deliverAt<Infinity);syncHud.classList.toggle('f0',form===0);
+  if(hudForm!==form){hudForm=form;$('formLabel').textContent=FORM_NAME[form];for(const el of syncHud.querySelectorAll('.fi')){const f=+el.dataset.f;el.classList.toggle('now',f===form);el.classList.toggle('lost',f>form);}}
+  screenEl.classList.toggle('danger',!inMenu&&!over&&!SONG.tut&&form===0&&!fxLow);
   if(lastHurt>t-0.05&&!syncHud.classList.contains('hit')){syncHud.classList.add('hit');setTimeout(()=>syncHud.classList.remove('hit'),350);}
   flowBar.style.width=(odT>0?odT/(OD_BARS*BAR)*100:flow)+'%';const m='×'+tier();if(multEl.textContent!==m){multEl.textContent=m;multEl.classList.remove('up');void multEl.offsetWidth;multEl.classList.add('up');}
   progEl.hidden=SONG.ep<0&&!SONG.tut;if(!progEl.hidden)progBar.style.width=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100+'%';
   // the first few episodes open with the rules of the run instead of the controls
-  let msg=inMenu?'':t<hintUntil?(runTip?'CATCH COINS TO BUILD FLOW · MISSES DRAIN SYNC':'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS'):'';
+  let msg=inMenu?'':t<hintUntil?(runTip?'3 LIVES: CAR → JETPACK → ON FOOT · CATCH COINS TO GET YOUR CAR BACK':'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS'):'';
   // flight school: the lesson for the coming bar (it shows a beat early)
   // (a lesson owns its own bar; a message about the band or overdrive fills the bars in between)
   if(SONG.tut&&!inMenu){msg='';const cur=Math.floor((t+BEAT)/BAR)-songBar0;for(let k=cur;k>=0;k--){const B=SONG.bar(k);if(B&&B.say){msg=B.say;if(k<cur&&t<tutMsg.until)msg=tutMsg.text;break;}}}
@@ -2258,16 +2367,51 @@ function playBacking(st,sb,at){const B=SONG.bar(sb);if(!B)return;
   if(band>=3&&st%2===0)tone(at,midi(r+24+iv[(st/2)%iv.length]+(st>=8?12:0)),{type:'triangle',dur:S16*1.8,g:0.03,cut:5000,attack:0.003});
   // band 4: claps on 2 and 4, a shaker on the sixteenths
   if(band>=4){if(st===4||st===12)nz(at,{type:'bandpass',freq:1400,q:1.2,dur:0.12,g:0.16,verb:0.3});nz(at,{type:'highpass',freq:7000,dur:0.035,g:st%2?0.025:0.04});}
+  // on foot: your footsteps are a kick on every beat (not muffled), and a police drone's siren every four bars;
+  // on the jetpack: the wind, a soft whoosh each bar
+  if(form===0&&!SONG.tut){if(st%4===0)kick(at,0.5,A.master);if(st===0&&sb%4===0){const o=A.ctx.createOscillator(),v=A.ctx.createGain(),f=A.ctx.createBiquadFilter();o.type='triangle';f.type='lowpass';f.frequency.value=2200;
+      for(let k=0;k<4;k++){o.frequency.setValueAtTime(k%2?960:720,at+k*BAR/4);}v.gain.setValueAtTime(0.0001,at);v.gain.exponentialRampToValueAtTime(0.022,at+0.2);v.gain.exponentialRampToValueAtTime(0.0001,at+BAR);
+      o.connect(f);f.connect(v);v.connect(A.master);o.start(at);o.stop(at+BAR+0.05);}}
+  if(form===1&&!SONG.tut&&st===0)nz(at,{type:'bandpass',freq:700+Math.random()*500,q:0.7,dur:BAR*0.9,g:0.045,out:A.master});
   // overdrive: a kick on every beat and a crash at the top of each bar
   if(odT>0){if(st%4===0)kick(at,0.75);if(st===0)nz(at,{type:'highpass',freq:5000,dur:1.4,g:0.12,verb:0.6});}}
 function powerUp(k){if(k==='magnet')magnetT=10*CARS[selCar].perk.mag;else if(k==='x2')x2T=12;else shieldOn=true;if(sim){sim.stats.power++;return;}
   if(!inMenu){pop({magnet:'MAGNET!',x2:'DOUBLE SCORE!',shield:'SHIELD!'}[k],'gold',2);mission('power',1);haptic('buy');}if(A.ctx&&audioOn)chime();}
 /* ---------- Sync, Flow and Overdrive ----------
-   Sync is your health: every coin you catch tops it up a little, a miss costs 5, a crash 20 (more in later episodes); at zero the run
-   is over. Flow is how well you're playing right now: it builds with every catch, drops with a miss and empties on a crash. It sets
+   (Since v23 your lives are the car, the jetpack and on foot, see below; Sync is kept only as a number.) Flow is how well you're playing right now: it builds with every catch, drops with a miss and empties on a crash. It sets
    the score multiplier (x1 to x4) and the band: below 30 only the drums and bass play, from 30 the whole band comes in. At 100 you
    go into OVERDRIVE: eight bars at x8, nothing costs Sync, the lead doubles an octave up and the screen opens up. */
 const SYNC_START=75,SYNC_CRASH=20,SYNC_MISS=5,OD_BARS=8;
+/* ---------- three lives, three ways to fly ----------
+   You start in the car. The first crash blows it apart and the pilot ejects onto a jetpack; the second wrecks the jetpack and you
+   land running on the skyway (swipe up to jump, down to slide); the third ends the run. In a lower form a rescue meter fills as you
+   catch coins (a miss drains it): full, and your next form is delivered on the next bar line, and the band comes back in */
+const FORM_NAME=['ON FOOT','JETPACK','CAR'],RESCUE_PER=1.6,RESCUE_MISS=4,RESCUE_GLASS=3;
+let form=2,rescue=0,deliverAt=Infinity,formAnim={kind:'',t0:-9,from:2},formV=2;
+const reachNow=()=>form===2?CARS[selCar].perk.reach:form===1?0.56:0.52;
+// the band's colour for each form, faded in on the next bar line (or at once)
+function formAudio(f,at,fast){if(!A.ctx||!A.backLP)return;const now=A.ctx.currentTime,w=at===undefined?now:Math.max(now,at),k=fast?0.02:0.08;
+  A.backLP.frequency.cancelScheduledValues(now);A.backHP.frequency.cancelScheduledValues(now);
+  A.backLP.frequency.setTargetAtTime([1500,9000,20000][f],w,k);A.backHP.frequency.setTargetAtTime([20,160,20][f],w,k);}
+// a crash: the band drops out under a muffle until the next bar
+function formMuffle(){if(!A.ctx||!A.backLP)return;const now=A.ctx.currentTime;A.backLP.frequency.cancelScheduledValues(now);A.backLP.frequency.setTargetAtTime(260,now,0.06);}
+const nextBarAt=(min=0.45)=>{let b=Math.ceil((t+min)/BAR)*BAR;return b;};
+function loseForm(h){if(SONG.tut)return;form--;formV=Math.max(0,form);formAnim={kind:form>=1?'eject':form===0?'fall':'down',t0:t,from:form+1};rescue=0;deliverAt=Infinity;
+  if(sim){sim.stats.formsLost=(sim.stats.formsLost||0)+1;if(form<0)sim.stats.failed=true;if(form<0)form=0;return;}
+  formMuffle();const at=offset+nextBarAt(0.6);if(form>=0)formAudio(form,at);
+  if(form===1){pop('CAR DOWN · JETPACK!','red',3,1600);breakCar();}else if(form===0){pop('JETPACK DOWN · RUN!','red',3,1600);breakPack();}
+  else{pop('OUT OF LIVES','red',3);form=0;over=true;setTimeout(()=>gameOver('lives'),900);}}
+// the rescue meter fills with every coin while you're out of the car
+function rescueGain(n){if(form>=2||SONG.tut||inMenu||deliverAt<Infinity)return;rescue=clamp(rescue+n,0,100);
+  if(rescue>=100){deliverAt=nextBarAt(0.5);if(!sim){pop(form===1?'RESCUE INBOUND · YOUR CAR':'RESCUE INBOUND · JETPACK','gold',2);riserTo(deliverAt);}}}
+function deliver(){deliverAt=Infinity;rescue=0;form++;formAnim={kind:'deliver',t0:t,from:form-1};invuln=Math.max(invuln,0.9);mission('rescue',1);
+  if(sim){sim.stats.rescues=(sim.stats.rescues||0)+1;return;}formAudio(form,undefined,true);pop(form===2?'NEW CAR!':'JETPACK!','gold',3,1400);haptic('win');
+  if(A.ctx&&audioOn){const at=A.ctx.currentTime;kick(at,0.9,A.master);nz(at,{type:'highpass',freq:4000,dur:1.0,g:0.16,verb:0.6,out:A.master});[0,4,7,12].forEach((x,i)=>tone(at+i*0.045,midi(72+x),{type:'triangle',dur:0.5,g:0.05,cut:7000,out:A.master}));}}
+// a cymbal-like swell that lands on the downbeat a delivery arrives on
+function riserTo(bt){if(!A.ctx||!audioOn)return;const at=A.ctx.currentTime,end=offset+bt,dur=Math.max(0.3,end-at),v=A.ctx.createGain();
+  v.gain.setValueAtTime(0.0001,at);v.gain.exponentialRampToValueAtTime(0.13,at+dur);v.gain.linearRampToValueAtTime(0,at+dur+0.05);
+  const sN=A.ctx.createBufferSource();sN.buffer=A.noise;sN.loop=true;const f=A.ctx.createBiquadFilter();f.type='highpass';f.frequency.setValueAtTime(1500,at);f.frequency.exponentialRampToValueAtTime(9000,at+dur);
+  sN.connect(f);f.connect(v);v.connect(A.master);sN.start(at);sN.stop(at+dur+0.1);}
 let sync=SYNC_START,flow=0,odT=0,odN=0,maxCombo=0,J={c:0,m:0,gl:0},lastHurt=-9;
 // later episodes (and later eras) make misses and crashes cost more Sync: x0.8 in the first Past episode up to x1.4
 const syncK=()=>SONG.diff?0.8+0.15*(SONG.diff.L??0):1;
@@ -2276,19 +2420,18 @@ const scoreMult=()=>tier()*(x2T>0?2:1);
 // the band changes only on bar lines: 1 = drums and bass, 2 = the whole band, 3 = + an arpeggio over the chords, 4 = + claps and
 // a shaker. It steps up as Flow passes 30 / 60 / 90 and only steps down once Flow is 12 below that mark, so one miss doesn't gut it
 let band=1;
-function bandAt(){if(inMenu)return 2;if(odT>0)return 4;const up=1+Math.min(3,Math.floor(flow/30));if(up>band)return up;
-  let b=band;while(b>1&&flow<(b-1)*30-12)b--;return b;}
+function bandAt(){if(inMenu)return 2;if(odT>0)return 4;const cap=[2,3,4][form];const up=Math.min(cap,1+Math.min(3,Math.floor(flow/30)));if(up>band)return up;
+  let b=Math.min(band,cap);while(b>1&&flow<(b-1)*30-12)b--;return b;}
 const bandLevel=()=>band>=2?0:2;
 // every coin is either caught or missed: a catch scores 100 x the multiplier (150 for one broken out of glass), tops up Sync and
 // builds Flow; a miss drains Sync and knocks Flow back
 function judgeCoin(g,glass=false,lost=false){if(over&&!sim)return;J[g]++;if(g!=='m'){maxCombo=Math.max(maxCombo,combo);if(glass)J.gl++;
-    score+=(glass?150:100)*scoreMult();
+    score+=(glass?150:100)*scoreMult();rescueGain(glass?RESCUE_GLASS:RESCUE_PER);
     if(!SONG.tut)sync=Math.min(100,sync+1.5);
     if(odT<=0){const t0=tier();flow=Math.min(100,flow+3*(SONG.tut?1.6:1));if(flow>=100)startOverdrive();else if(tier()>t0)tierUp(tier());}
     if(combo>0&&combo%50===0)pop(`${combo} COMBO`,'gold',1);}
   else if(!lost){flow=Math.max(0,flow-25);hurt(SYNC_MISS*syncK());}}
-function hurt(n){if(SONG.tut||odT>0||inMenu)return;sync=Math.max(0,sync-n);lastHurt=t;if(sim){sim.stats.minSync=Math.min(sim.stats.minSync??100,sync);return;}
-  if(sync<=0&&!over){over=true;setTimeout(()=>gameOver('sync'),700);}}
+function hurt(n){if(SONG.tut||odT>0||inMenu)return;sync=Math.max(0,sync-n);lastHurt=t;rescue=Math.max(0,rescue-RESCUE_MISS);}
 // the multiplier steps up: a two-note lift; at x2 the band comes in, so it gets a cymbal swell into the next downbeat
 function tierUp(k){if(!sim)tutSay(k===2?'HEAR THAT? YOUR FLOW BROUGHT THE BAND IN':k===3?'FLOW ×3 · FILL THE BAR FOR OVERDRIVE':'FLOW ×4 · ALMOST THERE');
   if(sim||!A.ctx||!audioOn||inMenu)return;const at=A.ctx.currentTime;[0,7].forEach((x,i)=>tone(at+i*0.06,midi(79+x+(k-2)*2),{type:'triangle',dur:0.25,g:0.045,cut:8000,out:A.master}));
@@ -2304,12 +2447,12 @@ function endOverdrive(cut=false){odT=0;flow=cut?0:30;screenEl.classList.remove('
 function crash(h){if(shieldOn&&!inMenu){shieldOn=false;h.state=1;invuln=1.2;fx(LX[h.col],LY[h.row],new THREE.Color(0x8ff6ff).multiplyScalar(2.5),true);if(!sim){pop('SHIELD SAVED YOU','gold',2);haptic('bump');}return;}
   h.state=1;combo=0;streak16=0;if(sim){sim.stats.crashes++;const ck=h.over?"block":h.kind==="glass"?"glass":"traffic";sim.stats.crashBy=sim.stats.crashBy||{};sim.stats.crashBy[ck]=(sim.stats.crashBy[ck]||0)+1;}
   const x=LX[h.col],y=LY[h.row];fx(x,y,new THREE.Color(0xff3d4f).multiplyScalar(2.5),true);
-  if(!sim)for(let i=0;i<34;i++){const a=rand()*Math.PI*2,s=1+rand()*3.5,g=0.75+rand()*0.25;emit(x+(rand()-0.5)*0.6,y+(rand()-0.5)*0.4,-0.5-rand(),Math.cos(a)*s,Math.sin(a)*s*0.7+0.6,SPEED*0.3+rand()*2,0.55+rand()*0.3,0.5,1.4+rand()*0.6,0.5,[g,g,g]);}
+  if(!sim)for(let i=0;i<(SONG.tut?34:14);i++){const a=rand()*Math.PI*2,s=1+rand()*3.5,g=0.55+rand()*0.2;emit(x+(rand()-0.5)*0.6,y+(rand()-0.5)*0.4,-0.5-rand(),Math.cos(a)*s,Math.sin(a)*s*0.7+0.6,SPEED*0.3+rand()*2,0.55+rand()*0.3,0.5,1.4+rand()*0.6,0.5,[g,g,g]);}
   if(melodyOn)setMelody(false,0);
   if(inMenu)return;
   run.lost++;respawn=RESPAWN;invuln=RESPAWN+0.9;cs.row=HOME;vt=0;holdV=false;flow=0;if(odT>0)endOverdrive(true);
-  if(!sim){flashEl.classList.remove('on');void flashEl.offsetWidth;flashEl.classList.add('on');}crashSound();haptic('crash');pop('CRASH!','red',3);
-  hurt(SYNC_CRASH*syncK());}
+  if(!sim){flashEl.classList.remove('on');void flashEl.offsetWidth;flashEl.classList.add('on');}crashSound();haptic('crash');if(SONG.tut)pop('CRASH!','red',3);
+  lastHurt=t;loseForm(h);}
 
 /* ---------- saves: stars and bests per episode, top five Infinite runs per map (this device only) ---------- */
 const readJ=k=>{try{return JSON.parse(store.get(k)||'null');}catch(e){return null;}};
@@ -2349,7 +2492,7 @@ const MISSION_POOL=[
   {id:'combo',goals:[30,60,100],say:n=>`Reach a ${n}-coin combo`,max:true},{id:'od',goals:[1,4,10],say:n=>n>1?`Go into OVERDRIVE ${n} times`:'Go into OVERDRIVE'},
   {id:'agrade',goals:[1,3,6],say:n=>n>1?`Get an A or better in ${n} episodes`:'Get an A or better in an episode'},{id:'sgrade',goals:[1,2,4],say:n=>n>1?`Get an S in ${n} episodes`:'Get an S in an episode'},
   {id:'over',goals:[4,12,30],say:n=>`Hop over ${n} roadblocks`},{id:'shatter',goals:[8,20,45],say:n=>`Break ${n} coins out of glass`},
-  {id:'coins',goals:[300,800,1800],say:n=>`Catch ${n} coins`},{id:'power',goals:[3,8,15],say:n=>`Collect ${n} power-ups`}];
+  {id:'coins',goals:[300,800,1800],say:n=>`Catch ${n} coins`},{id:'rescue',goals:[1,3,8],say:n=>n>1?`Get rescued ${n} times`:'Fill the rescue meter and get your car back'},{id:'power',goals:[3,8,15],say:n=>`Collect ${n} power-ups`}];
 function missionState(){let m=readJ('lr-missions');if(m&&m.active&&m.active.some(a=>!MISSION_POOL.some(p=>p.id===a.id)))m=null; // from an older version
   if(!m||!m.active){m={active:[0,1,2].map(i=>({id:MISSION_POOL[i].id,tier:0,prog:0})),next:3};store.set('lr-missions',JSON.stringify(m));}return m;}
 const mGoal=a=>MISSION_POOL.find(p=>p.id===a.id).goals[Math.min(a.tier,2)], mReward=a=>100+a.tier*100;
@@ -2384,22 +2527,22 @@ function recordInf(){const list=infList(key);list.push({s:score,l:LEVEL,d:today(
 
 const REVIVE_COST=200;
 function gameOver(why='sync'){if(inMenu||!$('over').hidden)return;over=true;paused=true;countEnd=0;audioOn=false;screenEl.classList.add('is-over');$('over').hidden=false;
-  $('overTitle').textContent=SONG.ep>=0?'OUT OF SYNC':'GAME OVER';
+  $('overTitle').textContent=SONG.ep>=0?'OUT OF LIVES':'GAME OVER';
   // one paid revive per episode run, while the song still has a way to go
-  const rv=$('revive'),can=SONG.ep>=0&&why==='sync'&&!run.revives&&t<gateT-BAR;rv.hidden=!can;$('again').className=can&&wallet.get()>=REVIVE_COST?'ghost':'big';
+  const rv=$('revive'),can=SONG.ep>=0&&why==='lives'&&!run.revives&&t<gateT-BAR;rv.hidden=!can;$('again').className=can&&wallet.get()>=REVIVE_COST?'ghost':'big';
   if(can){const w=wallet.get();rv.disabled=w<REVIVE_COST;rv.innerHTML=w>=REVIVE_COST?`REVIVE · <i class="coin"></i> ${REVIVE_COST}`:`REVIVE · NEED ${REVIVE_COST-w} MORE <i class="coin"></i>`;}
   if(SONG.ep>=0){const prog=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1);
     $('ovA').textContent='SONG';$('finalScore').textContent=Math.round(prog*100)+'%';$('ovB').textContent='COINS CAUGHT';$('best').textContent=accText(accuracy());
-    $('overNote').textContent='Your Sync ran out. The course is the same every try, so you can learn it.';$('again').textContent='TRY AGAIN';$('toMenu').textContent='EPISODES';}
+    $('overNote').textContent='You lost the car, the jetpack and your footing. The course is the same every try, so you can learn it.';$('again').textContent='TRY AGAIN';$('toMenu').textContent='EPISODES';}
   else{const rank=recordInf(),best=infList(key)[0].s;
     $('ovA').textContent='SCORE';$('finalScore').textContent=score.toLocaleString('en-US');$('ovB').textContent='BEST';$('best').textContent=best.toLocaleString('en-US');
     $('overNote').textContent=rank===1&&score>0?'NEW HIGH SCORE':rank<=5?`#${rank} on your ${MAPINFO[key].name} board`:'';$('again').textContent='FLY AGAIN';$('toMenu').textContent='MAIN MENU';}
   $('overCity').textContent=SONG.ep>=0?`${MAPINFO[key].name.toUpperCase()} · EPISODE ${EP+1} · ${SONG.name.toUpperCase()}`:`ENDLESS · ${MAPINFO[key].name.toUpperCase()} · ${accText(accuracy())} OF THE COINS`;showJudgements('overJud');
   const got=payRun();$('overEarn').textContent=earnText(got,'');resMissions('overMis');
   (rv.hidden||rv.disabled?$('again'):rv).focus({preventScroll:true});}
-// back in the air with half your Sync: a 3-2-1, then the song carries on from where you crashed
+// back on your feet: a 3-2-1, then the song carries on from where you crashed
 function revive(){if(!over||run.revives||wallet.get()<REVIVE_COST)return;wallet.add(-REVIVE_COST);run.revives++;
-  sync=50;flow=0;invuln=RESPAWN+2;respawn=0;over=false;$('over').hidden=true;screenEl.classList.remove('is-over');hud();
+  form=0;formV=0;rescue=0;formAudio(0,undefined,true);flow=0;invuln=RESPAWN+2;respawn=0;over=false;$('over').hidden=true;screenEl.classList.remove('is-over');hud();
   if(initAudio()){audioOn=true;A.ctx.resume().catch(()=>{});}countEnd=performance.now()+1500;pop('3','big',3);setTimeout(()=>pop('2','big',3),500);setTimeout(()=>pop('1','big',3),1000);}
 // numbers on the results screen roll up to their value (instantly when effects are reduced)
 function countUp(el,to,fmt,ms=900){if(fxLow){el.textContent=fmt(to);return;}const t0=performance.now();
@@ -2433,7 +2576,7 @@ function episodeClear(){if(inMenu||over)return;
 function tutorialDone(){if(inMenu||over)return;over=true;audioOn=false;haptic('win');const first=store.get('lr-tut')!=='1';store.set('lr-tut','1');const got=payRun(first?100:0);
   screenEl.classList.add('is-over');$('clear').hidden=false;$('clearRank').hidden=true;$('clearTitle').textContent='GRADUATED';$('clearCity').textContent='FLIGHT SCHOOL · YOU KNOW EVERY MOVE';
   showJudgements();$('clearScore').textContent=score.toLocaleString('en-US');$('clearCombo').textContent=maxCombo;
-  $('clearNote').textContent='In episodes, your Sync bar is your life: misses and crashes drain it, catches fill it. Keep the flow up and the band joins in.';
+  $('clearNote').textContent='In episodes you have 3 lives: a crash wrecks your car and you carry on by jetpack, then on foot. Catch coins to fill the rescue meter and get them back.';
   $('clearEarn').textContent=earnText(got,first?' (100 for finishing school)':'');resMissions('clearMis');
   $('nextEp').hidden=false;$('nextEp').dataset.era='';$('nextEp').textContent='START EPISODE 1';$('nextEp').focus({preventScroll:true});}
 
@@ -2484,11 +2627,13 @@ function update(dt){
   if(sim){sim.stats.air=cs.row!==HOME?sim.stats.air+dt:0;sim.stats.airMax=Math.max(sim.stats.airMax,+sim.stats.air.toFixed(2));}
   if(sim&&sim.bot)humanStep();else if((inMenu&&!garage)||over||demo||(sim&&!sim.bot))autopilot();
   [cs.x,cs.vx]=smoothDamp(cs.x,LX[cs.col],cs.vx,0.11,dt);[cs.y,cs.vy]=smoothDamp(cs.y,LY[cs.row],cs.vy,0.11,dt);
+  // a rescue arrives on its bar line
+  if(deliverAt<Infinity&&t>=deliverAt&&!over&&!inMenu)deliver();
   magnetT=Math.max(0,magnetT-dt);x2T=Math.max(0,x2T-dt);
   if(odT>0&&!inMenu){odT-=dt;if(odT<=0)endOverdrive();}
   for(const n of nodes){if(n.state)continue;
     if(respawn>0.45){if(n.pre&&A.ctx){n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);n.pre=null;}if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;if(!inMenu)judgeCoin('m',false,true);}continue;} // coins during a crash are lost (no extra penalty)
-    const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:CARS[selCar].perk.reach)&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
+    const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:reachNow())&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
     if(near&&t>=n.time-0.05&&!(n.glass&&!n.cracked)){n.state=1;lastJudged=n.time;combo++;if(!inMenu){run.hits++;mission('coins',1);mission('combo',combo);}if(n.pu)powerUp(n.pu);if(sim)sim.stats.hits++;collectFx(n);
       if(!inMenu)judgeCoin('c',n.glass);
       // a coin up there (or down there) ends the hop: the car drops straight back to the skyway
@@ -2502,7 +2647,7 @@ function update(dt){
   for(const h of hazards){if(h.state)continue;const z=hz(h),reach=KINDS[h.kind].len/2+0.9;if(z<-reach)continue;
     if(z>reach){h.state=2;if(h.over&&!inMenu&&!over)mission('over',1);if(h.near&&!inMenu&&!over){score+=25*scoreMult();if(sim)sim.stats.nearMiss++;}continue;}
     const dx=Math.abs(cs.x-LX[h.col]),dy=Math.abs(cs.y-LY[h.row]);
-    if(invuln<=0&&dx<0.75&&dy<(h.over?0.45:0.8)){crash(h);continue;}
+    if(invuln<=0&&dx<0.75&&dy<(h.over?0.45:0.8)&&!(form===0&&h.row===0&&!h.over)){crash(h);continue;}
     if((dx<1.9&&dy<0.5)||(dx<0.5&&dy<rowGap+0.3))h.near=true;}
   nodes=nodes.filter(n=>n.time>t-1);hazards=hazards.filter(h=>hz(h)<14);
   if(tutHold&&audioOn&&A.ctx&&!sim)while(n16*S16<t+0.03){const at=A.ctx.currentTime+(n16*S16-t)/SLOWMO;playBacking(n16%16,Math.floor(n16/16)-songBar0,Math.max(at,A.ctx.currentTime));n16++;}
@@ -2553,6 +2698,8 @@ function counterBurst(){const hud=coinHud.parentElement,c=coinHud.querySelector(
   for(let i=0;i<n;i++){const el=document.createElement('i'),a=(i/n)*Math.PI*2+rand()*0.6,r=16+rand()*18,sz=7+rand()*7;el.className='spk';el.style.cssText=`left:${x-sz/2}px;top:${y-sz/2}px;width:${sz}px;height:${sz}px`;hud.append(el);
     el.animate([{transform:'translate(0,0) scale(.3) rotate(0deg)',opacity:1},{transform:`translate(${Math.cos(a)*r*0.7}px,${Math.sin(a)*r*0.7}px) scale(1.15) rotate(45deg)`,opacity:1,offset:0.45},
       {transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(0) rotate(90deg)`,opacity:0}],{duration:420+rand()*220,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>el.remove();}}
+function sparkleBurst(k){for(let i=0;i<k;i++){const G=glints[glintI++%GLINTS],a=rand()*Math.PI*2;G.age=0;G.delay=rand()*0.15;G.life=0.4+rand()*0.35;
+    G.p.set(car.position.x+Math.cos(a)*(0.4+rand()*0.6),car.position.y+0.3+(rand()-0.3)*0.9,car.position.z+(rand()-0.5)*1.2);G.v.set(Math.cos(a)*0.8,0.8+rand(),0);G.k=0.24+rand()*0.24;G.r=rand();G.w=(rand()-0.5)*3;G.c.copy(GOLD).lerp(WHITE,0.4).multiplyScalar(2);}}
 function arriveCoin(){coinShown++;if(!sim)counterBurst();coinNEl.textContent=coinShown.toLocaleString('en-US');coinHud.classList.remove('bump');void coinHud.offsetWidth;coinHud.classList.add('bump');}
 function resetCollect(){coinShown=0;coinNEl.textContent='0';for(const F of flyers){F.age=9;F.g.visible=false;}for(const G of glints)G.age=9;}
 // the coin counter's spot in the 3D view: 2.4 units in front of the camera, under the counter's coin icon
@@ -2586,27 +2733,50 @@ function render(dt){
   if(respawn>0){const p=1-respawn/RESPAWN;
     if(p<0.38){const q=p/0.38;offZ=3.2*q*q;offY=-3.4*q*q;spin=q*4;}
     else{const q=(p-0.38)/0.62,e=1-Math.pow(1-q,3);offY=5.5*(1-e);offZ=-7*(1-e);spin=0;}}
+  // changes of form: the pilot is thrown up out of the wreck (a flip) and glides back down to the lane; when the jetpack fails you
+  // pop up, tumble and land running; the last crash knocks you flat. A delivery drops the new car (or jetpack) onto you
+  const fa=t-formAnim.t0,fp=fa/RESPAWN;
+  if(formAnim.kind==='eject'&&fp<1){if(fp<0.32){const q=fp/0.32;offY=2.4*(1-(1-q)*(1-q));offZ=0.5*q;spin=q*Math.PI*2;}else{const q=(fp-0.32)/0.68,e=1-Math.pow(1-q,3);offY=2.4*(1-e);offZ=0.5*(1-e);spin=0;}}
+  else if(formAnim.kind==='fall'&&fp<1){if(fp<0.25){const q=fp/0.25;offY=1.1*Math.sin(q*Math.PI/2);offZ=0;spin=-q*Math.PI*1.5;}
+    else{const q=Math.min(1,(fp-0.25)/0.28);offY=1.1*(1-q*q);offZ=0;spin=-Math.PI*1.5*(1-q)-Math.PI*0.5*Math.sin(Math.min(1,(fp-0.53)/0.2)*Math.PI)*(fp>0.53?1:0);}}
+  else if(formAnim.kind==='down'){const q=Math.min(1,fa/0.45);spin=-q*1.4;offY=-0.08*q;offZ=0;}
+  if(formAnim.kind==='deliver'&&fa>=0.45&&formV!==form){formV=form;sparkleBurst(14);}
   const roll=rollT>0?(1-rollT/0.65)*Math.PI*2:0;
   // edge bounce: out into the field, then a springy wobble back (and a tilt away from the wall)
   bumpT+=dt;const bw=bumpT<0.9?Math.sin(bumpT*24)*Math.exp(-bumpT*6):0;
-  car.position.set(cs.x+bumpDir*0.34*bw,cs.y+offY+Math.sin(t*2.6)*0.03+Math.abs(bw)*0.06,offZ);
-  car.rotation.set(clamp(cs.vy*0.05,-0.25,0.25)+spin,clamp(-cs.vx*0.03,-0.12,0.12)-bumpDir*0.12*bw,clamp(-cs.vx*0.08,-0.45,0.45)+roll-bumpDir*0.5*bw);
+  // on foot the pilot's feet are on the skyway road (a jump lifts them; a slide stays on the road); a change of form eases between heights
+  const baseY=formV===0?DECK_Y+Math.max(0,cs.y-LY[HOME])*0.75:cs.y;visY=fa<0.8?visY+(baseY-visY)*Math.min(1,dt*14):baseY;
+  const hum=formV<2?0.4:1;
+  car.position.set(cs.x+bumpDir*0.34*bw,visY+offY+(formV===0?0:Math.sin(t*2.6)*0.03)+Math.abs(bw)*0.06,offZ);
+  car.rotation.set(clamp(cs.vy*0.05,-0.25,0.25)*hum+spin,clamp(-cs.vx*0.03,-0.12,0.12)-bumpDir*0.12*bw,(clamp(-cs.vx*0.08,-0.45,0.45)-bumpDir*0.5*bw)*hum+roll);
+  // which model shows: the car (with the pilot hidden inside), or the pilot; a delivered car comes down from above
+  {const del=formAnim.kind==='deliver'&&fa<0.45,toCar=del&&formAnim.from===1,e=del?1-Math.pow(1-fa/0.45,2):1;
+    CARM.g.visible=formV===2||toCar;pilot.visible=formV<2;carBody.position.y=-0.27*CAR_K+(toCar?3.2*(1-e):0);
+    if(pilot.visible)posePilot(dt,cs.y-LY[HOME]);
+    if(del&&formAnim.from===0){const k=clamp((fa-0.2)/0.25,0,1);PL.pack.scale.setScalar(0.01+k*(1+0.3*Math.sin(k*Math.PI)));}else PL.pack.scale.setScalar(1);}
+  debrisUpdate(dt);
+  // the skyway road fades in under you when you're on foot (its markings scroll with the world), and police lights flash behind you
+  deckK+=((formV===0&&!inMenu?1:0)-deckK)*Math.min(1,dt*3);deck.visible=deckK>0.01;deckMat.opacity=deckK;deck.userData.railM.opacity=deckK;deckTex.offset.y=-dist/10;
+  siren.intensity=formV===0&&!inMenu&&!over&&!SONG.tut?2.6:0;if(siren.intensity){siren.color.setHex(Math.floor(t/BEAT*2)%2?0xff2030:0x2050ff);siren.position.x=cs.x;}
   edgeFx.visible=bumpT<0.55;if(edgeFx.visible){const a=1-bumpT/0.55;edgeFx.position.set(bumpDir*EDGE,cs.y,0.3);edgeFx.rotation.y=bumpDir*(Math.PI/2-0.6);edgeFx.scale.set(3+bumpT*2.4,2.2+bumpT*1.6,1);
     edgeFx.material.opacity=Math.min(1,a*1.4);edgeFx.material.color.copy(ROWC[hl]).lerp(WHITE,0.35).multiplyScalar(2.6);}
   car.visible=invuln<=0||respawn>RESPAWN*0.62||Math.floor(t*14)%2===0;
   const lift=cs.y-LY[HOME],diving=lift<-0.25;
   podMat.color.setRGB(...TH.pods).multiplyScalar(diving?0.35:2.2+pulse*2.5+(lift>0.25?2:0));
-  under.visible=respawn<=0;underMat.color.copy(ROWC[hl]).multiplyScalar(1.6);carLight.color.copy(ROWC[hl]);
+  under.visible=respawn<=0&&formV===2;underMat.color.copy(ROWC[hl]).multiplyScalar(1.6);carLight.color.copy(ROWC[hl]);
   exhaustAcc+=dt*60;
+  if(formV<2)exhaustAcc=0;
   while(exhaustAcc>=1){exhaustAcc-=1;carPt(CARM.exhaust[Math.floor(rand()*CARM.exhaust.length)],tmpV);
     emit(tmpV.x,tmpV.y,tmpV.z,(rand()-0.5)*0.6,-0.8-rand()*0.6,SPEED*0.9,0.45+rand()*0.2,0.2,1.0,0.07,TH.smoke);}
   // thrusters keep firing while the car is up off the skyway
-  if(lift>0.25&&respawn<=0){jetAcc+=dt*55;while(jetAcc>=1){jetAcc-=1;carPt(CARM.jets[Math.floor(rand()*CARM.jets.length)],tmpV);
+  // the jetpack's exhaust streams from its nozzles
+  if(formV===1&&pilot.visible){for(const f of PL.flames){f.getWorldPosition(tmpV);emit(tmpV.x,tmpV.y-0.08,tmpV.z+0.05,(rand()-0.5)*0.4,-2.5-rand()*1.5,SPEED*0.5,0.18,0.08,0.3,0.5,[2.4,1.3,0.5]);}}
+  if(lift>0.25&&respawn<=0&&formV===2){jetAcc+=dt*55;while(jetAcc>=1){jetAcc-=1;carPt(CARM.jets[Math.floor(rand()*CARM.jets.length)],tmpV);
     emit(tmpV.x,tmpV.y-0.05,tmpV.z,(rand()-0.5)*0.5,-3.5-rand()*2,SPEED*0.5,0.22,0.1,0.45,0.45,TH.pods);}}
   updateParticles(dt);
   if(TH.shadowY!==null){const hgt=car.position.y-TH.shadowY;shadow.position.set(car.position.x,TH.shadowY,car.position.z+0.1);shadow.scale.setScalar(clamp(1.25-hgt*0.08,0.6,1.3)*CAR_K);shadow.material.opacity=clamp(0.75-hgt*0.13,0.18,0.75);}
   // off the skyway: a magnetic tether links the car back to its lane and pulls tight as the hop runs out
-  const off=Math.abs(lift)>0.2&&respawn<=0;tether.visible=landRing.visible=off;
+  const off=Math.abs(lift)>0.2&&respawn<=0&&formV===2;tether.visible=landRing.visible=off;
   if(off){const y0=lift>0?cs.y-0.32:cs.y+0.22,len=Math.abs(y0-SKY_Y),urge=cs.row===HOME?1:clamp(1-vt/HANG,0,1);
     tether.position.set(cs.x,(y0+SKY_Y)/2,0.1);tether.scale.set(0.035+urge*0.03,len,0.035+urge*0.03);
     tetherMat.color.copy(ROWC[lift>0?2:0]).multiplyScalar(1.2+urge*1.6+pulse*0.6);
@@ -2617,7 +2787,7 @@ function render(dt){
   // rides lower on the screen (about 69% down instead of 61%), showing ~40% more road ahead. Kept modest so the street still
   // meets the painted skyline at the horizon.
   // The menu keeps its own framing; the two blend as a run starts or ends
-  const g=1-menuLift;camTarget.set(cs.x*0.7,cs.y*0.45+TH.cam.h+(PLAY_CAM.h-TH.cam.h)*g,TH.cam.z);lookTarget.set(cs.x*0.6,cs.y*0.4+PLAY_CAM.lookY*g,-14);
+  const g=1-menuLift,cy=formV===0?visY+0.45:cs.y;camTarget.set(cs.x*0.7,cy*0.45+TH.cam.h+(PLAY_CAM.h-TH.cam.h)*g-(formV===0?0.2:0),TH.cam.z-(formV<2?1.0:0));lookTarget.set(cs.x*0.6,cy*0.4+PLAY_CAM.lookY*g,-14);
   // garage: a slow showroom turn around the car (drag to turn it), or the view you get in a run; the turn is narrower at the sides, clear of the buildings
   const show=garage&&gView==='show';if(show){const a=gAng+t*0.3;const sa=Math.sin(a);camTarget.set(car.position.x+sa*3.3,car.position.y+1.2+Math.abs(sa)*0.9,car.position.z+Math.cos(a)*4.8);lookTarget.set(car.position.x,car.position.y-0.55,car.position.z);}
   camLift+=((show?0:(PLAY_CAM.h-TH.cam.h)*g)-camLift)*k;
@@ -2656,10 +2826,10 @@ function render(dt){
     let p=pool.find(p=>p.node===n)||pool.find(p=>!p.node);if(!p)continue;p.node=n;live.add(p);
     p.g.visible=true;
     // the magnetic pull: a coin you're about to catch is drawn toward the car (looks only; catching works as before)
-    let px=LX[n.col],py=LY[n.row],pz=z;const pullOk=!n.state&&!(n.glass&&!n.cracked)&&respawn<=0.45&&z>-PULL_Z&&
-      Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:CARS[selCar].perk.reach)+0.35&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7)+0.25;
+    let px=LX[n.col],py=formV===0&&n.row===0?DECK_Y+0.32:LY[n.row],pz=z;const pullOk=!n.state&&!(n.glass&&!n.cracked)&&respawn<=0.45&&z>-PULL_Z&&
+      Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:reachNow())+0.35&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7)+0.25;
     n.pull=(n.pull||0)+((pullOk?1:0)-(n.pull||0))*Math.min(1,dt*16);const u=clamp(1+z/PULL_Z,0,1),pe=u*u*(3-2*u)*n.pull;
-    if(pe>0.001){px+=(car.position.x-px)*pe*0.8;py+=(car.position.y+0.32-py)*pe*0.8;pz+=(car.position.z-1.1-pz)*pe*0.5;
+    if(pe>0.001){px+=(car.position.x-px)*pe*0.8;py+=(car.position.y+(formV===0?0.6:formV===1?0.15:0.32)-py)*pe*0.8;pz+=(car.position.z-1.1-pz)*pe*0.5;
       // a few fine particles stream in along the pull
       if(!fxLow&&dt>0&&rand()<0.3*pe){const c=COIN_METAL[n.row];emit(px+(rand()-0.5)*0.6,py+(rand()-0.5)*0.5,pz-0.2,(car.position.x-px)*5,(car.position.y-py)*5,SPEED*0.5+4,0.14,0.028,0.008,0.8,[c.r*1.1,c.g*1.0,c.b*0.7]);}}
     p.g.position.set(px,py,pz);
@@ -2676,11 +2846,11 @@ function render(dt){
       p.frameM.color.setRGB(0.75,0.9,1).multiplyScalar(miss?0.4:0.7+a*a*2.2);
       p.cue.visible=!miss&&lead>-0.06&&lead<TAP_EARLY*2.2;if(p.cue.visible){p.cue.scale.setScalar(0.95+Math.max(0,lead)/TAP_EARLY*0.9);p.cueM.opacity=Math.min(0.6,a*0.8);}}
     // coins above or below the skyway hang on a thin stem from it, and the first one of a run gets a launch pad
-    if(n.row!==HOME&&!miss&&z<1){const fade=Math.pow(clamp(1+z/70,0,1),1.5),y0=n.row===2?LY[2]-0.4:LY[0]+0.4;
+    if(n.row!==HOME&&!miss&&z<1&&!(formV===0&&n.row===0)){const fade=Math.pow(clamp(1+z/70,0,1),1.5),y0=n.row===2?LY[2]-0.4:LY[0]+0.4;
       if(si<STEMS){dummy.position.set(LX[n.col],(y0+SKY_Y)/2,z);dummy.scale.set(0.05,Math.abs(y0-SKY_Y),0.05);dummy.updateMatrix();stems.setMatrixAt(si,dummy.matrix);stems.setColorAt(si,tmpC.copy(rc).multiplyScalar(1.3*fade));si++;}
       const zp=z+PAD_LEAD*SPEED;if(n.runStart===n.time&&pi<PADS&&zp<0.6){const near=clamp(1+zp/8,0,1),pf=clamp(1+zp/60,0,1);
         // standing between the skyway and the coin's level, facing you; it fades as you reach it so it never blocks the view
-        dummy.position.set(LX[n.col],n.row===2?LY[1]+0.35:LY[1]-0.35,zp);dummy.rotation.set(0,0,n.row===0?Math.PI:0);dummy.scale.setScalar(1.35+near*0.3);dummy.updateMatrix();
+        dummy.position.set(LX[n.col],n.row===2?LY[1]+0.35:formV===0?DECK_Y+0.75:LY[1]-0.35,zp);dummy.rotation.set(0,0,n.row===0?Math.PI:0);dummy.scale.setScalar(1.35+near*0.3);dummy.updateMatrix();
         pads.setMatrixAt(pi,dummy.matrix);pads.setColorAt(pi,tmpC.copy(rc).lerp(WHITE,0.15).multiplyScalar((1.7+near*2.2)*pf*clamp(-zp/1.8,0,1)));pi++;dummy.rotation.set(0,0,0);}}}
   for(const p of pool)if(!live.has(p)){p.node=null;p.g.visible=false;}
   dummy.scale.set(1,1,1);stems.count=si;pads.count=pi;stems.instanceMatrix.needsUpdate=pads.instanceMatrix.needsUpdate=true;
@@ -2690,7 +2860,7 @@ function render(dt){
   for(const h of hazards){if(h.state===1||h.state===3)continue;const z=hz(h),nearCam=Math.abs(LX[h.col]-camera.position.x)<1.2&&Math.abs(LY[h.row]-camera.position.y)<1.3;
     if(z<-FAR||z-KINDS[h.kind].len/2>(nearCam?2.5:camera.position.z+0.5))continue;
     const o=hazObj(h);if(!o)continue;hlive.add(o);
-    o.g.visible=true;o.g.position.set(LX[h.col],LY[h.row]+(o.g.userData.bob?Math.sin(t*3+h.id)*0.05:0),z);
+    o.g.visible=true;o.g.position.set(LX[h.col],(formV===0&&h.over?(h.under?DECK_Y+0.85:DECK_Y+0.22):LY[h.row])+(o.g.userData.bob?Math.sin(t*3+h.id)*0.05:0),z);
     if(o.g.userData.rotors)o.g.userData.rotors.forEach((r,i)=>r.rotation.y=t*(i%2?30:-30));
     if(o.g.userData.paint){const pal=h.kind==='dbus'?[LOOK.busCol??0xb01e24]:h.kind==='biplane'?[0xc83a2a,0xe0b030,0x2a5aa0,0x2a7a4a]:LOOK.carCols||[0x141414];o.g.userData.paint.color.setHex(pal[h.id%pal.length]);}
     if(o.g.userData.prop)o.g.userData.prop.rotation.z=t*40;
@@ -2784,6 +2954,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, what changed
 const CHANGELOG=[
+ ['23','Bail Out','25 Oct 2026',['Three lives, three ways to play. A crash blows your car apart and the pilot ejects onto a jetpack (lighter, a little narrower, an airy mix with the wind in it). The next crash wrecks the jetpack and you land running on the skyway road: swipe up to jump hurdles, down to slide under bars, footsteps on the beat, a tense drums-and-bass mix and police lights behind you. The third crash ends the run.','Get your car back: out of the car, a rescue meter fills as you catch coins (misses drain it). Full, and a new jetpack or car is delivered on the next bar, with the band coming back in.','Lives replace the Sync bar: the top left shows the car, the jetpack and the runner, and the rescue meter. A revive brings you back on foot.','Hops, dives and roadblocks are back to their full number after v22 had thinned them out, with a rising target each episode; some coins near a hop become music-only notes to make room.','A new mission: get rescued.']],
  ['22','More Notes','25 Oct 2026',['Busier melodies: about 1.3 to 1.7 times as many notes in the Past and Present and about twice as many in the Future, the most in the hardest episodes, with quick sixteenth-note runs in the Present and Future.','More coins too, up to about 60% more, and more lane changes: about 12 to 35 a minute in the Past, 18 to 39 in the Present, 20 to 44 in the Future, rising every episode.','Some in-between notes are music only (no coin), so there is always time for the next lane change.','The guide line that showed the way to the next coins is gone: you read the coins themselves.']],
  ['21.2','Lane Ladder','25 Oct 2026',['Every episode asks for more lane changes than the one before, and each era starts higher than the last: about 10 to 25 a minute in the Past, 19 to 31 in the Present, 20 to 33 in the Future.','Before, it depended on each song: some late episodes had fewer lane changes than early ones (Past episode 5 had 10 a minute, the Future stayed at about 14).','Coins are still never closer than you can reach, and there are still no diagonal moves.']],
  ['21.1','Gold Rush','25 Oct 2026',['Coins no longer grow when you catch them: a caught coin heads straight for the coin counter and collapses quickly into it.','A trail of gold sparkles follows each coin, and a burst of little stars pops out of the counter as it lands.']],
@@ -3053,11 +3224,11 @@ window.__lrSim=(o={})=>{const save={key,LEVEL,MODE,EP};
   const s=sim.stats,res=sim.result,songT=t-t0;sim=null;
   LEVEL=save.LEVEL;MODE=save.MODE;EP=save.EP;applyTheme(save.key,false);openMenu();
   const hitRate=+(s.hits/Math.max(1,s.hits+s.misses+s.skipped)).toFixed(3);
-  // the sim plays on whatever happens; a run whose Sync would have run out counts as not passing
-  const passed=!!res&&(s.minSync??100)>0;
+  // the sim plays on whatever happens; a run that would have run out of lives counts as not passing
+  const passed=!!res&&!s.failed;
   return{...cfg,...s,seconds:+songT.toFixed(1),hitRate,passed,stars:passed?res.stars:0,grade:res?res.grade:'',acc:res?res.acc:0,J:{...J},swipesPerMin:+(s.swipes/songT*60).toFixed(1)};};
 
-window.__lrDebug={crash(){if(!inMenu&&!over)crash({state:0,col:cs.col,row:cs.row,kind:TH.kinds(cs.row)});},state:()=>({t,sync,flow,odT,over,paused,tut:!!SONG.tut,ep:SONG.ep,cs:{...cs},vt,respawn,invuln,key,MODE,EP,song:SONG.name,pads:pads.count,stems:stems.count,padCol:pads.instanceColor&&[...pads.instanceColor.array.slice(0,3)],hz:hazards.length,nodes:nodes.length}),
+window.__lrDebug={setForm(f){form=f;formV=f;formAnim={kind:'',t0:-9,from:f};formAudio(f,undefined,true);},rescueSoon(){rescue=99;},crash(){if(!inMenu&&!over)crash({state:0,col:cs.col,row:cs.row,kind:TH.kinds(cs.row)});},state:()=>({t,sync,flow,odT,over,paused,tut:!!SONG.tut,ep:SONG.ep,cs:{...cs},vt,respawn,invuln,key,MODE,EP,song:SONG.name,pads:pads.count,stems:stems.count,padCol:pads.instanceColor&&[...pads.instanceColor.array.slice(0,3)],hz:hazards.length,nodes:nodes.length}),
   freeze(){running=false;audioOn=false;},step(sec,draw=true){const n=Math.round(sec*30);for(let i=0;i<n;i++){update(1/30);if(i===n-2)camSnap=true;if(draw&&i>=n-2)render(1/30);}},
   // model test for the music: render a song offline (every coin caught) and measure how loud it is
   async audio(map,ep,sec=30){const menu=map==='menu',S=menu?null:ep<0?loopSong(map):buildSong(map,ep),keep={...A},kTH=TH,kS=SONG,sr=22050;
@@ -3076,7 +3247,7 @@ window.__lrDebug={crash(){if(!inMenu&&!over)crash({state:0,col:cs.col,row:cs.row
   carY(){tmpV.copy(car.position).project(camera);return +((1-tmpV.y)/2).toFixed(3);},horizonY(){tmpV.set(0,ROAD_Y,-90).project(camera);return +((1-tmpV.y)/2).toFixed(3);},
   // step until something worth a screenshot is on screen: the car up, the car down, or a block coming up under coins
   seek(kind,max=40){const ok={hop:()=>cs.row===2&&cs.y>1.2,dive:()=>cs.row===0&&cs.y<-1.2,
-      over:()=>hazards.some(h=>h.over&&hz(h)>-16&&hz(h)<-7),flash:()=>bdFlash>0.5,glass:()=>nodes.some(n=>n.glass&&!n.cracked&&-(n.time-t)*SPEED>-10&&-(n.time-t)*SPEED<-4),pickup:()=>nodes.some(n=>n.pu&&n.state===0&&-(n.time-t)*SPEED>-12&&-(n.time-t)*SPEED<-5),overNear:()=>hazards.some(h=>h.over&&hz(h)>-5&&hz(h)<-3.5),pad:()=>nodes.some(n=>n.runStart===n.time&&n.row!==HOME&&n.state===0&&-(n.time-PAD_LEAD-t)*SPEED>-14&&-(n.time-PAD_LEAD-t)*SPEED<-6)}[kind];
+      over:()=>hazards.some(h=>h.over&&hz(h)>-16&&hz(h)<-7),flash:()=>bdFlash>0.5,glass:()=>nodes.some(n=>n.glass&&!n.cracked&&-(n.time-t)*SPEED>-10&&-(n.time-t)*SPEED<-4),pickup:()=>nodes.some(n=>n.pu&&n.state===0&&-(n.time-t)*SPEED>-12&&-(n.time-t)*SPEED<-5),overNear:()=>hazards.some(h=>h.over&&hz(h)>-5&&hz(h)<-3.5),underNear:()=>hazards.some(h=>h.over&&h.under&&hz(h)>-6&&hz(h)<-4),hurdleNear:()=>hazards.some(h=>h.over&&!h.under&&hz(h)>-6&&hz(h)<-4),pad:()=>nodes.some(n=>n.runStart===n.time&&n.row!==HOME&&n.state===0&&-(n.time-PAD_LEAD-t)*SPEED>-14&&-(n.time-PAD_LEAD-t)*SPEED<-6)}[kind];
     for(let i=0;i<max*30;i++){update(1/30);if(ok()){camSnap=true;render(1/30);render(1/30);return true;}}render(1/30);return false;},song:(m,i)=>{const S=buildSong(m,i);return{name:S.name,bpm:S.bpm,len:S.len,bars:S.bars.map(b=>({sec:b.sec,chord:b.chord,mel:b.mel}))};}};
 applyTheme(key,false);renderMenu();dailyGift();
 let prev=performance.now(),frAcc=0,frN=0,frSq=0,frBase=1/60,frSlow=0,frFast=0,frLockUp=0;
