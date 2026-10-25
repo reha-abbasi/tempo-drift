@@ -37,6 +37,17 @@ body{padding:0!important}
 .info,.hint{display:none!important}
 .stage{position:fixed;left:env(safe-area-inset-left);right:env(safe-area-inset-right);top:env(safe-area-inset-top);bottom:env(safe-area-inset-bottom);gap:0!important}
 .screen{aspect-ratio:auto!important;width:100%;height:100%;max-width:none!important;border-radius:0!important;box-shadow:none!important}
+/* every control is at least 44 px tall (Apple's minimum for a finger) */
+.eras .style{min-height:44px;padding:0 18px}
+.home .pill.news,.ghost.icon{min-height:44px;min-width:44px}
+.ghost.icon{width:44px;height:44px}
+.eraline .arrow{width:44px;height:44px}
+.ghost.skip{min-height:44px;min-width:72px}
+.ghost.back,.tab,.setlist .ghost,.ghost.arrow.sm,.row2 .ghost,.seg .ghost{min-height:44px}
+.ghost.arrow.sm{width:40px;height:40px}
+/* on a wide screen the game keeps a phone's shape, centred, instead of stretching the menus across */
+@media (min-aspect-ratio:3/4){.stage{left:50%!important;right:auto!important;width:min(100vw,calc((100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))*0.5625));transform:translateX(-50%)}
+  body{background:radial-gradient(ellipse at 50% 40%,#1a1424,#000 70%)}}
 </style>
 """
 
