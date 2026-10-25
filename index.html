@@ -462,6 +462,10 @@ tr:last-child td{border-bottom:0}
 .intro .tapgo[hidden]{display:none}
 @keyframes tapgo{from{opacity:.45}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.intro .tapgo b{animation:none}}
+/* garage: cars or pilots */
+.gtabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gtabs .ghost{padding:8px;font-size:12.5px;letter-spacing:.1em}
+.gtabs .ghost[aria-pressed="true"]{color:#140c06;background:linear-gradient(180deg,#ffe7a6,#ffc44a);border-color:transparent}
 </style>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#000;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -572,6 +576,7 @@ body{padding:0!important}
       </div>
       <div class="menu panel garage" id="garage" hidden>
         <div class="phead"><button class="ghost back" id="garageBack">‹ BACK</button><b>GARAGE</b><span class="tot"><i class="coin"></i> <span id="gWallet">0</span></span></div>
+        <div class="gtabs" role="tablist"><button class="ghost" id="gtCars" aria-pressed="true">CARS</button><button class="ghost" id="gtPilots" aria-pressed="false">PILOTS</button></div>
         <div class="gspace" id="gspace" aria-hidden="true"></div>
         <div class="gcard">
           <div class="grow"><button class="ghost arrow" id="carPrev" aria-label="Previous car">‹</button>
@@ -651,7 +656,7 @@ body{padding:0!important}
 
   <div class="info">
     <div>
-      <div class="eyebrow">Version 24 · eight cities per era · two lives</div>
+      <div class="eyebrow">Version 25 · pilot shop</div>
       <h1>Tempo Drift</h1>
       <p class="lede">Rebuilt around the Golden Hour Realism style: real sunlight, shadows, reflections and textured buildings in every city. Three eras instead of four, back to three lanes, and new things to do: tap to shatter glass on the beat, grab power-ups, chase missions and a daily gift.</p>
     </div>
@@ -1997,28 +2002,65 @@ const under=new THREE.Mesh(new THREE.PlaneGeometry(2.4,3.2),underMat);under.rota
    The pilot rides in the car group (so it follows the lane and leans the same way). Feet are at the group's origin: on foot the
    group sits on the skyway road; on the jetpack it is lifted so the body is centred on the lane */
 let visY=0;
-const pilot=new THREE.Group();pilot.visible=false;car.add(pilot);const PL={};
-{const suit=new THREE.MeshStandardMaterial({color:0xece6da,roughness:0.55}),acc=new THREE.MeshStandardMaterial({color:0xff6a3c,roughness:0.45}),
-    dark=new THREE.MeshStandardMaterial({color:0x2c2c34,roughness:0.5,metalness:0.5}),visor=new THREE.MeshPhysicalMaterial({color:0x0e1622,metalness:0.6,roughness:0.06,clearcoat:1,emissive:0x2a6aff,emissiveIntensity:0.25});
-  const cap=(r,l,m)=>new THREE.Mesh(new THREE.CapsuleGeometry(r,l,6,12),m);
-  PL.hip=new THREE.Group();PL.hip.position.y=0.46;pilot.add(PL.hip);
-  PL.torso=new THREE.Group();PL.hip.add(PL.torso);const tb=cap(0.13,0.2,suit);tb.position.y=0.2;PL.torso.add(tb);
-  const belt=new THREE.Mesh(new THREE.CylinderGeometry(0.135,0.135,0.05,16),acc);belt.position.y=0.06;PL.torso.add(belt);
-  const stripe=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.22,0.02),acc);stripe.position.set(0,0.24,-0.128);PL.torso.add(stripe);
-  PL.head=new THREE.Group();PL.head.position.y=0.47;PL.torso.add(PL.head);PL.head.add(new THREE.Mesh(new THREE.SphereGeometry(0.115,20,14),suit));
-  const vz=new THREE.Mesh(new THREE.SphereGeometry(0.1,20,12,Math.PI*0.62,Math.PI*0.76,Math.PI*0.3,Math.PI*0.42),visor);vz.position.z=-0.03;vz.scale.set(1.08,1,1.1);PL.head.add(vz);
-  for(const sd of[-1,1]){const arm=new THREE.Group();arm.position.set(sd*0.18,0.38,0);PL.torso.add(arm);const a=cap(0.045,0.26,suit);a.position.y=-0.17;arm.add(a);
-      const glove=new THREE.Mesh(new THREE.SphereGeometry(0.05,10,8),dark);glove.position.y=-0.34;arm.add(glove);PL[sd<0?'armL':'armR']=arm;
-    const leg=new THREE.Group();leg.position.set(sd*0.075,0,0);PL.hip.add(leg);const l=cap(0.055,0.3,suit);l.position.y=-0.2;leg.add(l);
-      const boot=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.07,0.16),dark);boot.position.set(0,-0.42,-0.03);leg.add(boot);PL[sd<0?'legL':'legR']=leg;}
-  // the jetpack on the back (the camera sees the back: the pilot faces down the road, away from you)
-  PL.pack=new THREE.Group();PL.pack.position.set(0,0.22,0.15);PL.torso.add(PL.pack);PL.flames=[];
-  const fm=new THREE.MeshBasicMaterial({color:new THREE.Color(2.4,1.2,0.4),transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,depthWrite:false});
-  for(const sd of[-1,1]){const tank=new THREE.Mesh(new THREE.CapsuleGeometry(0.055,0.2,4,12),dark);tank.position.x=sd*0.07;PL.pack.add(tank);
-    const tip=new THREE.Mesh(new THREE.SphereGeometry(0.03,8,6),acc);tip.position.set(sd*0.07,0.15,0);PL.pack.add(tip);
-    const noz=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.055,0.06,12),dark);noz.position.set(sd*0.07,-0.16,0);PL.pack.add(noz);
-    const fl=new THREE.Mesh(new THREE.ConeGeometry(0.045,0.3,10,1,true),fm);fl.rotation.x=Math.PI;fl.position.set(sd*0.07,-0.34,0);PL.pack.add(fl);PL.flames.push(fl);}
-  pilot.scale.setScalar(1.2);}
+/* the pilots: the Astronaut flies free, the others are bought in the garage. Every pilot is the same rig (hip with the legs; torso
+   with the head, arms and jetpack), so poses, the ejection and the crash work for all. Each has a signature lead sound that the
+   melody switches to while you fly that pilot on the jetpack */
+const pilot=new THREE.Group();pilot.visible=false;pilot.scale.setScalar(1.2);car.add(pilot);let PL=null;
+const PILOTS=(()=>{const Mt=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:0.55,metalness:0.05,...o}),Ph=(c,o={})=>new THREE.MeshPhysicalMaterial({color:c,roughness:0.2,metalness:0.1,clearcoat:1,...o});
+  const glo=c=>new THREE.MeshBasicMaterial({color:new THREE.Color(c)}),cp=(r,l,m)=>new THREE.Mesh(new THREE.CapsuleGeometry(r,l,6,12),m),sp=(r,m)=>new THREE.Mesh(new THREE.SphereGeometry(r,24,16),m);
+  const bx=(w,h,d,m,rad=0.02)=>new THREE.Mesh(new RoundedBoxGeometry(w,h,d,3,Math.min(rad,w/2.1,h/2.1,d/2.1)),m),cy=(r0,r1,h,m,sg=16)=>new THREE.Mesh(new THREE.CylinderGeometry(r0,r1,h,sg),m);
+  const at=(o,x,y,z,rx=0,ry=0,rz=0)=>{o.position.set(x,y,z);o.rotation.set(rx,ry,rz);return o;};
+  const flame=(r,parent,x,y,z,k=1,cols=[[2.4,1.0,0.3],[2.6,2.2,1.4]])=>{const g=new THREE.Group();for(const[c,rad,h,op]of[[cols[0],0.05,0.34,0.8],[cols[1],0.025,0.2,0.9]]){
+      const m=new THREE.Mesh(new THREE.ConeGeometry(rad*k,h*k,12,1,true),new THREE.MeshBasicMaterial({color:new THREE.Color(...c),transparent:true,opacity:op,blending:THREE.AdditiveBlending,depthWrite:false}));
+      m.rotation.x=Math.PI;m.position.y=-h*k/2;m.userData.flame=true;g.add(m);}g.position.set(x,y,z);parent.add(g);r.flames.push(g);};
+  const rig=o=>{const r={root:new THREE.Group(),flames:[]};r.hip=new THREE.Group();r.hip.position.y=o.hipY;r.root.add(r.hip);r.torso=new THREE.Group();r.hip.add(r.torso);
+    r.head=new THREE.Group();r.head.position.y=o.neckY;r.torso.add(r.head);r.pack=new THREE.Group();r.pack.position.set(0,o.packY,o.packZ);r.torso.add(r.pack);
+    for(const sd of[-1,1]){const a=new THREE.Group();a.position.set(sd*o.shX,o.shY,0);r.torso.add(a);r[sd<0?'armL':'armR']=a;const l=new THREE.Group();l.position.set(sd*o.hipX,0,0);r.hip.add(l);r[sd<0?'legL':'legR']=l;}return r;};
+  return{
+  astro:{name:'Astronaut',price:0,about:'Chunky white suit, gold mirror visor',lead:'bell',build(){const r=rig({hipY:0.5,neckY:0.5,packY:0.24,packZ:0.17,shX:0.2,shY:0.4,hipX:0.085}),suit=Mt(0xf2efe8,{roughness:0.7}),acc=Mt(0xff7a3c),dark=Mt(0x3a3e48,{metalness:0.5}),gold=Ph(0xffc457,{metalness:1,roughness:0.12});
+    r.torso.add(at(cp(0.16,0.2,suit),0,0.22,0));r.torso.add(at(cy(0.165,0.165,0.06,acc),0,0.06,0));r.torso.add(at(bx(0.14,0.1,0.04,dark),0,0.28,-0.16));
+    r.head.add(sp(0.16,suit));r.head.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.135,24,14,Math.PI*0.55,Math.PI*0.9,Math.PI*0.25,Math.PI*0.45),gold),0,0,-0.04));r.head.add(at(cy(0.17,0.17,0.04,suit),0,-0.12,0));
+    for(const a of[r.armL,r.armR]){a.add(at(cp(0.06,0.24,suit),0,-0.17,0));a.add(at(sp(0.065,dark),0,-0.34,0));}
+    for(const l of[r.legL,r.legR]){l.add(at(cp(0.07,0.28,suit),0,-0.2,0));l.add(at(bx(0.13,0.09,0.2,dark,0.03),0,-0.41,-0.03));l.add(at(cy(0.075,0.075,0.03,acc),0,-0.3,0));}
+    for(const sd of[-1,1]){r.pack.add(at(cp(0.07,0.24,Mt(0xd8d4cc)),sd*0.08,0,0));flame(r,r.pack,sd*0.08,-0.2,0,1.1);}r.pack.add(at(bx(0.26,0.3,0.06,dark),0,0,-0.04));return r;}},
+  racer:{name:'Racer',price:300,about:'Race suit and a long aero helmet',lead:'saw',build(){const r=rig({hipY:0.5,neckY:0.5,packY:0.22,packZ:0.14,shX:0.17,shY:0.4,hipX:0.07}),red=Ph(0xd8232a),white=Ph(0xf6f6f2),blk=Ph(0x141418,{metalness:0.6}),visor=Ph(0x16202c,{metalness:0.8,roughness:0.05,emissive:0x2a4a9a,emissiveIntensity:0.3});
+    r.torso.add(at(cp(0.13,0.24,white),0,0.22,0));r.torso.add(at(bx(0.07,0.36,0.27,red,0.03),0,0.22,0));
+    const h=sp(0.13,red);h.scale.set(1,0.95,1.35);r.head.add(at(h,0,0,0.02));const v=new THREE.Mesh(new THREE.SphereGeometry(0.12,24,12,Math.PI*0.6,Math.PI*0.8,Math.PI*0.32,Math.PI*0.3),visor);v.scale.set(1.08,1,1.3);r.head.add(at(v,0,0,-0.02));r.head.add(at(bx(0.02,0.05,0.22,white),0,0.12,0.06));
+    for(const a of[r.armL,r.armR]){a.add(at(cp(0.045,0.26,white),0,-0.17,0));a.add(at(cp(0.047,0.1,red),0,-0.1,0));a.add(at(sp(0.05,blk),0,-0.34,0));}
+    for(const l of[r.legL,r.legR]){l.add(at(cp(0.055,0.32,white),0,-0.22,0));l.add(at(cp(0.057,0.12,red),0,-0.28,0));l.add(at(bx(0.1,0.07,0.19,blk,0.03),0,-0.44,-0.03));}
+    for(const sd of[-1,1]){r.pack.add(at(cy(0.045,0.055,0.34,blk),sd*0.07,0,0));flame(r,r.pack,sd*0.07,-0.19,0,1,[[1.0,1.4,2.6],[1.8,2.2,2.8]]);}return r;}},
+  robot:{name:'Robot',price:600,about:'Boxy robot, LED eyes, one big thruster',lead:'chip',build(){const r=rig({hipY:0.44,neckY:0.44,packY:0.18,packZ:0.16,shX:0.21,shY:0.32,hipX:0.09}),body=Ph(0x8fb0c8,{metalness:0.5,roughness:0.35}),dark=Ph(0x2a3440,{metalness:0.6}),led=glo(0x6affd8),warn=glo(0xffb020);
+    r.torso.add(at(bx(0.34,0.36,0.26,body,0.06),0,0.2,0));r.torso.add(at(bx(0.16,0.1,0.02,dark,0.02),0,0.24,-0.135));for(let k=0;k<3;k++)r.torso.add(at(bx(0.03,0.03,0.01,k===1?warn:led,0.005),-0.05+k*0.05,0.24,-0.147));
+    r.head.add(at(bx(0.26,0.2,0.22,body,0.05),0,0.08,0));r.head.add(at(bx(0.2,0.08,0.02,dark,0.02),0,0.09,-0.115));for(const sd of[-1,1])r.head.add(at(sp(0.025,led),sd*0.05,0.09,-0.125));
+    r.head.add(at(cy(0.008,0.008,0.14,dark,6),0,0.25,0));r.head.add(at(sp(0.025,warn),0,0.33,0));
+    for(const a of[r.armL,r.armR]){a.add(at(cy(0.035,0.035,0.26,dark,10),0,-0.14,0));a.add(at(bx(0.08,0.08,0.08,body,0.02),0,-0.3,0));}
+    for(const l of[r.legL,r.legR]){l.add(at(cy(0.04,0.04,0.26,dark,10),0,-0.15,0));l.add(at(bx(0.13,0.08,0.19,body,0.03),0,-0.33,-0.02));}
+    r.pack.add(at(cy(0.1,0.12,0.26,dark,20),0,0,0));r.pack.add(at(new THREE.Mesh(new THREE.TorusGeometry(0.11,0.012,8,24),led),0,0.04,0,Math.PI/2));flame(r,r.pack,0,-0.16,0,1.7,[[1.0,2.2,2.0],[2.0,2.6,2.6]]);return r;}},
+  fox:{name:'Fox Pilot',price:900,about:'Fox in a bomber jacket and goggles',lead:'flute',build(){const r=rig({hipY:0.48,neckY:0.48,packY:0.22,packZ:0.16,shX:0.18,shY:0.38,hipX:0.08}),fur=Mt(0xe8763a,{roughness:0.8}),white=Mt(0xf8f0e4,{roughness:0.8}),jacket=Mt(0x5a4030),wool=Mt(0xf0e6d0,{roughness:1}),goggle=Ph(0x9ad8ff,{roughness:0.05});
+    r.torso.add(at(cp(0.15,0.2,jacket),0,0.21,0));r.torso.add(at(new THREE.Mesh(new THREE.TorusGeometry(0.13,0.045,10,24),wool),0,0.36,0,Math.PI/2));
+    r.head.add(sp(0.13,fur));r.head.add(at(new THREE.Mesh(new THREE.ConeGeometry(0.07,0.16,16),white),0,-0.03,-0.15,-Math.PI/2));r.head.add(at(sp(0.022,Mt(0x1a1010)),0,-0.03,-0.23));
+    for(const sd of[-1,1]){r.head.add(at(new THREE.Mesh(new THREE.ConeGeometry(0.05,0.12,4),fur),sd*0.08,0.14,0.02,0,0,sd*-0.25));r.head.add(at(new THREE.Mesh(new THREE.TorusGeometry(0.035,0.012,8,16),Mt(0x6a4a2a)),sd*0.05,0.06,-0.11));r.head.add(at(sp(0.03,goggle),sd*0.05,0.06,-0.115));}
+    r.hip.add(at(cp(0.06,0.26,fur),0,0.02,0.2,1.1));r.hip.add(at(sp(0.058,white),0,0.11,0.36));
+    for(const a of[r.armL,r.armR]){a.add(at(cp(0.052,0.24,jacket),0,-0.17,0));a.add(at(sp(0.05,white),0,-0.33,0));}
+    for(const l of[r.legL,r.legR]){l.add(at(cp(0.06,0.28,Mt(0x3a3a48)),0,-0.2,0));l.add(at(bx(0.11,0.08,0.18,Mt(0x2a1a12),0.03),0,-0.41,-0.03));}
+    r.pack.add(at(bx(0.24,0.28,0.08,Mt(0x7a8a5a),0.04),0,0,0));for(const sd of[-1,1]){r.pack.add(at(cy(0.04,0.05,0.1,Mt(0x4a4a50,{metalness:0.6})),sd*0.07,-0.18,0));flame(r,r.pack,sd*0.07,-0.23,0,1);}return r;}},
+  ninja:{name:'Cyber Ninja',price:1200,about:'Matte armour, neon edges, glowing visor',lead:'koto',build(){const r=rig({hipY:0.5,neckY:0.5,packY:0.22,packZ:0.14,shX:0.18,shY:0.4,hipX:0.075}),arm=Ph(0x16161c,{metalness:0.6,roughness:0.35}),neon=glo(0x2ef2ff),mag=glo(0xff3fb4);
+    r.torso.add(at(cp(0.135,0.22,arm),0,0.22,0));for(const y of[0.12,0.3])r.torso.add(at(new THREE.Mesh(new THREE.TorusGeometry(0.138,0.006,6,32),neon),0,y,0,Math.PI/2));
+    const h=sp(0.125,arm);h.scale.set(1,1.05,1.12);r.head.add(h);r.head.add(at(bx(0.18,0.025,0.05,neon,0.01),0,0.01,-0.12));r.head.add(at(new THREE.Mesh(new THREE.ConeGeometry(0.03,0.14,4),arm),0,0.1,0.1,-1.2));
+    r.torso.add(at(bx(0.02,0.6,0.02,Ph(0x6a6a74,{metalness:1})),0.05,0.3,0.16,0,0,0.7));
+    for(const a of[r.armL,r.armR]){a.add(at(cp(0.048,0.26,arm),0,-0.17,0));a.add(at(bx(0.012,0.2,0.012,neon,0.004),0,-0.17,-0.05));}
+    for(const l of[r.legL,r.legR]){l.add(at(cp(0.056,0.3,arm),0,-0.21,0));l.add(at(bx(0.012,0.24,0.012,mag,0.004),0,-0.22,-0.06));l.add(at(bx(0.1,0.06,0.18,arm,0.02),0,-0.43,-0.03));}
+    r.pack.add(at(bx(0.2,0.22,0.07,arm,0.03),0,0,0));for(const sd of[-1,1]){r.pack.add(at(bx(0.05,0.02,0.07,neon,0.005),sd*0.06,0.06,0.04));flame(r,r.pack,sd*0.065,-0.14,0,0.95,[[2.6,0.5,1.6],[2.6,1.8,2.6]]);}return r;}},
+  mech:{name:'Mech Suit',price:2000,about:'Armoured suit, chest light, boot thrusters',lead:'hero',build(){const r=rig({hipY:0.52,neckY:0.52,packY:0.24,packZ:0.17,shX:0.25,shY:0.42,hipX:0.095}),red=Ph(0xb8202a,{metalness:0.7,roughness:0.25}),gold=Ph(0xe0b050,{metalness:1,roughness:0.2}),dark=Ph(0x2a2a30,{metalness:0.7}),core=glo(0x9ae8ff);
+    r.torso.add(at(bx(0.36,0.4,0.26,red,0.08),0,0.22,0));r.torso.add(at(cy(0.05,0.05,0.02,core,20),0,0.3,-0.135,Math.PI/2));r.torso.add(at(bx(0.28,0.1,0.22,gold,0.04),0,0.06,0));
+    for(const sd of[-1,1])r.torso.add(at(sp(0.11,red),sd*0.24,0.42,0));
+    r.head.add(at(bx(0.2,0.24,0.22,red,0.07),0,0.06,0));r.head.add(at(bx(0.16,0.12,0.02,gold,0.03),0,0.05,-0.112));for(const sd of[-1,1])r.head.add(at(bx(0.05,0.015,0.01,core,0.004),sd*0.04,0.07,-0.124));
+    for(const a of[r.armL,r.armR]){a.add(at(cp(0.065,0.22,red),0,-0.17,0));a.add(at(bx(0.11,0.12,0.11,gold,0.03),0,-0.32,0));}
+    for(const l of[r.legL,r.legR]){l.add(at(cp(0.075,0.28,red),0,-0.21,0));l.add(at(bx(0.14,0.1,0.2,gold,0.03),0,-0.42,-0.02));flame(r,l,0,-0.47,0.02,1.2,[[1.6,1.9,2.6],[2.4,2.6,2.8]]);}
+    for(const sd of[-1,1])r.pack.add(at(bx(0.03,0.2,0.12,dark,0.01),sd*0.12,0,0,0,0,sd*0.3));return r;}}};})();
+const PILOT_KEYS=Object.keys(PILOTS),pilotCache={};
+const ownsPilot=k=>!PILOTS[k].price||(readJ('td-pilots')||[]).includes(k);
+function showPilot(k){if(!pilotCache[k]){pilotCache[k]=PILOTS[k].build();pilot.add(pilotCache[k].root);}for(const kk in pilotCache)pilotCache[kk].root.visible=kk===k;PL=pilotCache[k];}
 // the wreck: the car's own parts fly apart, glowing hot, with fire, smoke and a fireball
 const debris=[];
 function wreck(meshes,x,y,heat){for(const o of meshes){if(debris.length>60)break;const m=new THREE.Mesh(o.geometry,o.material.clone());o.matrixWorld.decompose(m.position,m.quaternion,m.scale);
@@ -2036,7 +2078,7 @@ function breakCar(){CARM.g.updateMatrixWorld(true);const ms=[];CARM.g.traverse(o
   if(A.ctx&&audioOn){const at=A.ctx.currentTime+0.12;const o=A.ctx.createOscillator(),v=A.ctx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(180,at);o.frequency.exponentialRampToValueAtTime(1400,at+0.45);
     v.gain.setValueAtTime(0.0001,at);v.gain.exponentialRampToValueAtTime(0.05,at+0.05);v.gain.exponentialRampToValueAtTime(0.0001,at+0.5);o.connect(v);v.connect(A.master);o.start(at);o.stop(at+0.55);
     nz(at+0.5,{type:'bandpass',freq:1200,q:0.6,dur:0.8,g:0.12,out:A.master});}}
-function breakPack(){PL.pack.updateMatrixWorld(true);const ms=[];PL.pack.traverse(o=>{if(o.isMesh&&!PL.flames.includes(o))ms.push(o);});wreck(ms,car.position.x,car.position.y,0.9);
+function breakPack(){PL.pack.updateMatrixWorld(true);const ms=[];PL.pack.traverse(o=>{if(o.isMesh&&!o.userData.flame)ms.push(o);});wreck(ms,car.position.x,car.position.y,0.9);
   blast(car.position.x,car.position.y+0.2,car.position.z,false);}
 const boom=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffa040,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));boom.visible=false;scene.add(boom);let boomAge=9;
 function debrisUpdate(dt){if(boomAge<0.4){boomAge+=dt;const a=boomAge/0.4;boom.scale.setScalar(1.6+a*2.6);boom.material.opacity=(1-a)*0.55;boom.position.z+=SPEED*0.4*dt;}else boom.visible=false;for(let i=debris.length-1;i>=0;i--){const d=debris[i];d.age+=dt;d.v.y-=11*dt;d.m.position.addScaledVector(d.v,dt);
@@ -2046,10 +2088,10 @@ function debrisUpdate(dt){if(boomAge<0.4){boomAge+=dt;const a=boomAge/0.4;boom.s
     if(d.age>=d.life||d.m.position.z>camera.position.z+2){scene.remove(d.m);d.m.material.dispose();debris.splice(i,1);}}}
 // on the jetpack the pilot leans into the flight, legs trailing a little, hands near the throttle; the flames flare on a hop
 function posePilot(dt,lift){const P=PL,up=clamp(lift/1.2,-1,1);P.pack.visible=true;
-  P.torso.rotation.x=-0.42-up*0.15;P.hip.rotation.x=-0.1;P.head.rotation.x=0.3;P.hip.position.y=0.46;
+  P.torso.rotation.x=-0.42-up*0.15;P.hip.rotation.x=-0.1;P.head.rotation.x=0.3;
   P.legL.rotation.x=0.35+Math.sin(t*3.1)*0.06;P.legR.rotation.x=0.5+Math.sin(t*3.1+1)*0.06;P.armL.rotation.x=-0.5;P.armR.rotation.x=-0.5;P.armL.rotation.z=-0.25;P.armR.rotation.z=0.25;
   pilot.position.y=-0.45;pilot.rotation.x=0;
-  for(const f of P.flames){const k=(0.75+rand()*0.35)*(up>0.15?1.6:up<-0.15?0.6:1);f.scale.set(1,k,1);f.position.y=-0.16-0.15*k;}}
+  for(const f of P.flames){const k=(0.75+rand()*0.35)*(up>0.15?1.6:up<-0.15?0.6:1);f.scale.set(1,k,1);}}
 const shieldBubble=new THREE.Mesh(new THREE.SphereGeometry(1.25,32,20),new THREE.MeshBasicMaterial({color:0x6ad8ff,transparent:true,opacity:0.12,blending:THREE.AdditiveBlending,depthWrite:false}));shieldBubble.scale.set(1,0.7,1.3);shieldBubble.visible=false;carBody.add(shieldBubble);
 const carLight=new THREE.PointLight(0xffb347,4,7,1.6);carLight.position.set(0,-0.3,-1.5);carBody.add(carLight);
 const shadow=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.6),new THREE.MeshBasicMaterial({map:radial('0,0,0',0.9),transparent:true,depthWrite:false}));
@@ -2148,8 +2190,14 @@ const edgeFx=new THREE.Mesh(planeGeo,glowMat({map:hexTex,side:THREE.DoubleSide,o
 // the pulse: a ring of light that rushes down the lane (each tap has its own, so quick taps don't cut the last one short);
 // a broken case bursts into flat glass shards that tumble and catch the light, with a quick flash
 const PULSES=6,pulses=[...Array(PULSES)].map(()=>{const m=new THREE.Mesh(new THREE.TorusGeometry(0.7,0.05,10,48),glowMat({opacity:0}));m.visible=false;scene.add(m);return{m,age:9,hit:false,x:0,y:0};});let pulseI=0;
+// the chord playing now, and the next sixteenth-note on the music's clock (or now, if that's too far off to feel instant)
+function chordNow(){const B=SONG.bar(Math.floor((t+audLat)/BAR)-songBar0);return B&&B.chord?B.chord:[57,[0,4,7]];}
+function onGrid(){const now=A.ctx.currentTime,at=offset+Math.ceil((now-offset)/S16)*S16;return at-now<0.07?at:now;}
 function pulseFx(hit){if(sim)return;const P=pulses[pulseI++%PULSES];P.age=0;P.hit=hit;P.x=cs.x;P.y=cs.y;P.m.visible=true;
-  if(A.ctx&&audioOn){const at=A.ctx.currentTime;tone(at,midi(40),{type:'sine',dur:0.25,g:0.22,cut:900,cutEnd:120});nz(at,{type:'bandpass',freq:900,q:1.2,dur:0.12,g:0.08});}}
+  if(A.ctx&&audioOn){const at=onGrid(),[r,iv]=chordNow();
+    // a deep thump on the chord's root, a bright note from the chord on top, and a breath of air: part of the band, not a sound effect
+    tone(at,midi(r+12),{type:'sine',dur:0.3,g:0.2,cut:900,cutEnd:240});tone(at,midi(r+24+iv[1%iv.length]),{type:'triangle',dur:0.22,g:hit?0.05:0.03,cut:5200,attack:0.004});
+    nz(at,{type:'bandpass',freq:1100,q:1.4,dur:0.14,g:0.06,verb:0.25});}}
 const shardGeo=new THREE.BufferGeometry();shardGeo.setAttribute('position',new THREE.Float32BufferAttribute([0,0.5,0, -0.38,-0.32,0, 0.42,-0.18,0, 0,0.5,0.03, 0.42,-0.18,0.03, -0.38,-0.32,0.03],3));shardGeo.computeVertexNormals();
 const SHARDS=180, shardMat=new THREE.MeshPhysicalMaterial({color:0xeaf6ff,roughness:0.04,metalness:0.2,clearcoat:1,transparent:true,opacity:0.8,side:THREE.DoubleSide,emissive:0x8fd0ff,emissiveIntensity:0.35,depthWrite:false});
 const shardMesh=new THREE.InstancedMesh(shardGeo,shardMat,SHARDS);
@@ -2165,8 +2213,9 @@ function shatterFx(x,y,z,big=false){if(sim)return;const n=(big?36:24)>>(fxLow?1:
   for(let i=0;i<10;i++)emit(x+(rand()-0.5)*0.9,y+(rand()-0.5)*0.9,z,(rand()-0.5)*5,(rand()-0.3)*4,SPEED*0.8,0.35,0.05,0.02,0.9,[1.6,1.8,2]);
   breakFlash.position.set(x,y,z+0.2);breakFlash.visible=true;flashAge=0;
   // the sound of breaking glass: a crack, a hiss of fragments and a scatter of tinkles that falls away
-  if(A.ctx&&audioOn){const at=A.ctx.currentTime;kick(at,0.35);nz(at,{type:'highpass',freq:3500,dur:0.18,g:0.26});nz(at+0.02,{type:'bandpass',freq:6500,q:0.8,dur:0.45,g:0.1,verb:0.5});
-    for(let i=0;i<12;i++){const d=Math.pow(rand(),1.6)*0.45;tone(at+d,2600+rand()*4200,{type:'sine',dur:0.12+rand()*0.2,g:0.035*(1-d*1.6),cut:11000,out:A.master});}}}
+  // (on the grid, and the tinkles are the notes of the chord that's playing, falling on thirty-second notes)
+  if(A.ctx&&audioOn){const at=onGrid(),[r,iv]=chordNow();kick(at,0.35);nz(at,{type:'highpass',freq:3500,dur:0.16,g:0.22});nz(at+0.02,{type:'bandpass',freq:6500,q:0.8,dur:0.4,g:0.08,verb:0.5});
+    for(let i=0;i<10;i++){const d=Math.floor(Math.pow(rand(),1.4)*8)*S16/2,nt=r+36+iv[Math.floor(rand()*iv.length)]+(rand()<0.3?12:0);tone(at+d,midi(nt),{type:'sine',dur:0.14+rand()*0.18,g:0.032*(1-d*1.2),cut:11000,attack:0.002,out:A.back});}}}
 function pulseShardUpdate(dt){for(const P of pulses){if(P.age>=0.35){P.m.visible=false;continue;}P.age+=dt;const a=P.age/0.35;P.m.position.set(P.x,P.y,-0.6-a*PULSE_RANGE);P.m.scale.setScalar(1+a*0.7);
     P.m.material.opacity=(1-a)*(P.hit?0.6:0.35);P.m.material.color.set(P.hit?0xbfe8ff:0x8aa8ff).multiplyScalar(1.6);}
   if(flashAge<0.18){flashAge+=dt;const a=flashAge/0.18;breakFlash.material.opacity=(1-a)*0.7;breakFlash.scale.setScalar(1.4+a*1.8);breakFlash.position.z+=SPEED*dt;}else breakFlash.visible=false;
@@ -2414,7 +2463,7 @@ function jetFx(dir){jetT=0.3;if(sim||dir<0)return;const c=TH.pods;
   for(let i=0;i<16;i++){carPt(CARM.jets[i%CARM.jets.length],tmpV);emit(tmpV.x,tmpV.y-0.05,tmpV.z,(rand()-0.5)*0.7,-5-rand()*3,SPEED*0.5,0.32,0.1,0.5,0.55,c);}}
 function setMelody(on,at){melodyOn=on;
   if(audioOn&&A.ctx){const g=A.mel.gain;g.cancelScheduledValues(A.ctx.currentTime);g.setTargetAtTime(on?1:0,Math.max(A.ctx.currentTime,at),on?0.012:0.035);}}
-function playLead(at,note,len,out){const L=LEADS[SONG.V.lead]||LEADS.pluck,keep=A.mel,d=Math.max(L.min,len*EIGHTH*L.k);if(out)A.mel=out;L.f(at,midi(note),d);
+function playLead(at,note,len,out){const L=LEADS[form===1&&!inMenu&&!SONG.tut?PILOTS[selPilot].lead:SONG.V.lead]||LEADS.pluck,keep=A.mel,d=Math.max(L.min,len*EIGHTH*L.k);if(out)A.mel=out;L.f(at,midi(note),d);
   // in overdrive the lead is doubled an octave up, softer
   if(odT>0&&!inMenu){const g=A.ctx.createGain();g.gain.value=0.4;g.connect(A.mel);A.mel=g;L.f(at,midi(note+12),d);}A.mel=keep;}
 /* audio delay: the time from scheduling a sound to hearing it (Bluetooth headphones add 0.15-0.25 s). The game clock t runs that
@@ -2423,7 +2472,7 @@ function playLead(at,note,len,out){const L=LEADS[SONG.V.lead]||LEADS.pluck,keep=
 let audLat=0;const calGet=()=>{const v=store.get('lr-cal');return v===null||v===''||isNaN(+v)?null:+v;};
 function measureLat(){const c=calGet();audLat=c!==null?clamp(c/1000,0,0.5):A.ctx?clamp((A.ctx.outputLatency||0)+(A.ctx.baseLatency||0),0,0.5):0;}
 // with a long delay, a coin's note is booked ahead (if the car is lined up for it) so it still sounds on the beat; a miss silences it
-function preLead(n){if(n.pre||audLat<0.03||!audioOn||!A.ctx||sim||inMenu)return;const at=offset+n.time;if(at>A.ctx.currentTime+0.1||at<A.ctx.currentTime)return;
+function preLead(n){if(n.pre||!audioOn||!A.ctx||sim||inMenu)return;const at=offset+n.time;if(at>A.ctx.currentTime+0.1||at<A.ctx.currentTime)return;
   if(cs.col!==n.col||cs.row!==n.row||respawn>0)return;const g=A.ctx.createGain();g.connect(A.mel);n.pre=g;playLead(at,n.note,n.len,g);}
 function playBacking(st,sb,at){const B=SONG.bar(sb);if(!B)return;
   if(B.sec==='E'){if(st===0){const[r,tri]=B.chord;kick(at,1.1);nz(at,{type:'highpass',freq:5000,dur:1.8,g:0.2,verb:0.6});
@@ -2451,7 +2500,7 @@ const SYNC_START=75,SYNC_CRASH=20,SYNC_MISS=5,OD_BARS=8;
    You start in the car. The first crash blows it apart and the pilot ejects onto a jetpack; the second wrecks the jetpack and you
    land running on the skyway (swipe up to jump, down to slide); the third ends the run. In a lower form a rescue meter fills as you
    catch coins (a miss drains it): full, and your next form is delivered on the next bar line, and the band comes back in */
-const FORM_NAME=['','JETPACK','CAR'],RESCUE_PER=2.2,RESCUE_MISS=3,RESCUE_GLASS=3.5;
+const FORM_NAME=['','JETPACK','CAR'],RESCUE_PER=2.75,RESCUE_MISS=2.4,RESCUE_GLASS=4.4;
 let form=2,rescue=0,deliverAt=Infinity,formAnim={kind:'',t0:-9,from:2},formV=2;
 const reachNow=()=>form===2?CARS[selCar].perk.reach:0.56;
 // the band's colour for each form, faded in on the next bar line (or at once)
@@ -2469,7 +2518,7 @@ function loseForm(h){if(SONG.tut)return;form--;formV=Math.max(1,form);formAnim={
 // the rescue meter fills with every coin while you're out of the car
 // (quicker in early episodes: about 28 coins in episode 1, about 50 in episode 8)
 function rescueGain(n){if(form>=2||SONG.tut||inMenu||deliverAt<Infinity)return;rescue=clamp(rescue+n*(SONG.ep>=0?1.6-0.1*SONG.ep:1),0,100);
-  if(rescue>=100){deliverAt=nextBarAt(0.5);if(!sim){pop(form===1?'RESCUE INBOUND · YOUR CAR':'RESCUE INBOUND · JETPACK','gold',2);riserTo(deliverAt);}}}
+  if(rescue>=100){deliverAt=Math.ceil((t+0.35)/BEAT)*BEAT;if(!sim){pop(form===1?'RESCUE INBOUND · YOUR CAR':'RESCUE INBOUND · JETPACK','gold',2);riserTo(deliverAt);}}}
 function deliver(){deliverAt=Infinity;rescue=0;form++;formAnim={kind:'deliver',t0:t,from:form-1};invuln=Math.max(invuln,0.9);mission('rescue',1);
   if(sim){sim.stats.rescues=(sim.stats.rescues||0)+1;return;}formAudio(form,undefined,true);pop(form===2?'NEW CAR!':'JETPACK!','gold',3,1400);haptic('win');
   if(A.ctx&&audioOn){const at=A.ctx.currentTime;kick(at,0.9,A.master);nz(at,{type:'highpass',freq:4000,dur:1.0,g:0.16,verb:0.6,out:A.master});[0,4,7,12].forEach((x,i)=>tone(at+i*0.045,midi(72+x),{type:'triangle',dur:0.5,g:0.05,cut:7000,out:A.master}));}}
@@ -2550,6 +2599,7 @@ function recordEp(stars,acc,grade){const old=epSave(key,EP),best=score>old.score
 const STAR_PAY=40, wallet={get:()=>Math.max(0,+store.get('lr-coins')||0),add(n){store.set('lr-coins',String(wallet.get()+n));}};
 const owns=k=>!CARS[k].price||store.get('lr-unlockcars')==='1'||(readJ('lr-cars')||[]).includes(k);
 let selCar=CARS[store.get('lr-car')]&&owns(store.get('lr-car'))?store.get('lr-car'):'arrow';showCar(selCar);
+let selPilot=PILOTS[store.get('td-pilot')]&&ownsPilot(store.get('td-pilot'))?store.get('td-pilot'):'astro';showPilot(selPilot);
 function payRun(bonus=0){if(inMenu||sim)return 0;const n=Math.round((run.hits-(run.paidHits||0))*CARS[selCar].perk.coin)+bonus;run.paidHits=run.hits;wallet.add(n);return n;}
 const earnText=(n,why)=>`+${n.toLocaleString('en-US')} coins${why} · you have ${wallet.get().toLocaleString('en-US')}`;
 // missions ask for something on purpose (timing, clean runs, stars), not just for playing
@@ -2722,7 +2772,7 @@ function update(dt){
     // the melody's in-between notes (no coin) play on time while the melody is on
     const now=A.ctx.currentTime;for(const g of ghosts){if(g.done)continue;const at=offset+g.time;if(at>now+0.1)break;g.done=true;if(melodyOn&&at>=now-0.03&&respawn<=0)playLead(Math.max(at,now),g.note,g.len);}
     if(ghosts.length>64&&ghosts[32].done)ghosts=ghosts.filter(g=>!g.done);}
-  if(audioOn&&A.ctx&&!sim&&!needSync)while(n16*S16<t+audLat+0.12){const at=offset+n16*S16;if(at>=A.ctx.currentTime-0.01)playBacking(n16%16,Math.floor(n16/16)-songBar0,at);n16++;}
+  if(audioOn&&A.ctx&&!sim&&!needSync)while(n16*S16<t+audLat+0.3){const at=offset+n16*S16;if(at>=A.ctx.currentTime-0.01)playBacking(n16%16,Math.floor(n16/16)-songBar0,at);n16++;}
   // episodes end at the finish gate; the clear screen comes up with the last chord
   if((SONG.ep>=0||SONG.tut)&&!inMenu&&!over){if(!finished&&t>gateT){finished=true;pop('FINISH!','gold big',3);}if(t>gateT+BAR+0.15)(SONG.tut?tutorialDone:episodeClear)();}
   melLevel+=((melodyOn?1:0.3)-melLevel)*Math.min(1,dt*5);
@@ -2806,7 +2856,7 @@ function render(dt){
   if(formAnim.kind==='eject'&&fp<1){if(fp<0.32){const q=fp/0.32;offY=2.4*(1-(1-q)*(1-q));offZ=0.5*q;spin=q*Math.PI*2;}else{const q=(fp-0.32)/0.68,e=1-Math.pow(1-q,3);offY=2.4*(1-e);offZ=0.5*(1-e);spin=0;}}
   // the last crash: the jetpack bursts and the pilot tumbles away
   else if(formAnim.kind==='down'){const q=Math.min(1,fa/0.9);spin=-q*Math.PI*1.6;offY=0.6*Math.sin(q*Math.PI)-1.4*q*q;offZ=1.2*q;}
-  if(formAnim.kind==='deliver'&&fa>=0.45&&formV!==form){formV=form;sparkleBurst(14);}
+  if(formAnim.kind==='deliver'&&fa>=0.3&&formV!==form){formV=form;sparkleBurst(14);}
   const roll=rollT>0?(1-rollT/0.65)*Math.PI*2:0;
   // edge bounce: out into the field, then a springy wobble back (and a tilt away from the wall)
   bumpT+=dt;const bw=bumpT<0.9?Math.sin(bumpT*24)*Math.exp(-bumpT*6):0;
@@ -2815,8 +2865,8 @@ function render(dt){
   car.position.set(cs.x+bumpDir*0.34*bw,visY+offY+Math.sin(t*2.6)*0.03+Math.abs(bw)*0.06,offZ);
   car.rotation.set(clamp(cs.vy*0.05,-0.25,0.25)*hum+spin,clamp(-cs.vx*0.03,-0.12,0.12)-bumpDir*0.12*bw,(clamp(-cs.vx*0.08,-0.45,0.45)-bumpDir*0.5*bw)*hum+roll);
   // which model shows: the car (with the pilot hidden inside), or the pilot; a delivered car comes down from above
-  {const del=formAnim.kind==='deliver'&&fa<0.45,toCar=del&&formAnim.from===1,e=del?1-Math.pow(1-fa/0.45,2):1;
-    CARM.g.visible=formV===2||toCar;pilot.visible=formV<2;carBody.position.y=-0.27*CAR_K+(toCar?3.2*(1-e):0);
+  {const del=formAnim.kind==='deliver'&&fa<0.3,toCar=del&&formAnim.from===1,e=del?1-Math.pow(1-fa/0.3,2):1;
+    const shopP=garage&&gMode==='pilot';CARM.g.visible=(formV===2||toCar)&&!shopP;pilot.visible=formV<2||shopP;carBody.position.y=-0.27*CAR_K+(toCar?3.2*(1-e):0);
     if(pilot.visible)posePilot(dt,cs.y-LY[HOME]);
     PL.pack.scale.setScalar(1);}
   debrisUpdate(dt);
@@ -2826,7 +2876,7 @@ function render(dt){
   car.visible=invuln<=0||respawn>RESPAWN*0.62||Math.floor(t*14)%2===0;
   const lift=cs.y-LY[HOME],diving=lift<-0.25;
   podMat.color.setRGB(...TH.pods).multiplyScalar(diving?0.35:2.2+pulse*2.5+(lift>0.25?2:0));
-  under.visible=respawn<=0&&formV===2;underMat.color.copy(ROWC[hl]).multiplyScalar(1.6);carLight.color.copy(ROWC[hl]);
+  under.visible=respawn<=0&&formV===2&&!(garage&&gMode==='pilot');underMat.color.copy(ROWC[hl]).multiplyScalar(1.6);carLight.color.copy(ROWC[hl]);
   exhaustAcc+=dt*60;
   if(formV<2)exhaustAcc=0;
   while(exhaustAcc>=1){exhaustAcc-=1;carPt(CARM.exhaust[Math.floor(rand()*CARM.exhaust.length)],tmpV);
@@ -3031,6 +3081,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, a few short words per change
 const CHANGELOG=[
+ ['25','Pilot Shop','26 Oct 2026',['Astronaut pilot by default','5 pilots to buy','Each pilot has its own music','Rescue 25% easier, arrives on the beat','Music stays on the beat','Pulse and glass play in key']],
  ['24', 'Eight Cities', '25 Oct 2026', ['Two lives: car, then jetpack', '3 new, harder cities per era', 'More swipes every episode', 'PLAY opens the map', 'Intro music', 'Dev mode on at start']],
  ['23', 'Bail Out', '25 Oct 2026', ['Crash: car explodes, pilot ejects', 'Jetpack as a second life', 'Rescue meter wins the car back', 'Lives replace Sync']],
  ['22', 'More Notes', '25 Oct 2026', ['Busier melodies', 'More coins and lane changes', 'No guide line']],
@@ -3171,12 +3222,24 @@ function renderBoard(){document.querySelectorAll('#boardTabs .tab').forEach(b=>b
 function openMenu(panel='menu'){inMenu=true;over=false;paused=false;countEnd=0;for(const id of['over','pause','clear'])$(id).hidden=true;screenEl.classList.remove('is-over','is-paused');
   screenEl.classList.add('in-menu');audioOn=false;if(A.ctx&&A.ctx.state!=='running')A.ctx.resume().catch(()=>{});
   if(SONG.ep>=0||SONG.tut){setSong(loopSong(key));resetRun();}
-  const wasG=garage;garage=panel==='garage';if(garage){gIdx=CAR_KEYS.indexOf(selCar);renderGarage();for(const r of fxRings){r.age=9;r.m.visible=false;}for(const b of bursts){b.age=9;b.p.visible=false;}}else{showCar(selCar);if(wasG)resetRun();}
+  const wasG=garage;garage=panel==='garage';if(garage){gIdx=CAR_KEYS.indexOf(selCar);renderGarage();for(const r of fxRings){r.age=9;r.m.visible=false;}for(const b of bursts){b.age=9;b.p.visible=false;}}else{showCar(selCar);showPilot(selPilot);if(wasG)resetRun();}
   renderMenu();showPanel(panel);if(panel==='menu')dailyGift();if(panel==='eps'){epSel=-1;renderEps();}if(panel==='board')renderBoard();
   if(panel==='missions')renderMissions();if(panel==='changes')renderLog();
   ({menu:$('start'),eps:$('epsBack'),board:$('boardBack'),garage:$('garageBack'),missions:$('misBack'),settings:$('setBack'),changes:$('logBack'),sync:$('syncPad')})[panel].focus({preventScroll:true});if(panel==='settings'||panel==='sync')renderSync();}
 // garage: flip through the cars (any can be looked at), buy one with coins, choose which one you fly
-function renderGarage(){const k=CAR_KEYS[gIdx],C=CARS[k],own=owns(k),w=wallet.get(),act=$('carAct');showCar(k);
+// pilots: the same carousel, showing the pilot flying in the showroom
+let gMode='car',pilotIdx=0;
+function renderPilotShop(){const k=PILOT_KEYS[pilotIdx],Q=PILOTS[k],own=ownsPilot(k),w=wallet.get(),act=$('carAct');showPilot(k);
+  $('carName').textContent=Q.name.toUpperCase();$('carAbout').textContent=Q.about;$('carPerk').textContent=`Own music on the jetpack: ${LEAD_NAMES[Q.lead]||Q.lead}`;$('gWallet').textContent=w.toLocaleString('en-US');
+  $('carPrice').textContent=own?(Q.price?'OWNED':'FREE · OWNED'):`${Q.price.toLocaleString('en-US')} coins`;act.disabled=k===selPilot||(!own&&w<Q.price);
+  act.textContent=k===selPilot?'✓ YOUR PILOT':own?'FLY AS THIS PILOT':w>=Q.price?`BUY FOR ${Q.price.toLocaleString('en-US')} COINS`:`NEED ${(Q.price-w).toLocaleString('en-US')} MORE COINS`;
+  const dots=$('carDots');dots.textContent='';PILOT_KEYS.forEach((kk,i)=>{const d=document.createElement('button');d.className=ownsPilot(kk)?'own':'';d.setAttribute('aria-label',PILOTS[kk].name);
+    if(i===pilotIdx)d.setAttribute('aria-current','true');d.addEventListener('click',()=>{pilotIdx=i;renderGarage();});dots.append(d);});
+  $('carView').textContent=gView==='show'?'IN-GAME VIEW':'SHOWROOM VIEW';renderDev();}
+function renderGarage(){$('gtCars').setAttribute('aria-pressed',String(gMode==='car'));$('gtPilots').setAttribute('aria-pressed',String(gMode==='pilot'));
+  $('carPrev').setAttribute('aria-label',gMode==='car'?'Previous car':'Previous pilot');$('carNext').setAttribute('aria-label',gMode==='car'?'Next car':'Next pilot');
+  if(gMode==='pilot'){showCar(selCar);return renderPilotShop();}showPilot(selPilot);
+  const k=CAR_KEYS[gIdx],C=CARS[k],own=owns(k),w=wallet.get(),act=$('carAct');showCar(k);
   $('carName').textContent=C.name.toUpperCase();$('carAbout').textContent=C.about;$('carPerk').textContent=C.perk.say;$('gWallet').textContent=w.toLocaleString('en-US');
   $('carPrice').textContent=own?(C.price?'OWNED':'FREE · OWNED'):`${C.price.toLocaleString('en-US')} coins`;
   act.disabled=k===selCar||(!own&&w<C.price);
@@ -3231,9 +3294,13 @@ $('pauseBtn').addEventListener('click',pauseGame);$('resume').addEventListener('
 $('pauseMenu').addEventListener('click',()=>{payRun();openMenu('menu');});
 $('garageBtn').addEventListener('click',()=>{running=true;openMenu('garage');});
 $('misBtn').addEventListener('click',()=>openMenu('missions'));$('misBack').addEventListener('click',()=>openMenu('menu'));$('garageBack').addEventListener('click',()=>openMenu('menu'));
-$('carPrev').addEventListener('click',()=>{gIdx=(gIdx+CAR_KEYS.length-1)%CAR_KEYS.length;renderGarage();});
-$('carNext').addEventListener('click',()=>{gIdx=(gIdx+1)%CAR_KEYS.length;renderGarage();});
-$('carAct').addEventListener('click',()=>{const k=CAR_KEYS[gIdx],C=CARS[k];if(k===selCar)return;
+$('carPrev').addEventListener('click',()=>{if(gMode==='pilot')pilotIdx=(pilotIdx+PILOT_KEYS.length-1)%PILOT_KEYS.length;else gIdx=(gIdx+CAR_KEYS.length-1)%CAR_KEYS.length;renderGarage();});
+$('carNext').addEventListener('click',()=>{if(gMode==='pilot')pilotIdx=(pilotIdx+1)%PILOT_KEYS.length;else gIdx=(gIdx+1)%CAR_KEYS.length;renderGarage();});
+$('gtCars').addEventListener('click',()=>{gMode='car';renderGarage();});$('gtPilots').addEventListener('click',()=>{gMode='pilot';pilotIdx=PILOT_KEYS.indexOf(selPilot);renderGarage();});
+$('carAct').addEventListener('click',()=>{if(gMode==='pilot'){const k=PILOT_KEYS[pilotIdx],Q=PILOTS[k];if(k===selPilot)return;
+    if(!ownsPilot(k)){if(wallet.get()<Q.price)return;wallet.add(-Q.price);store.set('td-pilots',JSON.stringify([...(readJ('td-pilots')||[]),k]));chime();haptic('buy');}
+    selPilot=k;store.set('td-pilot',k);renderGarage();return;}
+  const k=CAR_KEYS[gIdx],C=CARS[k];if(k===selCar)return;
   if(!owns(k)){if(wallet.get()<C.price)return;wallet.add(-C.price);store.set('lr-cars',JSON.stringify([...(readJ('lr-cars')||[]),k]));chime();haptic('buy');}
   selCar=k;store.set('lr-car',k);renderGarage();});
 $('carView').addEventListener('click',()=>{gView=gView==='show'?'game':'show';renderGarage();});
