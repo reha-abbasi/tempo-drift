@@ -2103,7 +2103,7 @@ shadow.rotation.x=-Math.PI/2;scene.add(shadow);
 const MISSC=new THREE.Color(0x4a4f5c), WHITE=new THREE.Color(1,1,1), GOLD=new THREE.Color(0xffc44a), COIN_METAL=[new THREE.Color(0x5aa8ff),GOLD,new THREE.Color(0xff5a86)];
 const gemGeo=new THREE.OctahedronGeometry(0.36,0), gemEdge=new THREE.EdgesGeometry(gemGeo), ringGeo=new THREE.TorusGeometry(0.4,0.06,12,40);
 const glassPaneMat=new THREE.MeshPhysicalMaterial({color:0xd8eeff,metalness:0,roughness:0.04,clearcoat:1,transparent:true,opacity:0.28,side:THREE.DoubleSide,depthWrite:false});
-const gateRingGeo=new THREE.TorusGeometry(0.56,0.05,10,48),gateDiscGeo=new THREE.CircleGeometry(0.52,40),gateArrowGeo=new THREE.PlaneGeometry(0.62,0.62),tapDotGeo=new THREE.CircleGeometry(0.16,24);
+const gateRingGeo=new THREE.TorusGeometry(0.56,0.05,10,48),gateDiscGeo=new THREE.CircleGeometry(0.52,40),gateArrowGeo=new THREE.PlaneGeometry(0.62,0.62);
 const chevTex=canvasTex(128,128,(g,w)=>{g.clearRect(0,0,w,w);g.strokeStyle='#fff';g.lineWidth=16;g.lineCap='round';g.lineJoin='round';for(const x of[34,70]){g.globalAlpha=x<50?0.55:1;g.beginPath();g.moveTo(x,28);g.lineTo(x+30,64);g.lineTo(x,100);g.stroke();}});
 const caseGeo=new RoundedBoxGeometry(1.16,1.16,0.6,3,0.1),caseEdge=new THREE.EdgesGeometry(new THREE.BoxGeometry(1.16,1.16,0.6)),cueGeo=new THREE.RingGeometry(0.7,0.75,48);
 const coinGeo=new THREE.CylinderGeometry(0.4,0.4,0.09,36);coinGeo.rotateX(Math.PI/2);
@@ -2127,9 +2127,9 @@ const pool=[...Array(48)].map(()=>{const g=new THREE.Group();
   const shell=new THREE.Group(),frameM=new THREE.LineBasicMaterial({color:0xbfe6ff,transparent:true}),cueM=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,depthWrite:false,side:THREE.DoubleSide});
   shell.add(new THREE.Mesh(caseGeo,glassPaneMat),new THREE.LineSegments(caseEdge,frameM));const cue=new THREE.Mesh(cueGeo,cueM);shell.add(cue);shell.visible=false;
   const add=o=>new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,...o});
-  const gate=new THREE.Group(),gateM=add({}),gateDiscM=add({opacity:0.5}),arrowM=add({map:chevTex}),arrow=new THREE.Mesh(gateArrowGeo,arrowM),tapDot=new THREE.Mesh(tapDotGeo,gateM);
-  gate.add(new THREE.Mesh(gateRingGeo,gateM),new THREE.Mesh(gateDiscGeo,gateDiscM),arrow,tapDot);gate.visible=false;
-  g.add(halo,gem,edge,ring,coin,shell,gate);g.visible=false;scene.add(g);return{g,gem,edge,ring,coin,mat,metal,halo,pick,shell,frameM,cue,cueM,gate,gateM,gateDiscM,arrow,arrowM,tapDot,node:null};});
+  const gate=new THREE.Group(),gateM=add({}),gateDiscM=add({opacity:0.5}),arrowM=add({map:chevTex}),arrow=new THREE.Mesh(gateArrowGeo,arrowM);
+  gate.add(new THREE.Mesh(gateRingGeo,gateM),new THREE.Mesh(gateDiscGeo,gateDiscM),arrow);gate.visible=false;
+  g.add(halo,gem,edge,ring,coin,shell,gate);g.visible=false;scene.add(g);return{g,gem,edge,ring,coin,mat,metal,halo,pick,shell,frameM,cue,cueM,gate,gateM,gateDiscM,arrow,arrowM,node:null};});
 
 /* ---------- traffic & hazards: all drive forward at about half your speed ---------- */
 const M={yellow:new THREE.MeshStandardMaterial({color:0xf2b705,metalness:0.45,roughness:0.32}),white:new THREE.MeshStandardMaterial({color:0xeceef2,metalness:0.2,roughness:0.4}),
@@ -2311,7 +2311,8 @@ let mission=()=>{};
 // and never on the skyway in those lanes, because the car always comes back to it
 const ACCENT=[1.15,0.15,1.7,0.15,1.15,0.15,1.7,0.15];
 function placeHazards(b){if(SONG.tut){tutHazards(b);return;}if(b<runBar+1)return;const B=SONG.bar(b-songBar0);if(!B||(SONG.ep>=0&&!B.mel.length))return;
-  const p=SONG.ep>=0?SONG.diff.hz+(B.sec==='B'?0.06:0):Math.min(0.5,0.16+0.05*(b-runBar));
+  // (note mode has a third less traffic and fewer blocks to hop: every note is already a move)
+  const p=(SONG.ep>=0?SONG.diff.hz+(B.sec==='B'?0.06:0):Math.min(0.5,0.16+0.05*(b-runBar)))*(NOTE_MODE?0.67:1);
   const w=Math.max(...TH.kindList.map(k=>(KINDS[k].len/2+0.9)/(SPEED*KINDS[k].rel)))+0.06;
   // traffic arrives on the music's accents: mostly the backbeat (beats 2 and 4), then the downbeats, rarely between beats
   for(let e=0;e<8;e++){if(grand()>Math.min(1,p*ACCENT[e]))continue;const time=(b*8+e)*EIGHTH,t0=time-w,t1=time+w;
@@ -2324,7 +2325,7 @@ function placeHazards(b){if(SONG.tut){tutHazards(b);return;}if(b<runBar+1)return
   // obstacles to hop over (or dive under): a low block on the skyway, under coins above it (or over coins below it). Catching those
   // coins keeps the car up from just before the first one until a moment after the last (even for a late hop, or a swipe back
   // right after the last coin), and the block passes inside that time
-  const overP=SONG.ep>=0?SONG.diff.over:0.45,kind=TH.hop,hw=(KINDS[kind].len/2+0.9)/(SPEED*KINDS[kind].rel);
+  const overP=(SONG.ep>=0?SONG.diff.over:0.45)*(NOTE_MODE?0.7:1),kind=TH.hop,hw=(KINDS[kind].len/2+0.9)/(SPEED*KINDS[kind].rel);
   const runs=new Map();for(const n of nodes)if(n.row!==HOME){const k=n.runStart+'|'+n.col;if(!runs.has(k))runs.set(k,[]);runs.get(k).push(n);}
   for(const rn of runs.values()){const a=rn[0],z=rn[rn.length-1];if(a.step<b*8||a.step>=b*8+8)continue;
     const lo=a.time-0.07+hw,hi=z.time+DROP_TAIL-0.02-hw;if(lo>hi||rn.some((n,j)=>j&&n.time-rn[j-1].time>0.7)||grand()>overP)continue;
@@ -2354,7 +2355,7 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
     const laneDue=laneRate()?laneRate()/60*(bar*BAR-laneT0)-laneN:0;
     const lastOff=nodes.findLast(n=>n.row!==HOME),quiet=!SONG.tut&&pHi>pLo&&laneDue<3&&(!lastOff||bar*BAR-lastOff.time>BAR*(SONG.ep>=0?2.5-0.2*SONG.ep:2));
     let nudged=false;
-    B.mel.forEach(([e,note,len,fix,gh],i)=>{let tapN=false;const step=bar*8+e,time=tOf(step);if(gh){ghosts.push({time,note,len});if(sim)sim.stats.ghosts=(sim.stats.ghosts||0)+1;return;}let row=SONG.row(note),col=last?last.col:MID;
+    B.mel.forEach(([e,note,len,fix,gh],i)=>{const step=bar*8+e,time=tOf(step);if(gh){ghosts.push({time,note,len});if(sim)sim.stats.ghosts=(sim.stats.ghosts||0)+1;return;}let row=SONG.row(note),col=last?last.col:MID;
       // the time to the next note, so a hop or dive only goes to a coin that leaves room to drop back before it
       // (music-only notes don't count: they're not coins)
       let j=i+1;while(j<B.mel.length&&B.mel[j][4])j++;const nbFirst=nb?nb.mel.find(m=>!m[4]):null;
@@ -2394,8 +2395,9 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
         // and never closer together than a person can move: the lane change shrinks (same direction) until it fits, else the coin stays put
         let dc=col-last.col;const dr=Math.abs(row-last.row);while(dc&&gap<need(Math.abs(dc),dr))dc-=Math.sign(dc);col=last.col+dc;
         if(gap<need(Math.abs(dc),dr)){col=last.col;if(gap<need(0,dr)&&last.row===HOME)row=last.row;}
-        // note mode: a note the tune left in the same lane moves one lane over when there's time for a swipe, else it's a tap note
-        if(NOTE_MODE&&!SONG.tut&&row===HOME&&last.row===HOME&&col===last.col){if(gap>=need(1,0)){let d=Math.sign(note-last.note)||(grand()<0.5?-1:1);if(last.col+d<0||last.col+d>NL-1)d=-d;col=last.col+d;}else tapN=true;}
+        // note mode: a note the tune left in the same lane moves one lane over when there's time for a swipe, else the band plays it
+        if(NOTE_MODE&&!SONG.tut&&row===HOME&&last.row===HOME&&col===last.col){if(gap>=need(1,0)){let d=Math.sign(note-last.note)||(grand()<0.5?-1:1);if(last.col+d<0||last.col+d>NL-1)d=-d;col=last.col+d;}
+          else{ghosts.push({time,note,len});if(sim)sim.stats.ghosts=(sim.stats.ghosts||0)+1;return;}}
         if(col!==last.col)laneN++;
         if(row!==HOME)hopN++;
         if(sim){const a=Math.abs(col-last.col),b=Math.abs(row-last.row);sim.stats.swipesNeeded+=(a?1:0)+b;sim.stats.laneCh=(sim.stats.laneCh||0)+(a?1:0);sim.stats.laneSteps=(sim.stats.laneSteps||0)+a;sim.stats.wantCh=(sim.stats.wantCh||0)+(want!==last.col&&row===HOME&&last.row===HOME?1:0);if((a||b)&&gap<need(a,b))sim.stats.tooFast++;}}
@@ -2404,9 +2406,9 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
       const pu=!fix&&!SONG.tut&&row===HOME&&grand()<(SONG.ep>=0?0.012:0.02)?['magnet','shield','x2'][Math.floor(grand()*3)]:null;
       // a coin in glass: tap to break it open as you reach it. Only on the skyway, in the lane you're already in, at least 0.3 s
       // after the last coin and about a bar after the last glass one
-      const gp=SONG.ep>=0?SONG.diff.glass:0.2,glass=fix?!!fix.glass:NOTE_MODE&&!SONG.tut?tapN&&!pu:!pu&&!SONG.tut&&row===HOME&&!!last&&last.row===HOME&&col===last.col&&gap0>=0.3&&time-lastGlassT>=BAR*0.9&&grand()<gp*1.5;
+      const gp=SONG.ep>=0?SONG.diff.glass:0.2,glass=fix?!!fix.glass:NOTE_MODE&&!SONG.tut?false:!pu&&!SONG.tut&&row===HOME&&!!last&&last.row===HOME&&col===last.col&&gap0>=0.3&&time-lastGlassT>=BAR*0.9&&grand()<gp*1.5;
       if(glass){lastGlassT=time;if(sim)sim.stats.glass++;}
-      const n={id:nid++,step,time,col,row,note,len,state:0,skip:hsh(nid,42)<0.05,runStart:cont?last.runStart:time,wait:fix&&fix.wait,pu,glass,cracked:false,tapNote:NOTE_MODE&&glass&&!fix,
+      const n={id:nid++,step,time,col,row,note,len,state:0,skip:hsh(nid,42)<0.05,runStart:cont?last.runStart:time,wait:fix&&fix.wait,pu,glass,cracked:false,
         dir:!last?'':row===2&&last.row!==2?'U':row===0&&last.row!==0?'D':col>last.col?'R':col<last.col?'L':'',
         mv:!!last&&(col!==last.col||(row!==last.row&&row!==HOME))};nodes.push(n);last=n;});}
   placeHazards(bar-1);bar++;}}
@@ -2419,7 +2421,7 @@ function hud(){if(sim)return;const ph=[magnetT>0?`MAGNET ${Math.ceil(magnetT)}s`
   flowBar.style.width=(odT>0?odT/(OD_BARS*BAR)*100:flow)+'%';const m='×'+tier();if(multEl.textContent!==m){multEl.textContent=m;multEl.classList.remove('up');void multEl.offsetWidth;multEl.classList.add('up');}
   progEl.hidden=SONG.ep<0&&!SONG.tut;if(!progEl.hidden)progBar.style.width=clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100+'%';
   // the first few episodes open with the rules of the run instead of the controls
-  let msg=inMenu?'':t<hintUntil?(runTip?(NOTE_MODE?'EVERY NOTE IS A MOVE: SWIPE INTO THE RINGS · TAP THE DOTTED ONES':'2 LIVES: CAR, THEN JETPACK · CATCH COINS TO GET YOUR CAR BACK'):'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS'):'';
+  let msg=inMenu?'':t<hintUntil?(runTip?(NOTE_MODE?'EVERY NOTE IS A MOVE: SWIPE INTO THE RINGS':'2 LIVES: CAR, THEN JETPACK · CATCH COINS TO GET YOUR CAR BACK'):(NOTE_MODE?'SWIPE ← → LANES · ↑ HOP · ↓ DIVE':'SWIPE ← → LANES · ↑ HOP · ↓ DIVE · TAP TO BREAK GLASS')):'';
   // flight school: the lesson for the coming bar (it shows a beat early)
   // (a lesson owns its own bar; a message about the band or overdrive fills the bars in between)
   if(SONG.tut&&!inMenu){msg='';const cur=Math.floor((t+BEAT)/BAR)-songBar0;for(let k=cur;k>=0;k--){const B=SONG.bar(k);if(B&&B.say){msg=B.say;if(k<cur&&t<tutMsg.until)msg=tutMsg.text;break;}}}
@@ -2450,12 +2452,12 @@ function holdFor(w){tutHold=w;const[a,txt,dx,dy]=TUT_MOVE[w.wait],el=$('tut');$(
   el.style.setProperty('--dx',dx);el.style.setProperty('--dy',dy);el.hidden=false;tutShown.add(w.wait);}
 function releaseHold(){tutHold.waited=true;tutHold=null;$('tut').hidden=true;needSync=true;}
 const PULSE_RANGE=28,TAP_EARLY=0.45,TAP_LATE=0.12,MOVE_LEAD=0.1;let pulseCD=0,glassHint=0;
-function pulseFire(){if(over||paused||respawn>0.45||t<pulseCD)return false;pulseCD=t+0.12;
+function pulseFire(){if(over||paused||NOTE_MODE&&!SONG.tut||respawn>0.45||t<pulseCD)return false;pulseCD=t+0.12;
   // the nearest coin in glass in your lane, from a moment before you reach it until just after
   const early=SONG.tut?1.7:TAP_EARLY,g=nodes.find(n=>n.glass&&!n.cracked&&n.state===0&&n.col===cs.col&&Math.abs(LY[n.row]-cs.y)<0.9&&n.time-t<early&&n.time-t>-TAP_LATE);
   // a pulse with nothing to break is a misfire: it breaks the combo, so tapping all the time doesn't pay
   pulseFx(!!g);if(!g){if(!sim&&!inMenu)whoosh();if(!inMenu&&!SONG.tut&&combo>0){combo=0;flow=Math.max(0,flow-10);judge('MISFIRE','red');}return false;}
-  g.cracked=true;if(g.tapNote){fx(LX[g.col],LY[g.row],ROWC[g.row].clone().multiplyScalar(2.2),false);sparkleBurst(6);}else shatterFx(LX[g.col],LY[g.row],-(g.time-t)*SPEED);
+  g.cracked=true;shatterFx(LX[g.col],LY[g.row],-(g.time-t)*SPEED);
   if(!inMenu)mission('shatter',1);
   if(sim)sim.stats.shatters++;haptic('tick');
   if(tutHold&&tutOk(tutHold))releaseHold();return true;}
@@ -2589,8 +2591,8 @@ const infList=m=>readJ(`lr-inf-${m}`)||[];
 store.set('lr-dev','1');
 const devOn=()=>store.get('lr-dev')==='1';
 /* note mode (a test): every melody note is a move you play. Notes are glowing rings in a lane and height, never in the lane of the
-   note before, with an arrow for the swipe; notes too close together for a swipe are tap rings in your lane. Being in the ring
-   (or tapping on time) plays the note; a miss just goes quiet and breaks the combo. No gold to collect */
+   note before, with an arrow for the swipe; notes too close together for a swipe the band plays. No glass and no tapping. Being
+   in the ring plays the note; a miss just goes quiet and breaks the combo. No gold to collect */
 const NOTE_DEFAULT=false;let NOTE_MODE=store.get('td-notes')===null?NOTE_DEFAULT:store.get('td-notes')==='1';
 const ERA_NEED=10,eraOpen=m=>{const k=MAPS.indexOf(m);return k<=0||devOn()||mapStars(MAPS[k-1])>=ERA_NEED;};
 const epPassed=(m,i)=>epSave(m,i).stars>0;
@@ -2770,7 +2772,7 @@ function update(dt){
       // a coin up there (or down there) ends the hop: the car drops straight back to the skyway
       if(n.row!==HOME)vt=DROP_TAIL;
       const at=audioOn&&A.ctx?Math.max(A.ctx.currentTime,offset+n.time):0;if(!melodyOn)setMelody(true,at);if(audioOn&&A.ctx&&!sim&&!n.pre)playLead(at,n.note,n.len);}
-    else if(t>n.time+(n.glass&&!n.cracked?TAP_LATE:0.08)){n.state=2;lastJudged=n.time;combo=0;if(n.pre&&A.ctx)n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);let hit=false;if(n.glass&&!n.cracked&&near&&!inMenu&&!n.tapNote){n.cracked=true;shatterFx(LX[n.col],LY[n.row],0,true);if(invuln<=0){hit=true;if(glassHint++<2)pop('TAP TO BREAK THE GLASS','',2);crash({state:0,col:n.col,row:n.row,kind:'glass'});}}if(melodyOn)setMelody(false,0);
+    else if(t>n.time+(n.glass&&!n.cracked?TAP_LATE:0.08)){n.state=2;lastJudged=n.time;combo=0;if(n.pre&&A.ctx)n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);let hit=false;if(n.glass&&!n.cracked&&near&&!inMenu){n.cracked=true;shatterFx(LX[n.col],LY[n.row],0,true);if(invuln<=0){hit=true;if(glassHint++<2)pop('TAP TO BREAK THE GLASS','',2);crash({state:0,col:n.col,row:n.row,kind:'glass'});}}if(melodyOn)setMelody(false,0);
       if(!inMenu)judgeCoin('m',false,hit);
       if(sim){sim.stats.misses++;const pv=sim.prevCoin;sim.stats.missLog.push([+(pv?n.time-pv.time:0).toFixed(2),pv?pv.row:-1,n.row,pv?n.col-pv.col:0,n.runStart===n.time?'start':'run',cs.row,+vt.toFixed(2)]);}}
     if(sim&&n.state)sim.prevCoin=n;}
@@ -2972,10 +2974,10 @@ function render(dt){
     // note mode: the ring in its height's colour, brighter as it nears and on the beat when it's next; the arrow shows the swipe
     p.gate.visible=NOTE_MODE&&!n.pu;if(p.gate.visible){const lead=n.time-t,nr=clamp(1-lead/1.4,0,1),c=ROWC[n.row],nxt=n===up[0];
       p.gateM.color.copy(c).multiplyScalar(miss?0.2:1.2+nr*1.4+(nxt?pulse*0.9:0));p.gateDiscM.color.copy(c).multiplyScalar(miss?0:0.12+nr*0.22);
-      p.arrow.visible=!!n.dir&&!n.tapNote&&!miss;p.arrow.rotation.z={R:0,L:Math.PI,U:Math.PI/2,D:-Math.PI/2}[n.dir]||0;p.arrowM.color.setScalar(0.9+nr*1.3);
-      p.tapDot.visible=!!n.tapNote&&!miss;p.gate.scale.setScalar(nxt?1.08:1);}
+      p.arrow.visible=!!n.dir&&!miss;p.arrow.rotation.z={R:0,L:Math.PI,U:Math.PI/2,D:-Math.PI/2}[n.dir]||0;p.arrowM.color.setScalar(0.9+nr*1.3);
+      p.gate.scale.setScalar(nxt?1.08:1);}
     // a coin in glass: the frame lights up as you get close, and a ring closes in on the case at the moment to tap
-    p.shell.visible=!!n.glass&&!n.cracked;p.shell.children[0].visible=p.shell.children[1].visible=!n.tapNote;if(p.shell.visible){const lead=n.time-t,a=clamp(1-lead/(TAP_EARLY*2.2),0,1);
+    p.shell.visible=!!n.glass&&!n.cracked;if(p.shell.visible){const lead=n.time-t,a=clamp(1-lead/(TAP_EARLY*2.2),0,1);
       p.frameM.color.setRGB(0.75,0.9,1).multiplyScalar(miss?0.4:0.7+a*a*2.2);
       p.cue.visible=!miss&&lead>-0.06&&lead<TAP_EARLY*2.2;if(p.cue.visible){p.cue.scale.setScalar(0.95+Math.max(0,lead)/TAP_EARLY*0.9);p.cueM.opacity=Math.min(0.6,a*0.8);}}
     // coins above or below the skyway hang on a thin stem from it, and the first one of a run gets a launch pad
