@@ -2072,7 +2072,7 @@ function smoothDamp(cur,target,vel,st,dt){const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+
 // a run starts on the next bar line, after the song's intro; an episode's course is the same on every try
 function resetRun(){resetCollect();tPrev=t;nodes=[];hazards=[];songBar0=Math.ceil(t/BAR);runBar=songBar0+SONG.intro;bar=runBar;
   score=0;combo=0;streak16=0;shields=MAX_SHIELDS;sync=SYNC_START;flow=0;odT=0;odN=0;maxCombo=0;J={c:0,m:0,gl:0};lastHurt=-9;band=1;screenEl.classList.remove('od');invuln=0;respawn=0;n16=Math.ceil(t/S16);lastCount=-1;
-  cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
+  cs.row=HOME;vt=0;holdV=false;lastGlassT=-99;laneN=0;laneT0=runBar*BAR;magnetT=0;x2T=0;shieldOn=!inMenu&&!sim&&!SONG.tut&&CARS[selCar].perk.startShield;glassHint=0;run={coins:0,hits:0,lost:0,paid:false,mDone:[],moves:0,onBeat:0,revives:0};finished=false;tutShown.clear();if(tutHold){tutHold=null;$('tut').hidden=true;}
   grand=mkRng(SONG.ep>=0?SONG.seed*31+7:(runSeed=(runSeed*69069+1)>>>0));
   gateT=SONG.len===Infinity?Infinity:(songBar0+SONG.len-2)*BAR;
   if(!melodyOn)setMelody(true,0);hud();}
@@ -2111,16 +2111,23 @@ function tutHazards(b){const B=SONG.bar(b-songBar0);if(!B)return;
   const rn=B.over?nodes.filter(n=>n.step>=b*8&&n.step<b*8+8&&n.row!==HOME):[];
   if(rn.length){const kind=TH.hop,hw=(KINDS[kind].len/2+0.9)/(SPEED*KINDS[kind].rel),lo=rn[0].time-0.07+hw,hi=rn[rn.length-1].time+DROP_TAIL-0.02-hw;
     hazards.push({time:(lo+hi)/2,col:rn[0].col,row:HOME,state:0,id:nid++,kind,near:false,over:true});}}
+// lane changes a minute each episode asks for (Past, Present, Future; episodes 1 to 5)
+const LANE_RATE={old:[12,16,20,24,28],sunset:[18,22,26,30,34],rain:[22,26,30,34,38]};let laneN=0,laneT0=0;
+const laneRate=()=>SONG.ep>=0&&!SONG.tut&&LANE_RATE[SONG.map]?LANE_RATE[SONG.map][SONG.ep]:0;
 function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
   if(B&&B.mel.length){let last=nodes[nodes.length-1]||null;
     const nb=SONG.bar(bar+1-songBar0),tOf=st=>(st+(st%2?SONG.swing:0))*EIGHTH,ps=B.mel.map(m=>m[1]),pHi=Math.max(...ps),pLo=Math.min(...ps);
     // when the tune hasn't sent the car up or down for a while, the bar's highest note becomes a hop (or its lowest a dive)
-    const lastOff=nodes.findLast(n=>n.row!==HOME),quiet=!SONG.tut&&pHi>pLo&&(!lastOff||bar*BAR-lastOff.time>BAR*(SONG.ep>=0?2.5-0.2*SONG.ep:2));
+    // (unless the episode is behind on lane changes: then those coins are kept for changing lanes)
+    const laneDue=laneRate()?laneRate()/60*(bar*BAR-laneT0)-laneN:0;
+    const lastOff=nodes.findLast(n=>n.row!==HOME),quiet=!SONG.tut&&pHi>pLo&&laneDue<1.5&&(!lastOff||bar*BAR-lastOff.time>BAR*(SONG.ep>=0?2.5-0.2*SONG.ep:2));
     let nudged=false;
     B.mel.forEach(([e,note,len,fix],i)=>{const step=bar*8+e,time=tOf(step);let row=SONG.row(note),col=last?last.col:MID;
       // the time to the next note, so a hop or dive only goes to a coin that leaves room to drop back before it
       const nx=i+1<B.mel.length?B.mel[i+1][0]+bar*8:nb&&nb.mel.length?nb.mel[0][0]+bar*8+8:null,ahead=nx===null?9:tOf(nx)-time;
       if(quiet&&!nudged&&!fix&&row===HOME&&ahead>=ONE_NOTE&&(note===pHi||note===pLo)){row=note===pHi?HOME+1:HOME-1;nudged=true;}
+      // well behind on lane changes, a high or low note sometimes stays on the skyway so it can change lane instead
+      if(!fix&&row!==HOME&&laneRate()&&laneRate()/60*(time-laneT0)-laneN>2.5&&grand()<0.5)row=HOME;
       if(fix){col=fix.col;row=fix.row;}
       else if(last){const gap=time-last.time;
         // never straight from low to high: through the skyway first
@@ -2131,10 +2138,19 @@ function spawn(){while(bar*BAR<t+AHEAD){const B=SONG.bar(bar-songBar0);
         // the lane follows the tune: higher notes further right, lower further left. Lanes change on the skyway, and a coin changes
         // lane OR height from the last one, never both
         if(row===HOME&&last.row===HOME)col=SONG.lane(note);
+        const want=col;
+        // lane changes keep pace with the episode's target: rising each episode and from era to era. Behind it, a coin the
+        // tune leaves in the same lane moves to the next lane (the way the melody moves); well ahead of it, a change waits
+        const LR=laneRate();if(LR&&row===HOME&&last.row===HOME){const due=LR/60*(time-laneT0)-laneN;
+          if(col===last.col&&due>0.4&&gap>=need(1,0)){let d=Math.sign(note-last.note)||(grand()<0.5?-1:1);if(last.col+d<0||last.col+d>NL-1)d=-d;
+            // later episodes sometimes ask for the far lane, when there's time for two swipes
+            col=SONG.ep>=3&&last.col!==MID&&gap>=need(2,0)&&grand()<0.3?NL-1-last.col:last.col+d;}
+          else if(col!==last.col&&due<-2.5)col=last.col;}
         // and never closer together than a person can move: the lane change shrinks (same direction) until it fits, else the coin stays put
         let dc=col-last.col;const dr=Math.abs(row-last.row);while(dc&&gap<need(Math.abs(dc),dr))dc-=Math.sign(dc);col=last.col+dc;
         if(gap<need(Math.abs(dc),dr)){col=last.col;if(gap<need(0,dr)&&last.row===HOME)row=last.row;}
-        if(sim){const a=Math.abs(col-last.col),b=Math.abs(row-last.row);sim.stats.swipesNeeded+=(a?1:0)+b;if((a||b)&&gap<need(a,b))sim.stats.tooFast++;}}
+        if(col!==last.col)laneN++;
+        if(sim){const a=Math.abs(col-last.col),b=Math.abs(row-last.row);sim.stats.swipesNeeded+=(a?1:0)+b;sim.stats.laneCh=(sim.stats.laneCh||0)+(a?1:0);sim.stats.laneSteps=(sim.stats.laneSteps||0)+a;sim.stats.wantCh=(sim.stats.wantCh||0)+(want!==last.col&&row===HOME&&last.row===HOME?1:0);if((a||b)&&gap<need(a,b))sim.stats.tooFast++;}}
       if(sim){sim.stats.coins++;if(row!==HOME&&last&&last.row!==HOME)sim.stats.offRuns++;if(row!==HOME)sim.stats.offCoins=(sim.stats.offCoins||0)+1;}if(!inMenu)run.coins++;
       const cont=last&&row!==HOME&&row===last.row&&col===last.col,gap0=last?time-last.time:9;
       const pu=!fix&&!SONG.tut&&row===HOME&&grand()<(SONG.ep>=0?0.012:0.02)?['magnet','shield','x2'][Math.floor(grand()*3)]:null;
@@ -2749,6 +2765,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, what changed
 const CHANGELOG=[
+ ['21.2','Lane Ladder','25 Oct 2026',['Every episode asks for more lane changes than the one before, and each era starts higher than the last: about 10 to 25 a minute in the Past, 19 to 31 in the Present, 20 to 33 in the Future.','Before, it depended on each song: some late episodes had fewer lane changes than early ones (Past episode 5 had 10 a minute, the Future stayed at about 14).','Coins are still never closer than you can reach, and there are still no diagonal moves.']],
  ['21.1','Gold Rush','25 Oct 2026',['Coins no longer grow when you catch them: a caught coin heads straight for the coin counter and collapses quickly into it.','A trail of gold sparkles follows each coin, and a burst of little stars pops out of the counter as it lands.']],
  ['21','Magnet Catch','25 Oct 2026',['Coins you’re about to catch are pulled in toward the car and grow as they come, with fine gold particles streaming along the pull. With the Magnet power-up, coins from the other lanes swoop in too.','A caught coin pops, then arcs up into a new coin counter at the top of the screen and shrinks into it; the counter bumps and glints as each one lands.','Each catch leaves a twinkle of gold star glints around the car, a few more on a long combo, and a soft glow on the car.','Reduce effects keeps it lighter. How coins are caught hasn’t changed.']],
  ['20','The Band','24 Oct 2026',['Every run starts as a bare groove of drums and bass. Catch coins to build your Flow and the band joins in, an arpeggio and claps on top; miss and it thins back out.','Flow sets your multiplier (×1 to ×4). Fill it to go into OVERDRIVE: eight bars at ×8, a heavier groove, the lead an octave up and the screen lit in the era’s colour.','Lives are gone: a Sync bar is your life. Catches fill it, misses and crashes drain it, more so in later episodes.','No timing grades: a coin is caught or missed. Results give a grade from D to S for the share of coins you caught, with counts and your best combo.','Three stars per episode: clear the song, get an A (95% of the coins), get an S (99% with no crash). 10 stars in an era opens the next.','Flight School shows the band coming in and Overdrive as they happen; the first episodes open with the rules of the run.','New missions, a Reduce effects setting, and a pause screen that shows how you’re doing.']],
