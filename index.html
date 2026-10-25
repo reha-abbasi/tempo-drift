@@ -3082,7 +3082,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, a few short words per change
 const CHANGELOG=[
- ['25.1','Map Fix','26 Oct 2026',['Cities sit on their real spots','Smaller map markers']],
+ ['25.1','Map Fix','26 Oct 2026',['Cities sit on their real spots','Smaller map markers','Same world map for every era']],
  ['25','Pilot Shop','26 Oct 2026',['Astronaut pilot by default','5 pilots to buy','Each pilot has its own music','Rescue 25% easier, arrives on the beat','Music stays on the beat','Pulse and glass play in key']],
  ['24', 'Eight Cities', '25 Oct 2026', ['Two lives: car, then jetpack', '3 new, harder cities per era', 'More swipes every episode', 'PLAY opens the map', 'Intro music', 'Dev mode on at start']],
  ['23', 'Bail Out', '25 Oct 2026', ['Crash: car explodes, pilot ejects', 'Jetpack as a second life', 'Rescue meter wins the car back', 'Lives replace Sync']],
@@ -3154,11 +3154,10 @@ const MAPSTYLE={old:{sea:['#e8d9b8','#d8c39a'],land:'#c6a273',coast:'#7a5634',gr
   sunset:{sea:['#1a2e4c','#0e1a30'],land:'#2f4a68',coast:'#9cc2ec',grid:'rgba(160,200,255,.08)',route:'#ffd45c',pin:'#ffd45c',dots:false},
   rain:{sea:['#07060e','#0d0a1c'],land:'#ff3fb4',coast:'#2ef2ff',grid:'rgba(46,242,255,.1)',route:'#ff3fb4',pin:'#2ef2ff',dots:true}};
 const cityOf=n=>n.replace(/\s\d{4}$/,'');let epSel=0;
-function mapView(m,w,h){const pts=EPISODES[m].map(E=>GEO[cityOf(E.name)]),c0=m==='rain'?160:m==='sunset'?20:-30,
-    sh=lon=>((lon-c0+540)%360)-180,lat0=pts.reduce((a,p)=>a+p[0],0)/pts.length,k=Math.cos(lat0*Math.PI/180);
-  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;for(const[la,lo]of pts){const x=sh(lo)*k,y=-la;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
-  // padding, then widen the shorter side to fit the box
-  let pw=(x1-x0)*0.22+8,ph=(y1-y0)*0.28+10;x0-=pw;x1+=pw;y0-=ph;y1+=ph;const want=w/h,have=(x1-x0)/(y1-y0);
+// every era shows the same whole-world map at the same scale: the Americas on the left, Europe and Africa in the middle, Asia and
+// Australia on the right (centred a little east of Greenwich, so the Pacific is the seam)
+function mapView(m,w,h){const c0=12,sh=lon=>((lon-c0+540)%360)-180,k=1;
+  let x0=-180,x1=180,y0=-78,y1=58;const want=w/h,have=(x1-x0)/(y1-y0);
   if(have<want){const d=((y1-y0)*want-(x1-x0))/2;x0-=d;x1+=d;}else{const d=((x1-x0)/want-(y1-y0))/2;y0-=d;y1+=d;}
   const S=w/(x1-x0);return{proj:(la,lo)=>[(sh(lo)*k-x0)*S,(-la-y0)*S],sh,k,x0,y0,S,c0};}
 function drawWorld(m){const cv=$('wmapCv'),r=cv.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,r.width),h=Math.max(1,r.height);
@@ -3184,7 +3183,7 @@ function renderEps(){const m=key,E=EPISODES[m],M=drawWorld(m),pins=$('epPins'),s
   const done=store.get('lr-tut')==='1';$('tutState').textContent=done?'✓ DONE':'START HERE';$('tutPin').style.setProperty('--g',document.querySelector(`.style[data-theme="${m}"]`).style.getPropertyValue('--g'));
   // each city's dot sits on the city itself (cities closer than a dot's width are eased apart just enough, with a thin line to
   // the true spot); its name goes beside it, on whichever side is clear of the other dots and names and inside the map
-  const at=E.map(e=>M.V.proj(...GEO[cityOf(e.name)])),pos=at.map(p=>[...p]),D=21;
+  const at=E.map(e=>M.V.proj(...GEO[cityOf(e.name)])),pos=at.map(p=>[...p]),D=24;
   for(let it=0;it<60;it++)for(let a=0;a<pos.length;a++)for(let b=a+1;b<pos.length;b++){const dx=pos[b][0]-pos[a][0],dy=pos[b][1]-pos[a][1],d=Math.hypot(dx,dy)||0.01;
     if(d<D){const m=(D-d)/2/d;pos[a][0]-=dx*m;pos[a][1]-=dy*m;pos[b][0]+=dx*m;pos[b][1]+=dy*m;}}
   for(const p of pos){p[0]=clamp(p[0],12,M.w-12);p[1]=clamp(p[1],12,M.h-12);}
