@@ -436,6 +436,9 @@ tr:last-child td{border-bottom:0}
 @keyframes cbump{0%{transform:scale(1)}35%{transform:scale(1.16)}100%{transform:scale(1)}}
 @keyframes cring{from{transform:scale(.8);opacity:1}to{transform:scale(2.2);opacity:0}}
 @media (prefers-reduced-motion:reduce){.hud .chud.bump,.hud .chud.bump::after{animation:none}}
+/* the star sparkles that pop out of the coin counter as a coin lands */
+.hud .spk{position:absolute;pointer-events:none;background:radial-gradient(circle,#fff 0 22%,#ffe7a6 45%,#ffc44a 70%);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 3px rgba(255,214,120,.9))}
+@media (prefers-reduced-motion:reduce){.hud .spk{display:none}}
 </style>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#000;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -2502,19 +2505,26 @@ for(let i=0;i<GLINTS;i++){dummy.position.set(0,-99,0);dummy.updateMatrix();glint
 const carGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0}));carGlow.visible=false;scene.add(carGlow);let carGlowAge=9;
 function collectFx(n){if(sim)return;const col=COIN_METAL[n.row],rp=n.rp||[LX[n.col],LY[n.row],-0.6,1.2];
   // the coin itself flies to the counter (only during a run; on the menu it just twinkles away)
-  if(!inMenu){const F=flyers[flyI++%FLYERS];if(F.age<POP_T+FLY_T)arriveCoin();F.age=0;F.a.set(rp[0],rp[1],rp[2]);F.s0=rp[3];F.px0=Math.min(30,0.4*rp[3]*camFocal()/Math.max(0.5,camera.position.distanceTo(F.a)));F.c.children.forEach(m=>m.material=flyMats[n.row]);F.g.visible=true;F.g.position.copy(F.a);F.c.scale.setScalar(F.s0);}
+  if(!inMenu){const F=flyers[flyI++%FLYERS];if(F.age<POP_T+FLY_T)arriveCoin();F.age=0;F.a.set(rp[0],rp[1],rp[2]);F.s0=rp[3];F.px0=Math.min(30,0.4*rp[3]*camFocal()/Math.max(0.5,camera.position.distanceTo(F.a)));F.c.children.forEach(m=>m.material=flyMats[n.row]);F.col=COIN_METAL[n.row];F.g.visible=true;F.g.position.copy(F.a);F.c.scale.setScalar(F.s0);}
   // star glints around the car, and a soft glow on it
   const k=(fxLow?3:6)+Math.min(6,Math.floor(combo/6));
   for(let i=0;i<k;i++){const G=glints[glintI++%GLINTS],a=rand()*Math.PI*2;G.age=0;G.delay=rand()*0.12;G.life=0.32+rand()*0.28;
     G.p.set(car.position.x+Math.cos(a)*(0.45+rand()*0.5),car.position.y+0.05+(rand()-0.35)*0.7,car.position.z+(rand()-0.5)*1.1);G.v.set(Math.cos(a)*0.6,0.5+rand()*0.7,(rand()-0.5)*0.4);
     G.k=0.2+rand()*0.22;G.r=rand()*0.5-0.25;G.w=(rand()-0.5)*2.5;G.c.copy(col).lerp(WHITE,0.2+rand()*0.25).multiplyScalar(1.7);}
   carGlow.material.color.copy(col);carGlow.visible=true;carGlowAge=0;}
-function arriveCoin(){coinShown++;coinNEl.textContent=coinShown.toLocaleString('en-US');coinHud.classList.remove('bump');void coinHud.offsetWidth;coinHud.classList.add('bump');}
+function trailGlint(at,col){const G=glints[glintI++%GLINTS],d=camera.position.distanceTo(at);G.age=0;G.delay=0;G.life=0.22+rand()*0.14;
+  G.p.copy(at).add(tmpV.set((rand()-0.5),(rand()-0.5),0).multiplyScalar(0.06*d));G.v.set((rand()-0.5)*0.15*d,(rand()-0.5)*0.15*d,0);
+  G.k=(11+rand()*11)*d/camFocal();G.r=rand()*0.6-0.3;G.w=(rand()-0.5)*3;G.c.copy(col||GOLD).lerp(WHITE,0.35+rand()*0.3).multiplyScalar(2.3);}
+function counterBurst(){const hud=coinHud.parentElement,c=coinHud.querySelector('.coin').getBoundingClientRect(),h=hud.getBoundingClientRect(),x=c.left+c.width/2-h.left,y=c.top+c.height/2-h.top,n=fxLow?3:7;
+  for(let i=0;i<n;i++){const el=document.createElement('i'),a=(i/n)*Math.PI*2+rand()*0.6,r=16+rand()*18,sz=7+rand()*7;el.className='spk';el.style.cssText=`left:${x-sz/2}px;top:${y-sz/2}px;width:${sz}px;height:${sz}px`;hud.append(el);
+    el.animate([{transform:'translate(0,0) scale(.3) rotate(0deg)',opacity:1},{transform:`translate(${Math.cos(a)*r*0.7}px,${Math.sin(a)*r*0.7}px) scale(1.15) rotate(45deg)`,opacity:1,offset:0.45},
+      {transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(0) rotate(90deg)`,opacity:0}],{duration:420+rand()*220,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>el.remove();}}
+function arriveCoin(){coinShown++;if(!sim)counterBurst();coinNEl.textContent=coinShown.toLocaleString('en-US');coinHud.classList.remove('bump');void coinHud.offsetWidth;coinHud.classList.add('bump');}
 function resetCollect(){coinShown=0;coinNEl.textContent='0';for(const F of flyers){F.age=9;F.g.visible=false;}for(const G of glints)G.age=9;}
 // the coin counter's spot in the 3D view: 2.4 units in front of the camera, under the counter's coin icon
 function counterPoint(v){const r=cv.getBoundingClientRect(),c=coinHud.querySelector('.coin').getBoundingClientRect();
   v.set(((c.left+c.width/2-r.left)/r.width)*2-1,-((c.top+c.height/2-r.top)/r.height)*2+1,0.5).unproject(camera).sub(camera.position).normalize().multiplyScalar(2.4).add(camera.position);return v;}
-const POP_T=0.09, FLY_T=0.52, FLY_ARC=new THREE.Vector3(0,1.3,0), COUNTER_PX=8.5;
+const POP_T=0, FLY_T=0.4, FLY_ARC=new THREE.Vector3(0,0.9,0), COUNTER_PX=8.5;
 // pixels per world unit at one unit from the camera, so a flying coin can be given a size on screen
 const camFocal=()=>cv.clientHeight/(2*Math.tan(camera.fov*Math.PI/360));
 const sizeAt=(F,px)=>F.c.scale.setScalar(px*camera.position.distanceTo(F.g.position)/camFocal()/0.4);
@@ -2522,12 +2532,13 @@ function collectUpdate(dt){let anyFly=false;
   for(const F of flyers){if(F.age>=POP_T+FLY_T)continue;F.age+=dt;anyFly=true;
     if(F.age>=POP_T+FLY_T){F.g.visible=false;arriveCoin();continue;}
     F.g.quaternion.copy(camera.quaternion);F.c.rotation.y=Math.sin(F.age*13)*0.45;
-    if(F.age<POP_T){const e=F.age/POP_T;F.g.position.copy(F.a).add(tmpV.set(0,0.3*e,0.15*e));sizeAt(F,F.px0*(1+0.3*Math.sin(e*Math.PI/2)));continue;}
-    // up and over to the counter on a curve, quick at the end, shrinking to the counter's size
-    const u=(F.age-POP_T)/FLY_T,e=u*u*(3-2*u)*0.4+u*u*0.6;counterPoint(flyTo);const st=tmpV.copy(F.a).add(flyMid.set(0,0.3,0.15));
+    // off to the counter on a gentle curve, fast from the start, collapsing quickly to a small coin that slips into it
+    const u=F.age/FLY_T,e=1-Math.pow(1-u,1.7);counterPoint(flyTo);const st=tmpV.copy(F.a);
     flyMid.copy(st).lerp(flyTo,0.35).add(FLY_ARC);
     F.g.position.set((1-e)*(1-e)*st.x+2*(1-e)*e*flyMid.x+e*e*flyTo.x,(1-e)*(1-e)*st.y+2*(1-e)*e*flyMid.y+e*e*flyTo.y,(1-e)*(1-e)*st.z+2*(1-e)*e*flyMid.z+e*e*flyTo.z);
-    sizeAt(F,F.px0*1.3*(1-e)+COUNTER_PX*e);}
+    const px=COUNTER_PX*0.65+(F.px0-COUNTER_PX*0.65)*Math.pow(1-u,3.2);sizeAt(F,px);
+    // a trail of gold sparkles behind it
+    if(dt>0&&(!fxLow||F.age*30%2<1))trailGlint(F.g.position,F.col);}
   let alive=0;for(let i=0;i<GLINTS;i++){const G=glints[i];if(G.age>=G.delay+G.life)continue;G.age+=dt;alive++;const a=(G.age-G.delay)/G.life;
     if(a<0||a>=1){dummy.position.set(0,-99,0);dummy.scale.setScalar(0.001);}
     else{G.p.addScaledVector(G.v,dt);G.r+=G.w*dt;dummy.position.copy(G.p);dummy.quaternion.copy(camera.quaternion);dummy.rotateZ(G.r);dummy.scale.setScalar(G.k*Math.sin(a*Math.PI)*(1+0.3*Math.sin(a*Math.PI*6)));}
@@ -2609,7 +2620,7 @@ function render(dt){
   for(const n of nodes){if(n.state===1||n.state===3)continue;const z=-(n.time-t)*SPEED;if(z<-FAR||z>(n.state===2?0.5:8))continue;
     let p=pool.find(p=>p.node===n)||pool.find(p=>!p.node);if(!p)continue;p.node=n;live.add(p);
     p.g.visible=true;
-    // the magnetic pull: a coin you're about to catch is drawn toward the car and grows (looks only; catching works as before)
+    // the magnetic pull: a coin you're about to catch is drawn toward the car (looks only; catching works as before)
     let px=LX[n.col],py=LY[n.row],pz=z;const pullOk=!n.state&&!(n.glass&&!n.cracked)&&respawn<=0.45&&z>-PULL_Z&&
       Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:CARS[selCar].perk.reach)+0.35&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7)+0.25;
     n.pull=(n.pull||0)+((pullOk?1:0)-(n.pull||0))*Math.min(1,dt*16);const u=clamp(1+z/PULL_Z,0,1),pe=u*u*(3-2*u)*n.pull;
@@ -2620,7 +2631,7 @@ function render(dt){
     p.gem.rotation.y=p.edge.rotation.y=t*2+n.id;p.ring.rotation.z=t*1.5+n.id;p.coin.rotation.y=t*3.2+n.id;
     p.coin.visible=TH.nodeStyle==='coin'&&!n.pu;for(const k in p.pick){p.pick[k].visible=n.pu===k;if(n.pu===k)p.pick[k].rotation.y=t*2.4;}
     const miss=n.state===2,isNext=n===up[0],s=(1+pulse*0.04)*(isNext?1.06:1)*1.2,rc=ROWC[n.row];
-    p.gem.scale.set(s,s*1.3,s);p.edge.scale.copy(p.gem.scale);p.ring.scale.setScalar(s);p.coin.scale.setScalar(s*(1+0.35*pe));n.rp=[px,py,pz,s*(1+0.35*pe)];
+    p.gem.scale.set(s,s*1.3,s);p.edge.scale.copy(p.gem.scale);p.ring.scale.setScalar(s);p.coin.scale.setScalar(s*(1-0.12*pe));n.rp=[px,py,pz,s*(1-0.12*pe)];
     p.mat.emissive.copy(miss?MISSC:rc);p.mat.emissiveIntensity=miss?0.8:isNext?3.2:2.2;p.mat.opacity=miss?0.5:1;
     p.metal.color.copy(miss?MISSC:COIN_METAL[n.row]);p.metal.emissive.copy(miss?MISSC:COIN_METAL[n.row]);p.metal.emissiveIntensity=miss?0:(isNext?0.32:0.2)*(n.row===HOME?1:1.6);p.metal.opacity=miss?0.5:1;
     // plain gold coins: no glow around them, just the metal catching the light
@@ -2738,6 +2749,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, what changed
 const CHANGELOG=[
+ ['21.1','Gold Rush','25 Oct 2026',['Coins no longer grow when you catch them: a caught coin heads straight for the coin counter and collapses quickly into it.','A trail of gold sparkles follows each coin, and a burst of little stars pops out of the counter as it lands.']],
  ['21','Magnet Catch','25 Oct 2026',['Coins you’re about to catch are pulled in toward the car and grow as they come, with fine gold particles streaming along the pull. With the Magnet power-up, coins from the other lanes swoop in too.','A caught coin pops, then arcs up into a new coin counter at the top of the screen and shrinks into it; the counter bumps and glints as each one lands.','Each catch leaves a twinkle of gold star glints around the car, a few more on a long combo, and a soft glow on the car.','Reduce effects keeps it lighter. How coins are caught hasn’t changed.']],
  ['20','The Band','24 Oct 2026',['Every run starts as a bare groove of drums and bass. Catch coins to build your Flow and the band joins in, an arpeggio and claps on top; miss and it thins back out.','Flow sets your multiplier (×1 to ×4). Fill it to go into OVERDRIVE: eight bars at ×8, a heavier groove, the lead an octave up and the screen lit in the era’s colour.','Lives are gone: a Sync bar is your life. Catches fill it, misses and crashes drain it, more so in later episodes.','No timing grades: a coin is caught or missed. Results give a grade from D to S for the share of coins you caught, with counts and your best combo.','Three stars per episode: clear the song, get an A (95% of the coins), get an S (99% with no crash). 10 stars in an era opens the next.','Flight School shows the band coming in and Overdrive as they happen; the first episodes open with the rules of the run.','New missions, a Reduce effects setting, and a pause screen that shows how you’re doing.']],
  ['18','Play Test','24 Oct 2026',['Moves are graded on the beat: swipe as the note lands for PERFECT, close for GOOD (with bonus points).','Traffic arrives on the music’s accents, mostly beats 2 and 4.','Audio sync in Settings: tap along to line up sound and screen (for Bluetooth headphones).','A lower camera that shows more road ahead.','One call-out at a time; the timing grade sits just above the car.','The next episode opens at ★★★ or 85% of the coins; an episode needs half the coins to clear.','Eras get harder in turn, and the Present and Future open with 8 stars in the era before.','Car perks, and a revive for 200 coins when you run out of lives.','Missions ask for timing, clean runs and stars.','Flight School waits until you make each move.','The daily gift is a card you claim on the main menu.','Bigger buttons; sound moved into the pause menu.','Graphics quality steps back up when the phone has room, and a steady 30 fps no longer counts as slow.','Wet streets: fainter reflections, and the car no longer shows upside down in them.']],
