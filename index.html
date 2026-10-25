@@ -571,10 +571,9 @@ body{padding:0!important}
           <li><span>Haptics<small>a buzz on catches and crashes</small></span><button class="ghost" id="hapBtn" aria-pressed="true">HAPTICS ON</button></li>
           <li><span>Endless difficulty<small>how fast Endless gets</small></span><button class="ghost" id="levelBtn">NORMAL</button></li>
           <li><span>Flight School<small>replay the tutorial</small></span><button class="ghost" id="tutBtn">PLAY</button></li>
-          <li><span>Note mode (test)<small>every note is a swipe or a tap; no gold</small></span><button class="ghost" id="noteBtn">OFF</button></li>
           <li id="devRow" hidden><span>Dev mode<small>opens every era and episode, test coins in the Garage</small></span><button class="devsw" id="devBtn" role="switch" aria-checked="false"><span class="track"><i></i></span><span id="devLabel">OFF</span></button></li>
         </ul>
-        <p class="legend">Swipe left and right to change lanes, up to hop, down to dive. Tap to break open coins in glass. Everything is saved on this device.</p>
+        <p class="legend">Every note is a ring: swipe left and right to change lanes, up to hop, down to dive. Swipe just before the note for EXCELLENT. Everything is saved on this device.</p>
       </div>
       <div class="menu panel garage" id="garage" hidden>
         <div class="phead"><button class="ghost back" id="garageBack">‹ BACK</button><b>GARAGE</b><span class="tot"><i class="coin"></i> <span id="gWallet">0</span></span></div>
@@ -599,7 +598,7 @@ body{padding:0!important}
           <div class="echead"><span class="n" id="ecNum">1</span><span class="nm"><b id="ecName">London 1890</b><small id="ecSub">112 BPM · saloon piano</small></span><span class="st" id="ecStars"></span></div>
           <button class="big" id="epPlay">PLAY</button>
         </div>
-        <p class="legend"><span class="gold">★</span> clear the song · <span class="gold">★★</span> grade A (95% of the coins) · <span class="gold">★★★</span> grade S (99%, no crash). Clearing an episode opens the next; 10★ in an era opens the next era.</p>
+        <p class="legend"><span class="gold">★</span> clear the song · <span class="gold">★★</span> grade A (95% of the notes) · <span class="gold">★★★</span> grade S (99%, no crash). Clearing an episode opens the next; 10★ in an era opens the next era.</p>
       </div>
       <div class="menu panel" id="missions" hidden>
         <div class="phead"><button class="ghost back" id="misBack">‹ BACK</button><b>MISSIONS</b><span class="tot"><i class="coin"></i> <span id="mWallet">0</span></span></div>
@@ -643,7 +642,7 @@ body{padding:0!important}
         <small class="ceyebrow" id="clearCity"></small>
         <h3 class="calm win" id="clearTitle">EPISODE CLEAR</h3>
         <div class="rank" id="clearRank"><div class="grade" id="clearGrade">S</div>
-          <div class="rside"><div class="gstars" id="clearStars"><i>★</i><i>★</i><i>★</i></div><b id="clearAcc">0%</b><small>COINS CAUGHT</small></div></div>
+          <div class="rside"><div class="gstars" id="clearStars"><i>★</i><i>★</i><i>★</i></div><b id="clearAcc">0%</b><small>NOTES PLAYED</small></div></div>
         <div class="jud" id="clearJud"></div>
         <div class="res"><div><small>SCORE</small><b id="clearScore">0</b></div><div><small>MAX COMBO</small><b id="clearCombo">0</b></div></div>
         <p class="note2" id="clearNote"></p>
@@ -653,12 +652,12 @@ body{padding:0!important}
         <div class="row2"><button class="ghost" id="retryEp">RETRY</button><button class="ghost" id="clearMenu">EPISODES</button></div>
       </div>
     </div>
-    <p class="hint">Swipe left and right to change lanes, up to hop, down to dive. Tap to break open coins in glass. Keys: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>, <kbd>Enter</kbd> to pulse</p>
+    <p class="hint">Every note is a ring: swipe left and right to change lanes, up to hop, down to dive. Keys: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd></p>
   </div>
 
   <div class="info">
     <div>
-      <div class="eyebrow">Version 25 · pilot shop</div>
+      <div class="eyebrow">Version 26 · note mode</div>
       <h1>Tempo Drift</h1>
       <p class="lede">Rebuilt around the Golden Hour Realism style: real sunlight, shadows, reflections and textured buildings in every city. Three eras instead of four, back to three lanes, and new things to do: tap to shatter glass on the beat, grab power-ups, chase missions and a daily gift.</p>
     </div>
@@ -1148,35 +1147,33 @@ function loopSong(map){const tk=MAPINFO[map].th,th=THEMES[tk];
   return{map,th:tk,ep:-1,name:'Infinite',bpm:th.bpm,V:th.V0,seed:0,diff:null,look:{},intro:2,len:Infinity,swing:th.swing||0,
     bar:k=>k<0?null:k<2?{sec:'I',chord:th.chords[0],mel:[],lvl:k+1}:{sec:(k-2)%8<4?'A':'B',chord:th.chords[(k-2)%4],mel:th.mel[(k-2)%8],lvl:0},
     row:rowCut(th.mel.flat().map(m=>m[1]),0.22,0.12),lane:laneMap(th.mel.flat().map(m=>m[1]))};}
-/* flight school: a short guided song that teaches one move at a time. Each bar lists coins as [eighth, lane, height, move];
-   at a coin with a move, the game holds still until you make that move. say = the lesson shown over that bar */
+/* flight school: a short guided song that teaches one move at a time. Each bar lists notes as [eighth, lane, height, move];
+   at a note with a move, the game holds still until you make that move. say = the lesson shown over that bar */
 const TUT=[
-  {say:'CATCH THE COINS · EACH ONE PLAYS A NOTE',c:[[0,1,1],[4,1,1]]},
-  {say:'SWIPE → TO CHANGE LANE',c:[[0,1,1],[4,2,1,'right']]},
-  {c:[[0,2,1],[4,2,1]]},
+  {say:'EACH RING IS A NOTE · SWIPE INTO IT',c:[[0,1,1],[4,2,1,'right']]},
   {say:'SWIPE ← BACK ACROSS',c:[[0,1,1,'left'],[4,0,1]]},
-  {say:'TWO LANES OVER? SWIPE TWICE',c:[[0,0,1],[4,2,1]]},
-  {say:'ROSE COIN UP HIGH: SWIPE ↑ TO HOP',c:[[0,1,1],[4,1,2,'up']]},
-  {say:'ONE NOTE UP, THEN YOU DROP BACK',c:[[0,1,1],[4,1,1]]},
-  {c:[[0,1,1],[4,1,2]]},
-  {say:'BLUE COIN DOWN LOW: SWIPE ↓ TO DIVE',c:[[0,1,1],[4,1,0,'down']]},
-  {c:[[0,1,1],[4,1,1]]},
-  {say:'HOP OVER THE BLOCK',c:[[0,1,1],[4,1,2]],over:true},
-  {c:[[0,1,1],[4,1,1]]},
-  {say:'A COIN IN GLASS: TAP TO BREAK IT OPEN',c:[[0,1,1],[4,1,1,'tap']]},
-  {say:'BREAK THE GLASS BEFORE YOU REACH IT',c:[[0,1,1,null,'g'],[4,1,1,null,'g']]},
-  {say:'TRAFFIC! MOVE OUT OF ITS LANE',c:[[0,1,1],[4,0,1]],cars:[[8,1]]},
-  {c:[[0,0,1],[4,0,1,null,'g']]},
-  {say:'NOW ON YOUR OWN',c:[[0,1,1],[4,2,1]]},
-  {c:[[0,2,1],[4,2,2]]},
-  {c:[[0,1,1],[4,1,0]]},
-  {c:[[0,1,1],[4,0,1]]},
-  {say:'CRASH, AND YOU EJECT ONTO A JETPACK',c:[[0,0,1],[4,1,1]]},
+  {say:'SWIPE AS THE CLOSING RING MEETS IT',c:[[0,1,1],[4,2,1]]},
+  {say:'JUST BEFORE THE NOTE IS EXCELLENT',c:[[0,1,1],[4,0,1]]},
+  {say:'TWO LANES OVER? SWIPE TWICE',c:[[0,2,1],[4,1,1]]},
+  {say:'ROSE RING UP HIGH: SWIPE ↑ TO HOP',c:[[0,2,1],[4,2,2,'up']]},
+  {say:'ONE NOTE UP, THEN YOU DROP BACK',c:[[0,2,1],[4,1,1]]},
+  {c:[[0,0,1],[4,0,2]]},
+  {say:'BLUE RING DOWN LOW: SWIPE ↓ TO DIVE',c:[[0,0,1],[4,0,0,'down']]},
+  {c:[[0,0,1],[4,1,1]]},
+  {say:'HOP OVER THE BLOCK',c:[[0,2,1],[4,2,2]],over:true},
+  {c:[[0,2,1],[4,1,1]]},
+  {say:'TRAFFIC! MOVE OUT OF ITS LANE',c:[[0,0,1],[4,0,2]],cars:[[4,1]]},
+  {c:[[0,0,1],[4,1,1]]},
+  {say:'NOW ON YOUR OWN',c:[[0,2,1],[4,2,2]]},
+  {c:[[0,2,1],[4,1,1]]},
+  {c:[[0,1,0],[4,1,1]]},
+  {c:[[0,0,1],[4,1,1]]},
+  {say:'CRASH, AND YOU EJECT ONTO A JETPACK',c:[[0,2,1],[4,1,1]]},
 ];
 function tutSong(map){const tk=MAPINFO[map].th,th=THEMES[tk],bars=[];
   for(let k=0;k<2;k++)bars.push({sec:'I',chord:th.chords[0],mel:[],lvl:k+1});
-  TUT.forEach((b,k)=>{const m=th.mel[k%8];bars.push({sec:'A',chord:th.chords[k%4],lvl:0,say:b.say,over:b.over,cars:b.cars,panes:b.panes,
-    mel:b.c.map(([e,col,row,wait,gl],j)=>[e,m[Math.min(j,m.length-1)][1],2,{col,row,wait,glass:wait==='tap'||gl==='g'}])});});
+  TUT.forEach((b,k)=>{const m=th.mel[k%8];bars.push({sec:'A',chord:th.chords[k%4],lvl:0,say:b.say,over:b.over,cars:b.cars,
+    mel:b.c.map(([e,col,row,wait],j)=>[e,m[Math.min(j,m.length-1)][1],2,{col,row,wait}])});});
   bars.push({sec:'O',chord:th.chords[0],mel:[],lvl:0},{sec:'E',chord:th.chords[0],mel:[],lvl:0});
   // a gentler tempo for the fast maps
   return{map,th:tk,ep:-1,tut:true,name:'Flight School',swing:th.swing||0,bpm:Math.min(th.bpm,116),V:th.V0,seed:0,diff:null,look:{},intro:2,len:bars.length,bar:k=>k>=0&&bars[k]||null,row:()=>HOME,lane:()=>MID,bars};}
@@ -1987,7 +1984,7 @@ const CARS={
     return{jets:[[-0.45,-0.02,0.1],[0.45,-0.02,0.1],[0,-0.02,-0.5]],exhaust:[[-0.3,0.1,0.8],[0.3,0.1,0.8]]};}},
 };
 // each car you buy plays a little differently: one small perk each, none of them needed to finish an episode
-const PERKS={arrow:{say:'No perk · the all-rounder'},bubble:{mag:1.6,say:'Perk: magnets last 60% longer'},retro:{reach:0.78,say:'Perk: wider coin pickup'},
+const PERKS={arrow:{say:'No perk · the all-rounder'},bubble:{mag:1.6,say:'Perk: magnets last 60% longer'},retro:{reach:0.78,say:'Perk: rings are easier to reach'},
   spinner:{startShield:true,say:'Perk: starts every run with a shield'},manta:{coin:1.25,say:'Perk: +25% coins from every run'}};
 for(const k in CARS)CARS[k].perk={coin:1,mag:1,reach:0.62,startShield:false,...PERKS[k]};
 const CAR_KEYS=Object.keys(CARS), carCache={};
@@ -2335,7 +2332,6 @@ function placeHazards(b){if(SONG.tut){tutHazards(b);return;}if(b<runBar+1)return
 }
 // flight school's traffic and its block (under the run of coins, in the middle of the safe window)
 function tutHazards(b){const B=SONG.bar(b-songBar0);if(!B)return;
-  for(const[e,col]of B.panes||[])hazards.push({time:(b*8+e)*EIGHTH,col,row:HOME,state:0,id:nid++,kind:'glass',near:false});
   for(const[e,col]of B.cars||[])hazards.push({time:(b*8+e)*EIGHTH,col,row:HOME,state:0,id:nid++,kind:TH.kinds(HOME),near:false});
   const rn=B.over?nodes.filter(n=>n.step>=b*8&&n.step<b*8+8&&n.row!==HOME):[];
   if(rn.length){const kind=TH.hop,hw=(KINDS[kind].len/2+0.9)/(SPEED*KINDS[kind].rel),lo=rn[0].time-0.07+hw,hi=rn[rn.length-1].time+DROP_TAIL-0.02-hw;
@@ -2452,7 +2448,7 @@ function holdFor(w){tutHold=w;const[a,txt,dx,dy]=TUT_MOVE[w.wait],el=$('tut');$(
   el.style.setProperty('--dx',dx);el.style.setProperty('--dy',dy);el.hidden=false;tutShown.add(w.wait);}
 function releaseHold(){tutHold.waited=true;tutHold=null;$('tut').hidden=true;needSync=true;}
 const PULSE_RANGE=28,TAP_EARLY=0.45,TAP_LATE=0.12,MOVE_LEAD=0.1;let pulseCD=0,glassHint=0;
-function pulseFire(){if(over||paused||NOTE_MODE&&!SONG.tut||respawn>0.45||t<pulseCD)return false;pulseCD=t+0.12;
+function pulseFire(){if(over||paused||NOTE_MODE||respawn>0.45||t<pulseCD)return false;pulseCD=t+0.12;
   // the nearest coin in glass in your lane, from a moment before you reach it until just after
   const early=SONG.tut?1.7:TAP_EARLY,g=nodes.find(n=>n.glass&&!n.cracked&&n.state===0&&n.col===cs.col&&Math.abs(LY[n.row]-cs.y)<0.9&&n.time-t<early&&n.time-t>-TAP_LATE);
   // a pulse with nothing to break is a misfire: it breaks the combo, so tapping all the time doesn't pay
@@ -2557,7 +2553,7 @@ const bandLevel=()=>band>=2?0:2;
 // every coin is either caught or missed: a catch scores 100 x the multiplier (150 for one broken out of glass), tops up Sync and
 // builds Flow; a miss drains Sync and knocks Flow back
 function judgeCoin(g,glass=false,lost=false,tg=''){if(over&&!sim)return;J[g]++;if(g!=='m'){maxCombo=Math.max(maxCombo,combo);if(glass)J.gl++;
-    if(tg){J[tg]++;judge(TIMING[tg].say,TIMING[tg].cls);if(sim)sim.stats[tg]=(sim.stats[tg]||0)+1;}
+    if(tg){J[tg]++;judge(TIMING[tg].say,TIMING[tg].cls);if(tg==='ex')mission('excellent',1);if(sim)sim.stats[tg]=(sim.stats[tg]||0)+1;}
     score+=(glass?150:tg?TIMING[tg].pts:100)*scoreMult();rescueGain(glass?RESCUE_GLASS:RESCUE_PER);
     if(!SONG.tut)sync=Math.min(100,sync+1.5);
     if(odT<=0){const t0=tier();flow=Math.min(100,flow+3*(SONG.tut?1.6:1));if(flow>=100)startOverdrive();else if(tier()>t0)tierUp(tier());}
@@ -2595,10 +2591,10 @@ const infList=m=>readJ(`lr-inf-${m}`)||[];
 // dev mode (the switch at the top of the menu) opens every episode on every map
 store.set('lr-dev','1');
 const devOn=()=>store.get('lr-dev')==='1';
-/* note mode (a test): every melody note is a move you play. Notes are glowing rings in a lane and height, never in the lane of the
+/* every melody note is a move you play. Notes are glowing rings in a lane and height, never in the lane of the
    note before, with an arrow for the swipe; notes too close together for a swipe the band plays. No glass and no tapping. Being
    in the ring plays the note; a miss just goes quiet and breaks the combo. No gold to collect */
-const NOTE_DEFAULT=false;let NOTE_MODE=store.get('td-notes')===null?NOTE_DEFAULT:store.get('td-notes')==='1';
+const NOTE_MODE=true;
 const ERA_NEED=10,eraOpen=m=>{const k=MAPS.indexOf(m);return k<=0||devOn()||mapStars(MAPS[k-1])>=ERA_NEED;};
 const epPassed=(m,i)=>epSave(m,i).stars>0;
 const unlocked=(m,i)=>devOn()||(eraOpen(m)&&(i===0||epPassed(m,i-1)));
@@ -2625,12 +2621,12 @@ function payRun(bonus=0){if(inMenu||sim)return 0;const n=Math.round((run.hits-(r
 const earnText=(n,why)=>`+${n.toLocaleString('en-US')} coins${why} · you have ${wallet.get().toLocaleString('en-US')}`;
 // missions ask for something on purpose (timing, clean runs, stars), not just for playing
 const MISSION_POOL=[
-  {id:'nomiss',goals:[1,2,4],say:n=>n>1?`Catch every coin in ${n} episodes`:'Catch every coin in an episode'},
+  {id:'nomiss',goals:[1,2,4],say:n=>n>1?`Play every note in ${n} episodes`:'Play every note in an episode'},
   {id:'clean',goals:[1,2,4],say:n=>n>1?`Finish ${n} episodes without crashing`:'Finish an episode without crashing'},
-  {id:'combo',goals:[30,60,100],say:n=>`Reach a ${n}-coin combo`,max:true},{id:'od',goals:[1,4,10],say:n=>n>1?`Go into OVERDRIVE ${n} times`:'Go into OVERDRIVE'},
+  {id:'combo',goals:[30,60,100],say:n=>`Reach a ${n}-note combo`,max:true},{id:'od',goals:[1,4,10],say:n=>n>1?`Go into OVERDRIVE ${n} times`:'Go into OVERDRIVE'},
   {id:'agrade',goals:[1,3,6],say:n=>n>1?`Get an A or better in ${n} episodes`:'Get an A or better in an episode'},{id:'sgrade',goals:[1,2,4],say:n=>n>1?`Get an S in ${n} episodes`:'Get an S in an episode'},
-  {id:'over',goals:[4,12,30],say:n=>`Hop over ${n} roadblocks`},{id:'shatter',goals:[8,20,45],say:n=>`Break ${n} coins out of glass`},
-  {id:'coins',goals:[300,800,1800],say:n=>`Catch ${n} coins`},{id:'rescue',goals:[1,3,8],say:n=>n>1?`Get rescued ${n} times`:'Fill the rescue meter and get your car back'},{id:'power',goals:[3,8,15],say:n=>`Collect ${n} power-ups`}];
+  {id:'over',goals:[4,12,30],say:n=>`Hop over ${n} roadblocks`},{id:'excellent',goals:[25,80,200],say:n=>`Make ${n} EXCELLENT moves`},
+  {id:'coins',goals:[300,800,1800],say:n=>`Play ${n} notes`},{id:'rescue',goals:[1,3,8],say:n=>n>1?`Get rescued ${n} times`:'Fill the rescue meter and get your car back'},{id:'power',goals:[3,8,15],say:n=>`Collect ${n} power-ups`}];
 function missionState(){let m=readJ('lr-missions');if(m&&m.active&&m.active.some(a=>!MISSION_POOL.some(p=>p.id===a.id)))m=null; // from an older version
   if(!m||!m.active){m={active:[0,1,2].map(i=>({id:MISSION_POOL[i].id,tier:0,prog:0})),next:3};store.set('lr-missions',JSON.stringify(m));}return m;}
 const mGoal=a=>MISSION_POOL.find(p=>p.id===a.id).goals[Math.min(a.tier,2)], mReward=a=>100+a.tier*100;
@@ -2689,7 +2685,7 @@ function countUp(el,to,fmt,ms=900){if(fxLow){el.textContent=fmt(to);return;}cons
 function noteChips(id,chips,text){const el=$(id);el.textContent='';const row=document.createElement('span');row.className='chips';
   for(const c of chips.filter(Boolean)){const b=document.createElement('b');b.textContent=c;row.append(b);}if(row.childElementCount)el.append(row);el.append(text);}
 function showJudgements(id='clearJud'){const el=$(id);el.textContent='';el.hidden=false;
-  for(const[k,name,v]of NOTE_MODE&&!SONG.tut?[['p','EXCELLENT',J.ex],['g','GOOD',J.gd],['o','OK',J.ok],['m','MISSED',J.m]]:[['p','CAUGHT',J.c],['m','MISSED',J.m],['g','GLASS',J.gl],['o','CRASHES',run.lost]]){const d=document.createElement('div');d.className=k;d.innerHTML='<b></b><small></small>';d.querySelector('b').textContent=v;d.querySelector('small').textContent=name;el.append(d);}}
+  for(const[k,name,v]of NOTE_MODE?[['p','EXCELLENT',J.ex],['g','GOOD',J.gd],['o','OK',J.ok],['m','MISSED',J.m]]:[['p','CAUGHT',J.c],['m','MISSED',J.m],['g','GLASS',J.gl],['o','CRASHES',run.lost]]){const d=document.createElement('div');d.className=k;d.innerHTML='<b></b><small></small>';d.querySelector('b').textContent=v;d.querySelector('small').textContent=name;el.append(d);}}
 function episodeClear(){if(inMenu||over)return;
   const acc=accuracy(),clean=run.lost===0,gr=gradeOf(acc,clean),stars=starsFor(gr);
   if(sim){over=true;sim.result={stars,grade:gr,acc};return;}
@@ -2703,7 +2699,7 @@ function episodeClear(){if(inMenu||over)return;
   const ge=$('clearGrade');ge.textContent=gr;ge.className='grade g-'+gr;void ge.offsetWidth;ge.classList.add('go');
   countUp($('clearAcc'),acc,accText);countUp($('clearScore'),score,v=>Math.round(v).toLocaleString('en-US'));$('clearCombo').textContent=maxCombo;showJudgements();
   const el=[...$('clearStars').children];el.forEach(s=>s.classList.remove('on'));el.forEach((s,i)=>{if(i<stars)setTimeout(()=>s.classList.add('on'),700+i*220);});
-  const tip=gr==='S'?'Flawless.':gr==='A'?(clean?'S needs 99% of the coins.':'S needs 99% of the coins and no crash.'):'★★ for 95% of the coins (grade A), ★★★ for 99% with no crash (S).';
+  const tip=gr==='S'?'Flawless.':gr==='A'?(clean?'S needs 99% of the notes.':'S needs 99% of the notes and no crash.'):'★★ for 95% of the notes (grade A), ★★★ for 99% with no crash (S).';
   noteChips('clearNote',[opened&&`${MAPINFO[nextEra].name.toUpperCase()} UNLOCKED`,r.best&&'NEW BEST',odN&&`${odN} OVERDRIVE${odN>1?'S':''}`,clean&&'NO CRASH'],tip);
   if(opened){pop(`${MAPINFO[nextEra].name.toUpperCase()} UNLOCKED`,'gold',3);chime();}
   // after the last episode of an era, on to the next era if it's open
@@ -2714,7 +2710,7 @@ function episodeClear(){if(inMenu||over)return;
 function tutorialDone(){if(inMenu||over)return;over=true;audioOn=false;haptic('win');const first=store.get('lr-tut')!=='1';store.set('lr-tut','1');const got=payRun(first?100:0);
   screenEl.classList.add('is-over');$('clear').hidden=false;$('clearRank').hidden=true;$('clearTitle').textContent='GRADUATED';$('clearCity').textContent='FLIGHT SCHOOL · YOU KNOW EVERY MOVE';
   showJudgements();$('clearScore').textContent=score.toLocaleString('en-US');$('clearCombo').textContent=maxCombo;
-  $('clearNote').textContent='In episodes you have 2 lives: a crash wrecks your car and you carry on by jetpack; crash again and the run is over. Catch coins to fill the rescue meter and get your car back.';
+  $('clearNote').textContent='In episodes you have 2 lives: a crash wrecks your car and you carry on by jetpack; crash again and the run is over. Play notes to fill the rescue meter and get your car back.';
   $('clearEarn').textContent=earnText(got,first?' (100 for finishing school)':'');resMissions('clearMis');
   $('nextEp').hidden=false;$('nextEp').dataset.era='';$('nextEp').textContent='START EPISODE 1';$('nextEp').focus({preventScroll:true});}
 
@@ -2773,7 +2769,7 @@ function update(dt){
     if(respawn>0.45){if(n.pre&&A.ctx){n.pre.gain.setTargetAtTime(0,A.ctx.currentTime,0.01);n.pre=null;}if(t>n.time+0.08){n.state=3;lastJudged=n.time;if(sim)sim.stats.skipped++;if(!inMenu)judgeCoin('m',false,true);}continue;} // coins during a crash are lost (no extra penalty)
     const near=Math.abs(cs.x-LX[n.col])<(magnetT>0?2.4:reachNow())&&Math.abs(cs.y-LY[n.row])<(magnetT>0?2.2:0.7);
     if(near&&t>=n.time-0.05&&!(n.glass&&!n.cracked)){n.state=1;lastJudged=n.time;combo++;if(!inMenu){run.hits++;mission('coins',1);mission('combo',combo);}if(n.pu)powerUp(n.pu);if(sim)sim.stats.hits++;collectFx(n);
-      if(!inMenu)judgeCoin('c',n.glass,false,NOTE_MODE&&!SONG.tut&&n.mv?moveGrade(n.time-(cs.moveT??-9)):'');
+      if(!inMenu)judgeCoin('c',n.glass,false,NOTE_MODE&&n.mv&&!n.wait?moveGrade(n.time-(cs.moveT??-9)):'');
       // a coin up there (or down there) ends the hop: the car drops straight back to the skyway
       if(n.row!==HOME)vt=DROP_TAIL;
       const at=audioOn&&A.ctx?Math.max(A.ctx.currentTime,offset+n.time):0;if(!melodyOn)setMelody(true,at);if(audioOn&&A.ctx&&!sim&&!n.pre)playLead(at,n.note,n.len);}
@@ -3111,6 +3107,7 @@ function nextEpisode(m){if(store.get('lr-tut')!=='1')return -1;const E=EPISODES[
   let best=0;for(let i=1;i<E.length;i++)if(unlocked(m,i)&&epSave(m,i).stars<epSave(m,best).stars)best=i;return best;}
 // the change log, newest first: version, name, date, a few short words per change
 const CHANGELOG=[
+ ['26','Note Mode','26 Oct 2026',['No coins: every note is a ring','Swipe into each ring','EXCELLENT, GOOD, OK timing','Closing cue ring','No tapping or glass','New Flight School']],
  ['25.1','Map Fix','26 Oct 2026',['Cities sit on their real spots','Smaller map markers','Same world map for every era']],
  ['25','Pilot Shop','26 Oct 2026',['Astronaut pilot by default','5 pilots to buy','Each pilot has its own music','Rescue 25% easier, arrives on the beat','Music stays on the beat','Pulse and glass play in key']],
  ['24', 'Eight Cities', '25 Oct 2026', ['Two lives: car, then jetpack', '3 new, harder cities per era', 'More swipes every episode', 'PLAY opens the map', 'Intro music', 'Dev mode on at start']],
@@ -3236,7 +3233,7 @@ function renderEps(){const m=key,E=EPISODES[m],M=drawWorld(m),pins=$('epPins'),s
     b.innerHTML=`<span class="dot">${open?i+1:'🔒'}</span><span class="lb"><span class="nm"></span><span class="s"></span></span>`;b.querySelector('.nm').textContent=lab[i].name;b.querySelector('.s').textContent=lab[i].st;b.addEventListener('click',()=>{if(epSel===i&&open){EP=i;startRun();return;}epSel=i;renderEps();});pins.append(b);});
   // the chosen episode: its music, best result and PLAY
   const e=E[epSel],sv=epSave(m,epSel),open=unlocked(m,epSel);$('ecNum').textContent=open?epSel+1:'🔒';$('ecName').textContent=e.name;
-  $('ecSub').textContent=open?`${e.bpm} BPM · ${LEAD_NAMES[e.V.lead]}`:!eraOpen(m)?`Earn ${ERA_NEED}★ in the ${MAPINFO[MAPS[MAPS.indexOf(m)-1]].name} to open`:`Get ★★★ or 85% of the coins in episode ${epSel} to open`;
+  $('ecSub').textContent=open?`${e.bpm} BPM · ${LEAD_NAMES[e.V.lead]}`:!eraOpen(m)?`Earn ${ERA_NEED}★ in the ${MAPINFO[MAPS[MAPS.indexOf(m)-1]].name} to open`:`Get ★★★ or 85% of the notes in episode ${epSel} to open`;
   const st=$('ecStars');st.textContent='';if(open&&sv.stars){st.append(starsEl(sv.stars));const gr=document.createElement('small');gr.textContent=`${sv.grade} · ${accText(sv.acc)}`;st.append(gr);}
   const pb=$('epPlay');pb.disabled=!open;pb.textContent=open?(sv.stars?`PLAY AGAIN · EPISODE ${epSel+1}`:`PLAY EPISODE ${epSel+1}`):'LOCKED';}
 $('epPlay').addEventListener('click',()=>{if(!unlocked(key,epSel))return;EP=epSel;startRun();});
@@ -3294,7 +3291,7 @@ function startRun(){running=true;over=false;paused=false;countEnd=0;garage=false
   $('epLabel').textContent=MODE==='ep'?(EP<0?'FLIGHT SCHOOL':`EPISODE ${EP+1} · ${SONG.name.toUpperCase()}`):`ENDLESS · ${LEVEL.toUpperCase()}`;}
 // leaving the app pauses the run; resuming counts in for a moment, then re-syncs the music clock
 function pauseGame(){if(inMenu||over||paused)return;paused=true;countEnd=0;holdV=false;$('pause').hidden=false;
-  $('pauseInfo').textContent=SONG.tut?'FLIGHT SCHOOL':`${accText(accuracy())} OF THE COINS · ${score.toLocaleString('en-US')} · ×${tier()}${SONG.ep>=0?` · ${Math.round(clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100)}% OF THE SONG`:''}`;screenEl.classList.add('is-paused');if(A.ctx&&A.ctx.state==='running')A.ctx.suspend().catch(()=>{});}
+  $('pauseInfo').textContent=SONG.tut?'FLIGHT SCHOOL':`${accText(accuracy())} OF THE NOTES · ${score.toLocaleString('en-US')} · ×${tier()}${SONG.ep>=0?` · ${Math.round(clamp((t-runBar*BAR)/(gateT-runBar*BAR),0,1)*100)}% OF THE SONG`:''}`;screenEl.classList.add('is-paused');if(A.ctx&&A.ctx.state==='running')A.ctx.suspend().catch(()=>{});}
 function resumeGame(){if(!paused||countEnd)return;if(soundOn)unlockIOS();if(A.ctx)A.ctx.resume().catch(()=>{});$('pause').hidden=true;screenEl.classList.remove('is-paused');
   countEnd=performance.now()+1500;pop('3','big',3);setTimeout(()=>pop('2','big',3),500);setTimeout(()=>pop('1','big',3),1000);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pauseGame();if(inMenu&&A.ctx)A.ctx.suspend().catch(()=>{});}
@@ -3308,7 +3305,6 @@ function setMode(m){MODE=m;store.set('lr-mode',m);renderMenu();}
 $('start').addEventListener('click',()=>{running=true;setMode('ep');openMenu('eps');});
 $('modeEp').addEventListener('click',()=>{running=true;setMode('ep');EP=-1;startRun();});$('modeInf').addEventListener('click',()=>{running=true;setMode('inf');startRun();});
 $('eraPrev').addEventListener('click',()=>cycleEra(-1));$('eraNext').addEventListener('click',()=>cycleEra(1));
-$('noteBtn').textContent=NOTE_MODE?'ON':'OFF';$('noteBtn').addEventListener('click',()=>{NOTE_MODE=!NOTE_MODE;store.set('td-notes',NOTE_MODE?'1':'0');$('noteBtn').textContent=NOTE_MODE?'ON':'OFF';resetRun();});
 $('setBtn').addEventListener('click',()=>openMenu('settings'));$('setBack').addEventListener('click',()=>openMenu('menu'));
 $('tutBtn').addEventListener('click',()=>{running=true;setMode('ep');EP=-1;startRun();});
 // swipe left or right across the menu (or use the arrow keys) to change era
