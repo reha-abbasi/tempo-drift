@@ -1,6 +1,6 @@
 # Tempo Drift — Godot version
 
-The game remade in Godot 4.7. The Past so far: **London 1890**, **Istanbul 1910** and **Paris 1925**, picked on the title card.
+The game remade in Godot 4.7. The whole Past: **London 1890, Istanbul 1910, Paris 1925, New York 1935, Havana 1955, Vienna 1905, Cairo 1925 and Rome 1948**, picked on the title card. Each city has its own street, light, landmark and band.
 
 ## Open it
 
@@ -21,7 +21,7 @@ Every note is a ring: swipe into it just before its note for **EXCELLENT** (300)
 
 **Duet:** four EXCELLENTs in a row and a second instrument harmonises your melody (400 a note) until a GOOD, OK or miss.
 
-**Settings** (title card): picture quality (Auto, Low, Medium, High; phones start on Medium and the game steps down if it runs slow) and the audio offset for wireless headphones.
+**Settings** (title card): picture quality (Auto, Low, Medium, High; phones start on Medium and the game steps down if it runs slow) and the audio offset for wireless headphones, with a tap-along test that measures it.
 
 ## What's where
 

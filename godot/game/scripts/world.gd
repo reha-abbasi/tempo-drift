@@ -21,6 +21,7 @@ var env: Environment
 var rng := RandomNumberGenerator.new()
 var big_halos: MultiMeshInstance3D
 var look: Dictionary
+var searchlights := []
 
 # wall styles for the facade shader: brick 0, plaster 0.25, stucco ground floor 0.5, ashlar stone 0.75, brick with
 # stone bands 1
@@ -49,6 +50,46 @@ const LOOKS := {
 		"styles": [0.75], "floors": [5, 6], "roof": "mansard", "roof_col": Color(0.4, 0.45, 0.53),
 		"chimneys": true, "bays": "", "railings": false, "balconies": true, "trees": "chestnut", "landmark": "eiffel",
 		"rain": false, "smoke": false, "puddles": 0.18, "seed": 1925},
+	"newyork": {
+		"sky": [Color(0.06, 0.08, 0.2), Color(0.2, 0.21, 0.38), Color(0.66, 0.44, 0.4), Color(1.0, 0.6, 0.42)],
+		"cloud": Color(0.16, 0.16, 0.26), "cover": 0.6, "sun": Color(0.72, 0.62, 1.0), "sun_e": 0.55, "sun_dir": Vector3(0.3, -0.3, 1.0),
+		"fog": Color(0.24, 0.23, 0.33), "fog_d": 0.0068, "haze": Color(0.4, 0.34, 0.46), "ambient": 0.3, "lit": 0.55,
+		"walls": [Color(0.44, 0.34, 0.29), Color(0.58, 0.52, 0.45), Color(0.36, 0.3, 0.28), Color(0.64, 0.58, 0.5), Color(0.5, 0.28, 0.22)],
+		"styles": [1.0, 0.75, 0.0, 1.0], "floors": [6, 12], "roof": "flat", "roof_col": Color(0.2, 0.2, 0.22),
+		"chimneys": false, "bays": "", "railings": false, "balconies": false, "fire_escapes": true, "tanks": true,
+		"trees": "none", "landmark": "deco", "rain": false, "smoke": false, "steam": true, "puddles": 0.3, "seed": 1935},
+	"havana": {
+		"sky": [Color(0.22, 0.4, 0.68), Color(0.76, 0.62, 0.74), Color(1.0, 0.63, 0.5), Color(1.0, 0.78, 0.53)],
+		"cloud": Color(0.72, 0.6, 0.68), "cover": 0.7, "sun": Color(1.0, 0.72, 0.56), "sun_e": 2.2, "sun_dir": Vector3(-0.6, -0.22, 1.0),
+		"fog": Color(0.84, 0.62, 0.6), "fog_d": 0.0052, "haze": Color(0.98, 0.76, 0.66),
+		"walls": [Color(0.22, 0.7, 0.72), Color(0.92, 0.42, 0.52), Color(0.98, 0.8, 0.3), Color(0.58, 0.44, 0.82), Color(0.95, 0.92, 0.84), Color(1.0, 0.56, 0.32)],
+		"styles": [0.25], "floors": [2, 3], "roof": "flat", "roof_col": Color(0.6, 0.31, 0.21),
+		"chimneys": false, "bays": "", "railings": false, "balconies": true, "trees": "palm", "landmark": "capitolio",
+		"rain": false, "smoke": false, "puddles": 0.05, "seed": 1955},
+	"vienna": {
+		"sky": [Color(0.28, 0.3, 0.55), Color(0.72, 0.6, 0.72), Color(1.0, 0.69, 0.63), Color(1.0, 0.82, 0.66)],
+		"cloud": Color(0.6, 0.55, 0.66), "cover": 0.6, "sun": Color(1.0, 0.75, 0.62), "sun_e": 1.9, "sun_dir": Vector3(0.55, -0.2, 1.0),
+		"fog": Color(0.74, 0.63, 0.66), "fog_d": 0.0062, "haze": Color(0.9, 0.76, 0.76),
+		"walls": [Color(0.93, 0.8, 0.5), Color(0.9, 0.86, 0.76), Color(0.86, 0.74, 0.6), Color(0.84, 0.84, 0.78), Color(0.92, 0.76, 0.56)],
+		"styles": [0.75, 0.5, 0.25], "floors": [4, 5], "roof": "mansard", "roof_col": Color(0.34, 0.52, 0.45),
+		"chimneys": true, "bays": "", "railings": false, "balconies": true, "trees": "chestnut", "landmark": "stephansdom",
+		"rain": false, "smoke": true, "puddles": 0.15, "seed": 1905},
+	"cairo": {
+		"sky": [Color(0.34, 0.4, 0.6), Color(0.8, 0.66, 0.58), Color(1.0, 0.72, 0.46), Color(1.0, 0.84, 0.6)],
+		"cloud": Color(0.78, 0.66, 0.58), "cover": 0.78, "sun": Color(1.0, 0.74, 0.5), "sun_e": 2.3, "sun_dir": Vector3(-0.5, -0.24, 1.0),
+		"fog": Color(0.82, 0.66, 0.5), "fog_d": 0.0056, "haze": Color(0.98, 0.82, 0.62),
+		"walls": [Color(0.84, 0.68, 0.48), Color(0.76, 0.6, 0.42), Color(0.9, 0.8, 0.62), Color(0.68, 0.54, 0.4), Color(0.94, 0.88, 0.76)],
+		"styles": [0.25, 0.25, 0.75], "floors": [2, 4], "roof": "flat", "roof_col": Color(0.6, 0.5, 0.4),
+		"chimneys": false, "bays": "upper", "railings": false, "balconies": false, "trees": "palm", "landmark": "cairo",
+		"rain": false, "smoke": false, "puddles": 0.0, "seed": 1926},
+	"rome": {
+		"sky": [Color(0.28, 0.38, 0.62), Color(0.74, 0.62, 0.66), Color(1.0, 0.7, 0.5), Color(1.0, 0.84, 0.6)],
+		"cloud": Color(0.7, 0.6, 0.62), "cover": 0.72, "sun": Color(1.0, 0.72, 0.5), "sun_e": 2.1, "sun_dir": Vector3(0.6, -0.22, 1.0),
+		"fog": Color(0.82, 0.66, 0.55), "fog_d": 0.0064, "haze": Color(0.96, 0.78, 0.64),
+		"walls": [Color(0.84, 0.56, 0.32), Color(0.76, 0.42, 0.28), Color(0.9, 0.74, 0.5), Color(0.72, 0.5, 0.36), Color(0.88, 0.66, 0.44)],
+		"styles": [0.25, 0.25, 0.5], "floors": [3, 5], "roof": "pitch", "roof_col": Color(0.62, 0.33, 0.22),
+		"chimneys": false, "bays": "", "railings": false, "balconies": true, "trees": "pine", "landmark": "rome",
+		"rain": false, "smoke": false, "puddles": 0.05, "seed": 1948},
 }
 
 func build(length_units: float, look_name := "london") -> void:
@@ -119,7 +160,7 @@ func _environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.42
+	env.ambient_light_energy = look.get("ambient", 0.42)
 	env.ambient_light_sky_contribution = 0.85
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
@@ -170,6 +211,9 @@ func _environment() -> void:
 func follow(car_z: float) -> void:
 	if far:
 		far.position.z = car_z - 250.0
+	var tt := Time.get_ticks_msec() / 1000.0
+	for k in searchlights.size():
+		searchlights[k].rotation.z = sin(tt * 0.35 + k * 1.7) * 0.5 + (k - 1.5) * 0.12
 
 # ---------------------------------------------------------------- street, pavements, kerbs
 
@@ -251,6 +295,8 @@ func _houses() -> void:
 	var cornices := []
 	var rails := []
 	var balconies := []
+	var tanks := []
+	var ladders := []
 	var palette: Array = look.walls
 	var styles: Array = look.styles
 	var fl: Array = look.floors
@@ -294,9 +340,21 @@ func _houses() -> void:
 					cornices.append(_box_xf(Vector3(s * (FRONT - 0.25), WALK_Y + f * 2.7 + 0.03, cz), Vector3(0.55, 0.08, w)))
 			# the cornice along the top of the front
 			cornices.append(_box_xf(Vector3(s * (FRONT - 0.12), WALK_Y + h - 0.12, cz), Vector3(0.36, 0.26, w + 0.02)))
-			# the roof, its ridge along the street
+			# the roof, its ridge along the street (flat roofs have only their parapet)
 			var rh := (2.8 + rng.randf() * 0.6) if look.roof == "mansard" else (1.6 + rng.randf() * 0.9 if look.chimneys else 1.1 + rng.randf() * 0.6)
-			roofs.append(Transform3D(Basis.from_scale(Vector3(DEPTH * 0.92, rh, w)), Vector3(cx + s * 0.2, WALK_Y + h, cz)))
+			if look.roof != "flat":
+				roofs.append(Transform3D(Basis.from_scale(Vector3(DEPTH * 0.92, rh, w)), Vector3(cx + s * 0.2, WALK_Y + h, cz)))
+			else:
+				rh = 0.0
+			if look.get("tanks", false) and rng.randf() < 0.45:
+				# a wooden water tank on legs on the roof (New York)
+				tanks.append(Transform3D(Basis.from_scale(Vector3(1.8, 1.8, 1.8)), Vector3(cx + rng.randf_range(-2.0, 2.0), WALK_Y + h + 2.0, cz)))
+			if look.get("fire_escapes", false) and rng.randf() < 0.55 and floors > 3:
+				# an iron fire escape zigzagging up the front
+				for f in range(1, floors):
+					balconies.append(Transform3D(Basis.from_scale(Vector3(1, 0.9, 3.0)), Vector3(s * (FRONT - 0.7), WALK_Y + f * 2.7 + 0.45, cz)))
+					cornices.append(_box_xf(Vector3(s * (FRONT - 0.38), WALK_Y + f * 2.7 + 0.02, cz), Vector3(0.75, 0.06, 3.0)))
+					ladders.append(Transform3D(Basis.from_scale(Vector3(1, 2.7, 0.5)).rotated(Vector3.RIGHT, 0.6 if f % 2 == 0 else -0.6), Vector3(s * (FRONT - 0.5), WALK_Y + f * 2.7 + 1.35, cz)))
 			if look.chimneys:
 				# chimney stacks on the party wall, with clay pots
 				var sh := 1.4 + rng.randf() * 1.2
@@ -311,7 +369,7 @@ func _houses() -> void:
 				rails.append(Transform3D(Basis.from_scale(Vector3(1, 1.0, w)), Vector3(s * (FRONT - 0.9), WALK_Y + 0.5, cz)))
 			z -= w
 			since_gap += w
-	var wall_mat := _mat("res://shaders/facade.gdshader")
+	var wall_mat := _mat("res://shaders/facade.gdshader", {"lit_share": look.get("lit", 0.34)})
 	_multi(BoxMesh.new(), wall_mat, walls, wall_cd)
 	if stacks.size() > 0:
 		_multi(BoxMesh.new(), wall_mat, stacks, stack_cd)
@@ -328,6 +386,24 @@ func _houses() -> void:
 		_multi(rail_mesh, rail_mat, rails, [], false)
 	if balconies.size() > 0:
 		_multi(rail_mesh, rail_mat, balconies, [], false)
+	if ladders.size() > 0:
+		_multi(rail_mesh, rail_mat, ladders, [], false)
+	if tanks.size() > 0:
+		var tank := CylinderMesh.new()
+		tank.top_radius = 0.5; tank.bottom_radius = 0.5; tank.height = 1.0; tank.radial_segments = 14
+		var wood := _std(Color(0.4, 0.3, 0.22), 0.8)
+		_multi(tank, wood, tanks)
+		var cone := CylinderMesh.new()
+		cone.top_radius = 0.02; cone.bottom_radius = 0.55; cone.height = 0.4; cone.radial_segments = 14
+		var tops := []
+		var legs := []
+		for xf in tanks:
+			tops.append(Transform3D(xf.basis, xf.origin + Vector3(0, 1.1, 0)))
+			for k in 4:
+				var a := k * PI * 0.5 + PI * 0.25
+				legs.append(Transform3D(Basis.from_scale(Vector3(0.1, 1.2, 0.1)), xf.origin + Vector3(cos(a) * 0.7, -1.5, sin(a) * 0.7)))
+		_multi(cone, _std(Color(0.22, 0.2, 0.2), 0.6), tops)
+		_multi(BoxMesh.new(), _std(Color(0.08, 0.08, 0.08), 0.5, 0.5), legs, [], false)
 
 func _railing_shader() -> Shader:
 	var sh := Shader.new()
@@ -371,7 +447,28 @@ func _lamps_and_trees() -> void:
 			if n % 2 == 1:
 				var tz := z + 6.5
 				var tx: float = s * (ROAD_HW + 1.25)
-				if look.trees == "cypress":
+				if look.trees == "none":
+					pass
+				elif look.trees == "palm":
+					# a tall palm leaning a little toward the street, a crown of drooping fronds
+					var ph := 6.5 + rng.randf() * 2.5
+					var lean: float = -s * 0.06
+					trunks.append(Transform3D(Basis.from_scale(Vector3(0.24, ph, 0.24)).rotated(Vector3.FORWARD, lean), Vector3(tx - s * ph * 0.03, WALK_Y + ph * 0.5, tz)))
+					var top := Vector3(tx - s * ph * 0.06, WALK_Y + ph, tz)
+					for k in 8:
+						var a := k * TAU / 8.0 + rng.randf() * 0.3
+						var d := Vector3(cos(a), 0, sin(a))
+						# each frond: a long flat leaf reaching out and drooping (stretched along its own length)
+						var fb := Basis.looking_at((d + Vector3(0, -0.45, 0)).normalized(), Vector3.UP).scaled_local(Vector3(0.75, 0.16, 2.6))
+						crowns.append(Transform3D(fb, top + d * 1.15 - Vector3(0, 0.45, 0)))
+					crowns.append(Transform3D(Basis.from_scale(Vector3(0.7, 0.6, 0.7)), top))
+				elif look.trees == "pine":
+					# a Roman umbrella pine: a tall bare trunk and a wide flat crown
+					var ph := 6.0 + rng.randf() * 2.0
+					trunks.append(Transform3D(Basis.from_scale(Vector3(0.3, ph, 0.3)), Vector3(tx, WALK_Y + ph * 0.5, tz)))
+					crowns.append(Transform3D(Basis.from_scale(Vector3(3.4, 1.1, 3.0)), Vector3(tx + s * 0.3, WALK_Y + ph + 0.4, tz)))
+					crowns.append(Transform3D(Basis.from_scale(Vector3(2.4, 0.9, 2.2)), Vector3(tx - s * 0.6, WALK_Y + ph + 0.8, tz + 0.8)))
+				elif look.trees == "cypress":
 					trunks.append(Transform3D(Basis.from_scale(Vector3(0.24, 1.6, 0.24)), Vector3(tx, WALK_Y + 0.8, tz)))
 					var th := 6.5 + rng.randf() * 3.0
 					crowns.append(Transform3D(Basis.from_scale(Vector3(0.85, th * 0.5, 0.85)), Vector3(tx, WALK_Y + 1.2 + th * 0.5, tz)))
@@ -401,13 +498,18 @@ func _lamps_and_trees() -> void:
 	var bark := _std(Color(0.42, 0.4, 0.33), 0.85)
 	var trunk := CylinderMesh.new()
 	trunk.top_radius = 0.35; trunk.bottom_radius = 0.5; trunk.height = 1.0; trunk.radial_segments = 8
+	if trunks.is_empty():
+		return
+	if look.trees == "palm":
+		bark = _std(Color(0.5, 0.42, 0.32), 0.9)
 	_multi(trunk, bark, trunks)
 	var crown := SphereMesh.new()
 	crown.radial_segments = 14; crown.rings = 8
 	var leaves := ShaderMaterial.new()
 	leaves.shader = _leaves_shader()
 	var greens: Array = {"plane": [Color(0.16, 0.22, 0.09), Color(0.36, 0.42, 0.16)], "chestnut": [Color(0.2, 0.3, 0.1), Color(0.44, 0.52, 0.2)],
-		"cypress": [Color(0.06, 0.12, 0.07), Color(0.16, 0.24, 0.12)]}[look.trees]
+		"cypress": [Color(0.06, 0.12, 0.07), Color(0.16, 0.24, 0.12)], "palm": [Color(0.14, 0.24, 0.08), Color(0.42, 0.52, 0.18)],
+		"pine": [Color(0.1, 0.16, 0.07), Color(0.26, 0.34, 0.14)], "none": [Color.BLACK, Color.BLACK]}[look.trees]
 	leaves.set_shader_parameter("dark", greens[0])
 	leaves.set_shader_parameter("light", greens[1])
 	_multi(crown, leaves, crowns)
@@ -477,6 +579,17 @@ func _skyline() -> void:
 			_mosque()
 		"eiffel":
 			_eiffel()
+		"deco":
+			_deco()
+		"capitolio":
+			_capitolio()
+		"stephansdom":
+			_stephansdom()
+		"cairo":
+			_pyramids()
+			_mosque()
+		"rome":
+			_rome()
 		_:
 			_bigben()
 	_roofscape()
@@ -495,7 +608,7 @@ func _mosque() -> void:
 	var dome := SphereMesh.new()
 	dome.radial_segments = 32; dome.rings = 16; dome.is_hemisphere = true
 	_part(mos, BoxMesh.new(), m, Vector3(0, 9, 0), Vector3(40, 18, 34))
-	_part(mos, CylinderMesh.new(), m, Vector3(0, 21, 0), Vector3(22, 6, 22))
+	_part(mos, _cyl1(), m, Vector3(0, 21, 0), Vector3(22, 6, 22))
 	_part(mos, dome, m, Vector3(0, 24, 0), Vector3(14, 13, 14))
 	for d in [Vector3(1, 0, 0), Vector3(-1, 0, 0), Vector3(0, 0, 1), Vector3(0, 0, -1)]:
 		_part(mos, dome, m, Vector3(0, 18, 0) + d * 12.0, Vector3(9, 7, 9))
@@ -598,9 +711,151 @@ func _eiffel() -> void:
 	var dome := SphereMesh.new()
 	dome.radial_segments = 24; dome.rings = 12; dome.is_hemisphere = true
 	var gold := _sil_h(0.5, 0.0)
-	_part(far, CylinderMesh.new(), gold, Vector3(90, ROAD_Y + 18, 90), Vector3(20, 14, 20))
+	_part(far, _cyl1(), gold, Vector3(90, ROAD_Y + 18, 90), Vector3(20, 14, 20))
 	_part(far, dome, gold, Vector3(90, ROAD_Y + 25, 90), Vector3(11, 14, 11))
 	_part(far, spire, gold, Vector3(90, ROAD_Y + 44, 90), Vector3(1.6, 10, 1.6))
+
+func _glow_at(parent: Node3D, pos: Vector3, size: Vector3, col: Color, e: float) -> void:
+	var h := MeshInstance3D.new()
+	h.mesh = QuadMesh.new()
+	h.material_override = _mat("res://shaders/halo.gdshader", {"tint": col, "energy": e, "fade": 0.0})
+	h.position = pos
+	h.scale = size
+	parent.add_child(h)
+
+## a cylinder one unit tall (Godot's default is two), so a part's scale is its size
+func _cyl1(seg := 24) -> CylinderMesh:
+	var c := CylinderMesh.new()
+	c.top_radius = 0.5; c.bottom_radius = 0.5; c.height = 1.0; c.radial_segments = seg
+	return c
+
+func _spire_mesh(seg := 4) -> CylinderMesh:
+	var c := CylinderMesh.new()
+	c.top_radius = 0.02; c.bottom_radius = 0.5; c.height = 1.0; c.radial_segments = seg
+	return c
+
+## Manhattan at night: stepped Art Deco towers with lit windows, a crowned spire, and searchlights sweeping the sky
+func _deco() -> void:
+	var lit := _sil_h(0.3, 0.0)
+	lit.set_shader_parameter("lights", 1.0)
+	lit.set_shader_parameter("near_col", Color(0.12, 0.12, 0.18))
+	var far_lit := _sil_h(0.55, 0.0)
+	far_lit.set_shader_parameter("lights", 0.7)
+	far_lit.set_shader_parameter("near_col", Color(0.12, 0.12, 0.18))
+	# the Empire State: setbacks and a mast
+	var es := Node3D.new()
+	es.position = Vector3(4.0, ROAD_Y, 0)
+	far.add_child(es)
+	# the shaft, then four setbacks, each narrower
+	_part(es, BoxMesh.new(), lit, Vector3(0, 30, 0), Vector3(26, 60, 21))
+	for k in range(1, 5):
+		var w := 26.0 - k * 4.5
+		_part(es, BoxMesh.new(), lit, Vector3(0, 60 + (k - 1) * 18 + 9, 0), Vector3(w, 18, w * 0.8))
+	_part(es, _cyl1(), lit, Vector3(0, 142, 0), Vector3(4, 14, 4))
+	_part(es, _spire_mesh(8), lit, Vector3(0, 162, 0), Vector3(2, 26, 2))
+	_glow_at(es, Vector3(0, 176, 3), Vector3.ONE * 8.0, Color(1.0, 0.35, 0.3), 1.2)
+	# the Chrysler crown on the left: stacked arches narrowing to a needle, lit
+	var ch := Node3D.new()
+	ch.position = Vector3(-46, ROAD_Y, 40)
+	far.add_child(ch)
+	_part(ch, BoxMesh.new(), lit, Vector3(0, 50, 0), Vector3(18, 100, 18))
+	for k in 5:
+		_part(ch, SphereMesh.new(), lit, Vector3(0, 100 + k * 6, 0), Vector3(16 - k * 3, 12, 16 - k * 3))
+	_part(ch, _spire_mesh(8), lit, Vector3(0, 140, 0), Vector3(1.5, 30, 1.5))
+	_glow_at(ch, Vector3(0, 112, 9), Vector3(14, 22, 1), Color(1.0, 0.86, 0.6), 0.5)
+	# a forest of towers behind
+	for i in 22:
+		var x := -110.0 + i * 10.0 + rng.randf() * 5.0
+		if absf(x - 4.0) < 16.0:
+			continue
+		var h := 40.0 + rng.randf() * 70.0
+		_part(far, BoxMesh.new(), far_lit, Vector3(x, ROAD_Y + h * 0.5, 60.0 + rng.randf() * 60.0), Vector3(10 + rng.randf() * 8, h, 10))
+	# searchlights: long pale beams fanning up from behind the skyline (they sweep in follow())
+	var beam_mat := _mat("res://shaders/beam.gdshader")
+	for k in 4:
+		var b := MeshInstance3D.new()
+		b.mesh = QuadMesh.new()
+		b.material_override = beam_mat
+		b.position = Vector3(-60.0 + k * 40.0, ROAD_Y, 80.0)
+		b.scale = Vector3(7.0, 260.0, 1.0)
+		far.add_child(b)
+		searchlights.append(b)
+
+## Havana: the Capitolio's dome on its drum above a long colonnaded front
+func _capitolio() -> void:
+	var m := _sil_h(0.36, 1.2)
+	var c := Node3D.new()
+	c.position = Vector3(-2.0, ROAD_Y, 0)
+	far.add_child(c)
+	_part(c, BoxMesh.new(), m, Vector3(0, 12, 0), Vector3(120, 24, 30))
+	_part(c, BoxMesh.new(), m, Vector3(0, 28, 0), Vector3(36, 10, 26))
+	_part(c, _cyl1(), m, Vector3(0, 40, 0), Vector3(22, 16, 22))
+	var dome := SphereMesh.new()
+	dome.radial_segments = 28; dome.rings = 14; dome.is_hemisphere = true
+	_part(c, dome, m, Vector3(0, 47, 0), Vector3(13, 22, 13))
+	_part(c, _cyl1(), m, Vector3(0, 72, 0), Vector3(3, 6, 3))
+	_part(c, _spire_mesh(8), m, Vector3(0, 78, 0), Vector3(1.5, 6, 1.5))
+	_glow_at(c, Vector3(0, 74, 4), Vector3.ONE * 7.0, Color(1.0, 0.8, 0.5), 0.8)
+	# the sea wall and the lighthouse of El Morro off to the left
+	var m2 := _sil_h(0.6, 0.0)
+	_part(far, _cyl1(), m2, Vector3(-110, ROAD_Y + 18, 60), Vector3(6, 36, 6))
+	_glow_at(far, Vector3(-110, ROAD_Y + 38, 64), Vector3.ONE * 10.0, Color(1.0, 0.85, 0.6), 1.0)
+
+## Vienna: St. Stephen's, its steep patterned roof and the great south spire, and a green dome beside it
+func _stephansdom() -> void:
+	var m := _sil_h(0.34, 1.6)
+	var c := Node3D.new()
+	c.position = Vector3(2.0, ROAD_Y, 0)
+	far.add_child(c)
+	_part(c, BoxMesh.new(), m, Vector3(-8, 14, 0), Vector3(30, 28, 60))
+	var roof := _prism()
+	var rm := MeshInstance3D.new()
+	rm.mesh = roof
+	rm.material_override = m
+	rm.position = Vector3(-8, 28, 0)
+	rm.scale = Vector3(30, 26, 60)
+	c.add_child(rm)
+	_part(c, BoxMesh.new(), m, Vector3(14, 30, -10), Vector3(12, 60, 12))
+	_part(c, _spire_mesh(8), m, Vector3(14, 92, -10), Vector3(12, 64, 12))
+	_part(c, _spire_mesh(8), m, Vector3(14, 130, -10), Vector3(2.5, 14, 2.5))
+	for sx in [-1.0, 1.0]:
+		_part(c, _spire_mesh(6), m, Vector3(14 + sx * 6.5, 64, -10 + sx * 6.5), Vector3(2.2, 14, 2.2))
+	var green := _sil_h(0.5, 0.0)
+	green.set_shader_parameter("near_col", Color(0.24, 0.36, 0.32))
+	var dome := SphereMesh.new()
+	dome.radial_segments = 24; dome.rings = 12; dome.is_hemisphere = true
+	_part(far, _cyl1(), green, Vector3(80, ROAD_Y + 22, 80), Vector3(22, 14, 22))
+	_part(far, dome, green, Vector3(80, ROAD_Y + 29, 80), Vector3(12, 18, 12))
+	for sx in [-1.0, 1.0]:
+		_part(far, _cyl1(), green, Vector3(80 + sx * 20, ROAD_Y + 20, 72), Vector3(4, 40, 4))
+
+## Cairo: the pyramids of Giza far off in the dust
+func _pyramids() -> void:
+	var m := _sil_h(0.62, 0.0)
+	var pyr := _spire_mesh(4)
+	for p in [[Vector3(-120, 0, -180), 110.0], [Vector3(-40, 0, -150), 90.0], [Vector3(-190, 0, -120), 60.0]]:
+		_part(far, pyr, m, p[0] + Vector3(0, ROAD_Y + p[1] * 0.5, 0), Vector3(p[1] * 1.6, p[1], p[1] * 1.6), PI * 0.25)
+
+## Rome: St. Peter's dome with its lantern, and the Colosseum's broken ring to one side
+func _rome() -> void:
+	var m := _sil_h(0.36, 1.4)
+	var c := Node3D.new()
+	c.position = Vector3(3.0, ROAD_Y, 0)
+	far.add_child(c)
+	# a long low front, a short drum ringed with columns, and the great ribbed dome with its lantern
+	_part(c, BoxMesh.new(), m, Vector3(0, 11, 14), Vector3(100, 22, 24))
+	_part(c, _cyl1(32), m, Vector3(0, 28, -6), Vector3(40, 12, 40))
+	var dome := SphereMesh.new()
+	dome.radial_segments = 32; dome.rings = 16; dome.is_hemisphere = true
+	_part(c, dome, m, Vector3(0, 34, -6), Vector3(21, 30, 21))
+	_part(c, _cyl1(), m, Vector3(0, 66, -6), Vector3(6, 8, 6))
+	_part(c, _spire_mesh(8), m, Vector3(0, 74, -6), Vector3(3, 8, 3))
+	_glow_at(c, Vector3(0, 68, 0), Vector3.ONE * 8.0, Color(1.0, 0.8, 0.5), 0.7)
+	var col := _sil_h(0.5, 3.0)
+	col.set_shader_parameter("arches", 1.0)
+	var ring := CylinderMesh.new()
+	ring.top_radius = 0.5; ring.bottom_radius = 0.5; ring.height = 1.0; ring.radial_segments = 40
+	_part(far, ring, col, Vector3(-85, ROAD_Y + 16, 70), Vector3(60, 32, 50))
 
 func _bigben() -> void:
 	# the Elizabeth Tower: the shaft, the belfry with its four lit clock faces, and the spire
@@ -652,9 +907,9 @@ func _bigben() -> void:
 	var sp := _sil_h(0.68, 0.0)
 	var dome := SphereMesh.new()
 	dome.radial_segments = 24; dome.rings = 12; dome.is_hemisphere = true
-	_part(far, CylinderMesh.new(), sp, Vector3(110, ROAD_Y + 26, 120), Vector3(30, 18, 30))
+	_part(far, _cyl1(), sp, Vector3(110, ROAD_Y + 26, 120), Vector3(30, 18, 30))
 	_part(far, dome, sp, Vector3(110, ROAD_Y + 35, 120), Vector3(17, 17, 17))
-	_part(far, CylinderMesh.new(), sp, Vector3(110, ROAD_Y + 54, 120), Vector3(3, 6, 3))
+	_part(far, _cyl1(), sp, Vector3(110, ROAD_Y + 54, 120), Vector3(3, 6, 3))
 
 func _roofscape() -> void:
 	# the roofs of the rest of the city, layer behind layer
@@ -709,7 +964,11 @@ func _weather() -> void:
 	add_child(rain)
 	smoke = _puffs(70, 7.0, Vector3(13, 1.2, 70), Vector3(0.6, 0.35, 0), Vector2(3.0, 7.0), Color(0.6, 0.58, 0.56), 0.16)
 	smoke.visible = look.smoke
-	mist = _puffs(36, 8.0, Vector3(5, 0.4, 70), Vector3(0.3, 0.02, 0), Vector2(7.0, 12.0), Color(0.82, 0.75, 0.66), 0.07)
+	if look.get("steam", false):
+		# steam rising from the manholes
+		mist = _puffs(40, 4.0, Vector3(4, 0.2, 70), Vector3(0.1, 1.4, 0), Vector2(2.0, 5.0), Color(0.75, 0.72, 0.8), 0.16)
+	else:
+		mist = _puffs(36, 8.0, Vector3(5, 0.4, 70), Vector3(0.3, 0.02, 0), Vector2(7.0, 12.0), look.haze, 0.07)
 
 func _puffs(amount: int, life: float, box: Vector3, vel: Vector3, size: Vector2, col: Color, alpha: float) -> GPUParticles3D:
 	var p := GPUParticles3D.new()

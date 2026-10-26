@@ -32,7 +32,7 @@ var judge_age := 9.0
 var pops: VBoxContainer
 var title: Control
 var results: Control
-var cards: HBoxContainer
+var cards: GridContainer
 var ep_label: Label
 var _cards := []
 var res_box: VBoxContainer
@@ -178,12 +178,14 @@ func _build_title() -> void:
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(hint)
 	# the three cities of the Past, one card each: pick one, then FLY
-	cards = HBoxContainer.new()
+	cards = GridContainer.new()
+	cards.columns = 4
 	cards.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	cards.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	cards.offset_top = -250; cards.offset_bottom = -170
-	cards.add_theme_constant_override("separation", 8)
-	cards.alignment = BoxContainer.ALIGNMENT_CENTER
+	cards.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	cards.offset_top = -300; cards.offset_bottom = -160
+	cards.add_theme_constant_override("h_separation", 6)
+	cards.add_theme_constant_override("v_separation", 6)
 	title.add_child(cards)
 	var b := _button("FLY")
 	b.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
@@ -288,10 +290,10 @@ func set_episodes(list: Array, sel: int) -> void:
 		var b := Button.new()
 		b.toggle_mode = true
 		b.button_pressed = i == sel
-		b.custom_minimum_size = Vector2(132, 78)
+		b.custom_minimum_size = Vector2(118, 62)
 		b.text = "%s\n%s   %s" % [e.city, e.year, "★".repeat(e.stars) + "☆".repeat(3 - e.stars)]
 		b.add_theme_font_override("font", font_body)
-		b.add_theme_font_size_override("font_size", 14)
+		b.add_theme_font_size_override("font_size", 13)
 		b.add_theme_color_override("font_color", Color(1, 1, 1, 0.85))
 		b.add_theme_color_override("font_pressed_color", Color(0.12, 0.06, 0.02))
 		b.add_theme_color_override("font_hover_pressed_color", Color(0.12, 0.06, 0.02))

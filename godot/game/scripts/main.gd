@@ -1,10 +1,10 @@
 extends Node3D
-## Tempo Drift, the Past: London 1890, Istanbul 1910 and Paris 1925.
+## Tempo Drift, the Past: eight cities from London 1890 to Rome 1948.
 ## Puts the pieces together: the baked course and soundtrack, the street, the car, the rings, the traffic, the HUD,
 ## and the camera, and runs a song from the title card to the results.
 ##
 ## Command-line options (after "--"), for testing:
-##   --ep=N             which episode (0 London, 1 Istanbul, 2 Paris)
+##   --ep=N             which episode (0 London ... 7 Rome)
 ##   --sim              play the whole episode at once with a perfect pilot and print the result
 ##   --shots=DIR        play it with the perfect pilot at a fixed frame rate and save screenshots in DIR
 ##   --at=SECONDS       (with --shots) where in the song to take them
@@ -13,6 +13,11 @@ const EPISODES := [
 	{"id": "old_0", "city": "LONDON", "year": "1890", "look": "london"},
 	{"id": "old_1", "city": "ISTANBUL", "year": "1910", "look": "istanbul"},
 	{"id": "old_2", "city": "PARIS", "year": "1925", "look": "paris"},
+	{"id": "old_3", "city": "NEW YORK", "year": "1935", "look": "newyork"},
+	{"id": "old_4", "city": "HAVANA", "year": "1955", "look": "havana"},
+	{"id": "old_5", "city": "VIENNA", "year": "1905", "look": "vienna"},
+	{"id": "old_6", "city": "CAIRO", "year": "1925", "look": "cairo"},
+	{"id": "old_7", "city": "ROME", "year": "1948", "look": "rome"},
 ]
 const SAVE := "user://save.cfg"
 
@@ -50,6 +55,8 @@ var title_shot := false
 var crash_at := -1.0
 var results_shot := false
 var ep_arg := -1
+var od_k := 0.0
+var streaks: GPUParticles3D
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
@@ -98,6 +105,8 @@ func _ready() -> void:
 	fill.light_specular = 0.6
 	add_child(fill)
 	fill.look_at_from_position(Vector3.ZERO, Vector3(0.25, -0.55, -1.0), Vector3.UP)
+	streaks = _make_streaks()
+	add_child(streaks)
 	cam = Camera3D.new()
 	cam.fov = 62.0
 	cam.near = 0.1
@@ -252,6 +261,33 @@ func _finish(r: Dictionary, cleared: bool) -> void:
 	await get_tree().create_timer(0.9 if cleared else 1.4).timeout
 	hud.show_results(r, cleared, EPISODES[ep].city + " " + EPISODES[ep].year)
 
+## Overdrive's light streaks: long warm lines flying past on both sides
+func _make_streaks() -> GPUParticles3D:
+	var p := GPUParticles3D.new()
+	p.amount = 90
+	p.lifetime = 0.7
+	p.emitting = false
+	p.visibility_aabb = AABB(Vector3(-20, -10, -40), Vector3(40, 20, 80))
+	var pm := ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pm.emission_box_extents = Vector3(6.0, 3.0, 8.0)
+	pm.direction = Vector3(0, 0, 1)
+	pm.spread = 0.0
+	pm.initial_velocity_min = 45.0
+	pm.initial_velocity_max = 70.0
+	pm.gravity = Vector3.ZERO
+	pm.particle_flag_align_y = true
+	p.process_material = pm
+	var q := QuadMesh.new()
+	q.size = Vector2(0.035, 3.2)
+	var m := ShaderMaterial.new()
+	m.shader = load("res://shaders/rain.gdshader")
+	m.set_shader_parameter("tint", Color(1.0, 0.7, 0.4))
+	m.set_shader_parameter("energy", 1.4)
+	q.material = m
+	p.draw_pass_1 = q
+	return p
+
 func _set_layers(n: Node, mask: int) -> void:
 	if n is VisualInstance3D:
 		n.layers = mask
@@ -400,6 +436,16 @@ func _place_camera(dt: float) -> void:
 	cam_look = Vector3(lerpf(cam_look.x, look.x, k), lerpf(cam_look.y, look.y, k), look.z)
 	cam.position = cam_pos
 	cam.look_at(cam_look, Vector3.UP)
+	# Overdrive opens the view out and warms the picture; the light streaks rush past
+	od_k = lerpf(od_k, 1.0 if game.od_t > 0.0 else 0.0, clampf(dt * 3.0, 0.0, 1.0))
+	cam.fov = 62.0 + 9.0 * od_k
+	if world and world.env:
+		world.env.glow_intensity = 0.55 + 0.35 * od_k
+		world.env.adjustment_saturation = 1.12 + 0.2 * od_k
+		world.env.adjustment_brightness = 1.0 + 0.06 * od_k
+	if streaks:
+		streaks.emitting = od_k > 0.5
+		streaks.global_position = cam.global_position + Vector3(0, -0.5, -22)
 
 # ---------------------------------------------------------------- what happens in a run
 

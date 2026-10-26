@@ -122,6 +122,11 @@ STYLES = {
     ('old', 0): {'kit': 'brush', 'comp': 'charleston', 'comp_prog': 0, 'pad': 49, 'arp': 8, 'duet': 11},          # London: music-hall swing
     ('old', 1): {'kit': 'darbuka', 'comp': 'kanun', 'comp_prog': 46, 'pad': 48, 'arp': 15, 'duet': 40},          # Istanbul: oud, kanun, santur, violin
     ('old', 2): {'kit': 'brush', 'comp': 'pompe', 'comp_prog': 25, 'pad': 49, 'arp': 8, 'duet': 71},            # Paris: gypsy jazz, accordion, clarinet
+    ('old', 3): {'kit': 'swing', 'comp': 'charleston', 'comp_prog': 0, 'pad': 59, 'arp': 11, 'duet': 65},       # New York: big band, muted brass, sax
+    ('old', 4): {'kit': 'latin', 'comp': 'montuno', 'comp_prog': 0, 'pad': 61, 'arp': 12, 'duet': 57},          # Havana: son, montuno, trumpet, trombone
+    ('old', 5): {'kit': 'brush', 'comp': 'oompah', 'comp_prog': 45, 'pad': 48, 'arp': 46, 'duet': 42},          # Vienna: salon orchestra, violin, cello
+    ('old', 6): {'kit': 'darbuka', 'comp': 'kanun', 'comp_prog': 46, 'pad': 48, 'arp': 15, 'duet': 77},         # Cairo: oud, kanun, santur, nay
+    ('old', 7): {'kit': 'brush', 'comp': 'ripple', 'comp_prog': 24, 'pad': 21, 'arp': 8, 'duet': 40},          # Rome: mandolin, guitar, accordion, violin
 }
 
 def arrange_swing(S):
@@ -132,6 +137,7 @@ def arrange_swing(S):
     for k in L:
         L[k].cc(0, 91, 60); L[k].cc(1, 91, 50); L[k].cc(2, 91, 70); L[k].cc(DR, 91, 40)
     kit_prog = 40 if st['kit'] == 'brush' else 0
+    # (drum kits: 40 brushes, 0 standard; congas, bongos and claves are in the standard kit)
     L['core'].program(DR, kit_prog, 128)     # the brush kit (or a standard kit for hand drums)
     L['core'].program(1, 32)                 # upright bass
     L['full'].program(DR, kit_prog, 128)
@@ -173,6 +179,21 @@ def arrange_swing(S):
         bright = sec in ('B', 'C')
         for k in ['core', 'full']:
             tr = L[k]
+            if st['kit'] == 'latin':
+                # son: the clave (3-2 across two bars), conga tumbao, bongo martillo, and the bass anticipating the chord
+                clave = [0, 3, 6] if b % 2 == 0 else [2, 4]
+                for e in clave:
+                    tr.note(DR, T(S.at(b, e)), q // 4, 75, S.hv(70, 4))
+                for e, p, v in [(2, 62, 64), (3, 62, 48), (6, 63, 74), (7, 64, 70)]:
+                    tr.note(DR, T(S.at(b, e)), q // 3, p, S.hv(v, 5))
+                for e in range(8):
+                    tr.note(DR, T(S.at(b, e)), q // 4, 60 if e % 2 == 0 else 61, S.hv(40 if e % 2 else 50, 4))
+                if not (sec == 'I' and lvl < 2):
+                    base = root - 24 if root - 24 >= 31 else root - 12
+                    nb2 = nxt_root - 24 if nxt_root - 24 >= 31 else nxt_root - 12
+                    tr.note(1, T(S.at(b, 3)), q * 1.4, base + 7, S.hv(84, 4))
+                    tr.note(1, T(S.at(b, 6)), q * 1.9, nb2, S.hv(88, 4))
+                continue
             if st['kit'] == 'darbuka':
                 # the maksum rhythm on hand drums: doum on one and three, teks between, finger cymbals on the off-beats
                 for e, p, v in [(0, 64, 84), (1, 62, 58), (3, 63, 70), (4, 64, 80), (5, 62, 56), (6, 63, 66), (7, 62, 50)]:
@@ -186,15 +207,16 @@ def arrange_swing(S):
                         tr.note(1, T(S.at(b, e)), q * 0.7, p, S.hv(82, 5))
                 continue
             # brushes: the ride "ding, ding-a ding" on the swung eighths, a swish on 2 and 4, a feathered bass drum
+            swing_kit = st['kit'] == 'swing'
             for beat in range(4):
                 tb = T(S.at(b, beat * 2))
-                ride = 51 if bright else 59
+                ride = 51 if bright or swing_kit else 59
                 tr.note(DR, tb, q // 2, ride, S.hv(58 if beat % 2 == 0 else 64))
                 if beat % 2 == 1:
                     tr.note(DR, T(S.at(b, beat * 2 + 1)), q // 4, ride, S.hv(44))
-                    tr.note(DR, tb, q // 2, 40, S.hv(46))       # brush swish
+                    tr.note(DR, tb, q // 2, 38 if swing_kit else 40, S.hv(52 if swing_kit else 46))   # snare (or brush swish)
                     tr.note(DR, tb, q // 4, 44, S.hv(40))       # hi-hat foot
-                tr.note(DR, tb, q // 2, 36, S.hv(34))           # feathered kick
+                tr.note(DR, tb, q // 2, 36, S.hv(44 if swing_kit else 34))   # feathered kick
             if sec == 'I' and lvl < 2:
                 continue
             # walking bass
@@ -217,6 +239,27 @@ def arrange_swing(S):
                 tb = T(S.at(b, beat * 2)) + S.rng.randint(-8, 8)
                 for j, p in enumerate(v):
                     L['full'].note(2, tb + j * 10, q * 0.32, p, S.hv(70 if beat % 2 else 52, 5))
+        elif st['comp'] == 'montuno':
+            # the piano montuno: a syncopated figure in octaves and chord tones, pushing into the next bar
+            lo = voicing(root, iv, 60, 72, color=False)
+            hi = [p + 12 for p in lo]
+            for e, chordal in [(0, False), (1, True), (3, False), (4, True), (6, True), (7, False)]:
+                tb = T(S.at(b, e))
+                ps = hi if chordal else [lo[0], lo[0] + 12]
+                for p in ps:
+                    L['full'].note(2, tb, q * 0.4, p, S.hv(64 if chordal else 58, 5))
+        elif st['comp'] == 'oompah':
+            # oom-pah: pizzicato chords on two, three and four (the bass takes one)
+            for beat in (1, 2, 3):
+                tb = T(S.at(b, beat * 2))
+                for p in v:
+                    L['full'].note(2, tb, q * 0.35, p, S.hv(62 if beat != 2 else 54, 5))
+        elif st['comp'] == 'ripple':
+            # a guitar rippling through the chord in eighths
+            ap = voicing(root, iv, 52, 67, color=False)
+            ap = ap + ap[1:][::-1]
+            for e in range(8):
+                L['full'].note(2, T(S.at(b, e)), q * 0.8, ap[e % len(ap)], S.hv(56 if e % 2 == 0 else 48, 5))
         else:
             # kanun: the chord rippled upward in eighths, the top note ringing
             ap = voicing(root, iv, 60, 79, color=False) + [voicing(root, iv, 72, 84, color=False)[0]]
