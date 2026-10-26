@@ -137,16 +137,16 @@ func update_fx(dt: float, at_car: Vector3) -> void:
 			rel[e].z += dt * 5.0
 		e.global_position = car_pos + rel[e]
 	for f in flashes:
-		if f.age > 0.35:
+		if f.age > 0.28:
 			f.m.visible = false
 			continue
 		f.age += dt
-		var k: float = f.age / 0.35
+		var k: float = f.age / 0.28
 		f.m.visible = true
 		f.m.global_position = car_pos + f.rel
-		f.m.scale = Vector3.ONE * (1.0 + k * 0.6)
+		f.m.scale = Vector3.ONE * (0.75 + k * 0.55)
 		f.m.set_instance_shader_parameter("tint", f.col)
-		f.m.set_instance_shader_parameter("glow", (1.0 - k) * (1.0 - k) * 1.6)
+		f.m.set_instance_shader_parameter("glow", (1.0 - k) * (1.0 - k) * 1.1)
 	for d in debris:
 		d.age += dt
 		d.v.y -= 14.0 * dt
@@ -154,8 +154,8 @@ func update_fx(dt: float, at_car: Vector3) -> void:
 		var n: MeshInstance3D = d.n
 		n.position += d.v * dt
 		n.rotation += d.w * dt
-		if n.position.y < WorldLondon.ROAD_Y + 0.15:
-			n.position.y = WorldLondon.ROAD_Y + 0.15
+		if n.position.y < World.ROAD_Y + 0.15:
+			n.position.y = World.ROAD_Y + 0.15
 			d.v *= Vector3(0.6, -0.35, 0.6)
 	for i in range(debris.size() - 1, -1, -1):
 		if debris[i].age > 1.8:

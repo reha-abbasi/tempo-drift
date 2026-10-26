@@ -168,6 +168,7 @@ static func car() -> Node3D:
 	root.set_meta("pods", pods)
 	root.set_meta("flames", flames)
 	root.set_meta("under", under)
+	root.set_meta("beam", beam)
 	return root
 
 # ---------------------------------------------------------------- the pilot on a jetpack

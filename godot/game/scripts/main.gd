@@ -1,19 +1,25 @@
 extends Node3D
-## Tempo Drift, first slice: Past · Episode 1 · London 1890.
+## Tempo Drift, the Past: London 1890, Istanbul 1910 and Paris 1925.
 ## Puts the pieces together: the baked course and soundtrack, the street, the car, the rings, the traffic, the HUD,
 ## and the camera, and runs a song from the title card to the results.
 ##
 ## Command-line options (after "--"), for testing:
+##   --ep=N             which episode (0 London, 1 Istanbul, 2 Paris)
 ##   --sim              play the whole episode at once with a perfect pilot and print the result
 ##   --shots=DIR        play it with the perfect pilot at a fixed frame rate and save screenshots in DIR
 ##   --at=SECONDS       (with --shots) where in the song to take them
 
-const COURSE := "res://data/old_0.json"
-const SONG_DIR := "res://audio/old_0"
+const EPISODES := [
+	{"id": "old_0", "city": "LONDON", "year": "1890", "look": "london"},
+	{"id": "old_1", "city": "ISTANBUL", "year": "1910", "look": "istanbul"},
+	{"id": "old_2", "city": "PARIS", "year": "1925", "look": "paris"},
+]
+const SAVE := "user://save.cfg"
 
+var ep := 0
 var game: Game
 var music: Music
-var world: WorldLondon
+var world: World
 var rings: Rings
 var traffic: Traffic
 var fx: Fx
@@ -22,6 +28,7 @@ var cam: Camera3D
 var car: Node3D
 var pilot: Node3D
 var arch: Node3D
+var quality: Quality
 
 var state := "title"      # title, play, results
 var cam_pos := Vector3(0, 2.0, 7.2)
@@ -42,12 +49,15 @@ var eject_from := Vector3.ZERO
 var title_shot := false
 var crash_at := -1.0
 var results_shot := false
+var ep_arg := -1
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	for a in args:
 		if a == "--sim":
 			sim_mode = true
+		elif a.begins_with("--ep="):
+			ep_arg = int(a.substr(5))
 		elif a.begins_with("--shots="):
 			shot_dir = a.substr(8)
 		elif a.begins_with("--crash="):
@@ -60,24 +70,17 @@ func _ready() -> void:
 			for s in a.substr(5).split(","):
 				shot_at.append(float(s))
 	auto = sim_mode or shot_dir != ""
+	var save := ConfigFile.new()
+	save.load(SAVE)
+	ep = ep_arg if ep_arg >= 0 else clampi(save.get_value("play", "episode", 0), 0, EPISODES.size() - 1)
 	game = Game.new()
 	add_child(game)
-	game.load_course(COURSE)
+	game.load_course("res://data/%s.json" % EPISODES[ep].id)
 	if sim_mode:
 		_run_sim()
 		return
 	music = Music.new()
 	add_child(music)
-	music.load_song(SONG_DIR)
-	world = WorldLondon.new()
-	add_child(world)
-	world.build((game.gate + game.BAR * 3.0) * game.SPEED)
-	rings = Rings.new()
-	add_child(rings)
-	rings.setup(game)
-	traffic = Traffic.new()
-	add_child(traffic)
-	traffic.setup(game)
 	fx = Fx.new()
 	add_child(fx)
 	fx.setup()
@@ -95,9 +98,6 @@ func _ready() -> void:
 	fill.light_specular = 0.6
 	add_child(fill)
 	fill.look_at_from_position(Vector3.ZERO, Vector3(0.25, -0.55, -1.0), Vector3.UP)
-	arch = Models.finish_arch()
-	arch.position = Vector3(0, WorldLondon.ROAD_Y, -game.gate * game.SPEED)
-	add_child(arch)
 	cam = Camera3D.new()
 	cam.fov = 62.0
 	cam.near = 0.1
@@ -108,6 +108,8 @@ func _ready() -> void:
 	add_child(hud)
 	hud.start_pressed.connect(_start)
 	hud.again_pressed.connect(_again)
+	hud.episode_chosen.connect(_choose_episode)
+	hud.menu_pressed.connect(_to_title)
 	game.judged.connect(_on_judged)
 	game.missed.connect(_on_missed)
 	game.crashed.connect(_on_crashed)
@@ -116,6 +118,23 @@ func _ready() -> void:
 	game.cleared.connect(func(r): _finish(r, true))
 	game.game_over.connect(func(r): _finish(r, false))
 	game.finished.connect(func(): hud.pop("FINISH!", "gold"))
+	quality = Quality.new()
+	add_child(quality)
+	_load_episode(ep)
+	quality.setup(self)
+	var cf := ConfigFile.new()
+	cf.load(Quality.SAVE)
+	music.offset = cf.get_value("audio", "offset_ms", 0) / 1000.0
+	hud.quality_chosen.connect(func(c):
+		quality.set_choice(c)
+		hud.show_settings_state(quality.choice, quality.label(), int(music.offset * 1000.0)))
+	hud.offset_changed.connect(func(ms):
+		music.offset = ms / 1000.0
+		var cf2 := ConfigFile.new()
+		cf2.load(Quality.SAVE)
+		cf2.set_value("audio", "offset_ms", ms)
+		cf2.save(Quality.SAVE))
+	hud.show_settings_state(quality.choice, quality.label(), int(music.offset * 1000.0))
 	_place_camera(1.0)
 	hud.show_title(true)
 	if shot_dir != "":
@@ -128,6 +147,60 @@ func _ready() -> void:
 			get_viewport().get_texture().get_image().save_png(shot_dir + "/title.png")
 			print("SHOT title")
 		_start()
+
+## builds an episode: its course and soundtrack, its city, its rings and traffic, its finish arch
+func _load_episode(i: int) -> void:
+	ep = i
+	var E: Dictionary = EPISODES[i]
+	for n in [world, rings, traffic, arch]:
+		if n:
+			n.queue_free()
+	game.load_course("res://data/%s.json" % E.id)
+	music.stop()
+	music.load_song("res://audio/" + E.id)
+	world = World.new()
+	add_child(world)
+	world.build((game.gate + game.BAR * 3.0) * game.SPEED, E.look)
+	rings = Rings.new()
+	add_child(rings)
+	rings.setup(game)
+	traffic = Traffic.new()
+	add_child(traffic)
+	traffic.setup(game)
+	arch = Models.finish_arch()
+	arch.position = Vector3(0, World.ROAD_Y, -game.gate * game.SPEED)
+	add_child(arch)
+	if quality.main:
+		quality.apply()
+	hud.set_episodes(_episode_cards(), ep)
+	var save := ConfigFile.new()
+	save.load(SAVE)
+	save.set_value("play", "episode", ep)
+	save.save(SAVE)
+
+func _episode_cards() -> Array:
+	var save := ConfigFile.new()
+	save.load(SAVE)
+	var out := []
+	for E in EPISODES:
+		out.append({"city": E.city, "year": E.year, "stars": save.get_value(E.id, "stars", 0), "best": save.get_value(E.id, "best", 0),
+			"grade": save.get_value(E.id, "grade", "")})
+	return out
+
+func _choose_episode(i: int) -> void:
+	if i == ep or state == "play":
+		return
+	_load_episode(i)
+	game.t = -0.05
+	_place_camera(1.0)
+
+func _to_title() -> void:
+	music.stop()
+	state = "title"
+	game.reset()
+	hud.hide_results()
+	hud.show_title(true)
+	hud.set_episodes(_episode_cards(), ep)
 
 func _start() -> void:
 	game.reset()
@@ -148,12 +221,27 @@ func _again() -> void:
 		traffic.models[i].visible = false
 	_start()
 
+## keeps the best result of each episode
+func _save_result(r: Dictionary) -> void:
+	var id: String = EPISODES[ep].id
+	var save := ConfigFile.new()
+	save.load(SAVE)
+	if r.stars > save.get_value(id, "stars", 0):
+		save.set_value(id, "stars", r.stars)
+		save.set_value(id, "grade", r.grade)
+	if r.score > save.get_value(id, "best", 0):
+		save.set_value(id, "best", r.score)
+		r.new_best = true
+	save.save(SAVE)
+
 func _finish(r: Dictionary, cleared: bool) -> void:
 	state = "results"
+	if cleared and shot_dir == "":
+		_save_result(r)
 	if shot_dir != "":
 		print("RESULT ", JSON.stringify(r))
 		if results_shot:
-			hud.show_results(r, cleared)
+			hud.show_results(r, cleared, EPISODES[ep].city + " " + EPISODES[ep].year)
 			for i in 20:
 				await get_tree().process_frame
 			await RenderingServer.frame_post_draw
@@ -162,7 +250,7 @@ func _finish(r: Dictionary, cleared: bool) -> void:
 		get_tree().quit()
 		return
 	await get_tree().create_timer(0.9 if cleared else 1.4).timeout
-	hud.show_results(r, cleared)
+	hud.show_results(r, cleared, EPISODES[ep].city + " " + EPISODES[ep].year)
 
 func _set_layers(n: Node, mask: int) -> void:
 	if n is VisualInstance3D:
@@ -200,6 +288,8 @@ func _process(dt: float) -> void:
 				game._crash({"t": t, "col": game.col, "row": game.row, "kind": "oldcar", "state": 0})
 			game.step(t, dt)
 		_music_follow()
+		if shot_dir == "":
+			quality.watch(dt)
 	_beat(game.t, dt)
 	var car_z := -game.t * game.SPEED
 	_pose_car(car_z, dt)
@@ -242,6 +332,7 @@ func _music_follow() -> void:
 			elif cur.state == 0:
 				on = game.col == cur.col and game.row == cur.row and game.respawn <= 0.0
 		music.set_lead(layer, on)
+		music.set_lead(layer + 2, cur != null and cur.state == 1 and cur.get("duet", false))
 
 # ---------------------------------------------------------------- the car, the pilot and the camera
 

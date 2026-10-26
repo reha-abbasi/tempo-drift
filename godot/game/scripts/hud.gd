@@ -5,6 +5,10 @@ extends CanvasLayer
 
 signal start_pressed
 signal again_pressed
+signal quality_chosen(choice: int)
+signal episode_chosen(i: int)
+signal menu_pressed
+signal offset_changed(ms: int)
 
 const GOLD := Color(1.0, 0.83, 0.36)
 const ROSE := Color(1.0, 0.45, 0.6)
@@ -28,6 +32,9 @@ var judge_age := 9.0
 var pops: VBoxContainer
 var title: Control
 var results: Control
+var cards: HBoxContainer
+var ep_label: Label
+var _cards := []
 var res_box: VBoxContainer
 
 func _ready() -> void:
@@ -45,6 +52,7 @@ func _ready() -> void:
 	_build_play()
 	_build_title()
 	_build_results()
+	_build_settings()
 
 func _label(text: String, size: int, col := Color.WHITE, font: Font = null) -> Label:
 	var l := Label.new()
@@ -163,18 +171,148 @@ func _build_title() -> void:
 	var name_l := _label("TEMPO DRIFT", 54, Color(1, 0.95, 0.85))
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(name_l)
-	var ep := _label("PAST · EPISODE 1 · LONDON 1890", 17, GOLD, font_body)
-	ep.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(ep)
+	ep_label = _label("PAST", 17, GOLD, font_body)
+	ep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v.add_child(ep_label)
 	var hint := _label("Every note is a ring. Swipe into each one,\njust before its note for EXCELLENT.", 16, Color(1, 1, 1, 0.8), font_body)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(hint)
+	# the three cities of the Past, one card each: pick one, then FLY
+	cards = HBoxContainer.new()
+	cards.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	cards.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	cards.offset_top = -250; cards.offset_bottom = -170
+	cards.add_theme_constant_override("separation", 8)
+	cards.alignment = BoxContainer.ALIGNMENT_CENTER
+	title.add_child(cards)
 	var b := _button("FLY")
 	b.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	b.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	b.offset_top = -150; b.offset_bottom = -86
+	b.offset_top = -140; b.offset_bottom = -76
 	b.pressed.connect(func(): start_pressed.emit())
 	title.add_child(b)
+
+func _ghost_button(text: String) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.add_theme_font_override("font", font_body)
+	b.add_theme_font_size_override("font_size", 15)
+	b.add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
+	b.add_theme_color_override("font_pressed_color", Color(0.12, 0.06, 0.02))
+	for st in ["normal", "hover", "pressed", "focus"]:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = GOLD if st == "pressed" else Color(1, 1, 1, 0.1)
+		sb.set_corner_radius_all(18)
+		sb.border_color = Color(1, 1, 1, 0.25)
+		sb.set_border_width_all(1)
+		sb.content_margin_top = 8; sb.content_margin_bottom = 8; sb.content_margin_left = 14; sb.content_margin_right = 14
+		b.add_theme_stylebox_override(st, sb)
+	return b
+
+# ---------------------------------------------------------------- settings: picture quality and the audio offset
+
+var settings: Control
+var q_buttons := []
+var off_slider: HSlider
+var off_label: Label
+var q_label: Label
+
+func _build_settings() -> void:
+	var gear := _ghost_button("SETTINGS")
+	gear.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	gear.offset_left = -130; gear.offset_right = -16; gear.offset_top = 16; gear.offset_bottom = 52
+	gear.pressed.connect(func(): settings.visible = true)
+	title.add_child(gear)
+	settings = CenterContainer.new()
+	settings.set_anchors_preset(Control.PRESET_FULL_RECT)
+	settings.visible = false
+	root.add_child(settings)
+	var card := _card()
+	card.custom_minimum_size = Vector2(420, 0)
+	settings.add_child(card)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 12)
+	card.add_child(v)
+	var h := _label("SETTINGS", 26, Color(1, 0.95, 0.85))
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v.add_child(h)
+	v.add_child(_label("Picture quality", 15, GOLD, font_body))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	v.add_child(row)
+	var group := ButtonGroup.new()
+	for i in 4:
+		var b := _ghost_button(["AUTO", "LOW", "MEDIUM", "HIGH"][i])
+		b.toggle_mode = true
+		b.button_group = group
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var c := i - 1
+		b.pressed.connect(func(): quality_chosen.emit(c))
+		row.add_child(b)
+		q_buttons.append(b)
+	q_label = _label("", 13, Color(1, 1, 1, 0.6), font_body)
+	v.add_child(q_label)
+	v.add_child(_label("Audio offset", 15, GOLD, font_body))
+	var orow := HBoxContainer.new()
+	v.add_child(orow)
+	off_slider = HSlider.new()
+	off_slider.min_value = -150
+	off_slider.max_value = 300
+	off_slider.step = 5
+	off_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	off_slider.value_changed.connect(func(x):
+		off_label.text = "%+d ms" % int(x)
+		offset_changed.emit(int(x)))
+	orow.add_child(off_slider)
+	off_label = _label("0 ms", 15, Color.WHITE, font_body)
+	off_label.custom_minimum_size = Vector2(80, 0)
+	off_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	orow.add_child(off_label)
+	var hint := _label("Wireless headphones play sound late. If the notes sound\nlater than the rings, move this to the right.", 12, Color(1, 1, 1, 0.6), font_body)
+	v.add_child(hint)
+	var done := _button("DONE")
+	done.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	done.pressed.connect(func(): settings.visible = false)
+	v.add_child(done)
+
+func set_episodes(list: Array, sel: int) -> void:
+	for c in cards.get_children():
+		c.queue_free()
+	_cards.clear()
+	for i in list.size():
+		var e: Dictionary = list[i]
+		var b := Button.new()
+		b.toggle_mode = true
+		b.button_pressed = i == sel
+		b.custom_minimum_size = Vector2(132, 78)
+		b.text = "%s\n%s   %s" % [e.city, e.year, "★".repeat(e.stars) + "☆".repeat(3 - e.stars)]
+		b.add_theme_font_override("font", font_body)
+		b.add_theme_font_size_override("font_size", 14)
+		b.add_theme_color_override("font_color", Color(1, 1, 1, 0.85))
+		b.add_theme_color_override("font_pressed_color", Color(0.12, 0.06, 0.02))
+		b.add_theme_color_override("font_hover_pressed_color", Color(0.12, 0.06, 0.02))
+		for st in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+			var sb := StyleBoxFlat.new()
+			sb.bg_color = GOLD if st.contains("pressed") else Color(0.08, 0.06, 0.12, 0.6)
+			sb.set_corner_radius_all(16)
+			sb.border_color = Color(1, 0.85, 0.5, 0.35)
+			sb.set_border_width_all(1)
+			b.add_theme_stylebox_override(st, sb)
+		var k := i
+		b.pressed.connect(func():
+			for o in _cards:
+				o.button_pressed = o == b
+			episode_chosen.emit(k))
+		cards.add_child(b)
+		_cards.append(b)
+	var e: Dictionary = list[sel]
+	ep_label.text = "PAST · EPISODE %d · %s %s%s" % [sel + 1, e.city, e.year, ("   ·   BEST %s" % _thousands(e.best)) if e.best > 0 else ""]
+
+func show_settings_state(choice: int, label: String, offset_ms: int) -> void:
+	q_buttons[choice + 1].button_pressed = true
+	q_label.text = "Now: " + label
+	off_slider.set_value_no_signal(offset_ms)
+	off_label.text = "%+d ms" % offset_ms
 
 func _build_results() -> void:
 	results = CenterContainer.new()
@@ -191,10 +329,10 @@ func show_title(on: bool) -> void:
 	title.visible = on
 	play.visible = not on
 
-func show_results(r: Dictionary, cleared: bool) -> void:
+func show_results(r: Dictionary, cleared: bool, place := "") -> void:
 	for c in res_box.get_children():
 		c.queue_free()
-	var head := _label("LONDON 1890 · CLEARED" if cleared else "LONDON 1890 · OUT OF LIVES", 16, GOLD, font_body)
+	var head := _label(place + (" · CLEARED" if cleared else " · OUT OF LIVES") + ("   ·   NEW BEST" if r.get("new_best", false) else ""), 16, GOLD, font_body)
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	res_box.add_child(head)
 	var g := _label(r.grade if cleared else "—", 96, GOLD if cleared else RED)
@@ -220,7 +358,7 @@ func show_results(r: Dictionary, cleared: bool) -> void:
 		col.add_child(k)
 		grid.add_child(col)
 	res_box.add_child(grid)
-	var sc := _label("SCORE %s   ·   MAX COMBO %d" % [_thousands(r.score), r.max_combo], 16, Color(1, 1, 1, 0.9), font_body)
+	var sc := _label("SCORE %s   ·   MAX COMBO %d   ·   DUET NOTES %d" % [_thousands(r.score), r.max_combo, r.get("duets", 0)], 15, Color(1, 1, 1, 0.9), font_body)
 	sc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	res_box.add_child(sc)
 	var gap := Control.new()
@@ -230,6 +368,10 @@ func show_results(r: Dictionary, cleared: bool) -> void:
 	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	b.pressed.connect(func(): again_pressed.emit())
 	res_box.add_child(b)
+	var m := _ghost_button("CITIES")
+	m.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	m.pressed.connect(func(): menu_pressed.emit())
+	res_box.add_child(m)
 	results.visible = true
 
 func hide_results() -> void:
@@ -265,7 +407,9 @@ func update_play(g: Game, car_screen: Vector2, dt: float, progress: float) -> vo
 	mult_l.add_theme_color_override("font_color", Color(1.0, 0.6, 0.25) if g.od_t > 0.0 else GOLD)
 	flow_fg.size = Vector2(140.0 * (1.0 if g.od_t > 0.0 else g.flow / 100.0), 4)
 	flow_fg.color = Color(1.0, 0.55, 0.2) if g.od_t > 0.0 else GOLD
-	combo_l.text = "%d COMBO" % g.combo if g.combo >= 5 else ""
+	var duet := g.ex_streak >= Game.DUET_AFTER
+	combo_l.text = ("DUET · " if duet else "") + ("%d COMBO" % g.combo if g.combo >= 5 else "")
+	combo_l.add_theme_color_override("font_color", GOLD if duet else Color(1, 1, 1, 0.85))
 	lives_l.text = "◆ CAR   ◇ JET" if g.form == 2 else "◇ CAR   ◆ JET"
 	rescue_bg.visible = g.form < 2 and not g.over
 	rescue_fg.size = Vector2(96.0 * g.rescue / 100.0, 4)

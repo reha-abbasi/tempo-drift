@@ -27,6 +27,9 @@ const RESCUE_MISS := 2.4
 # a move made just before its note is EXCELLENT (the car takes about 0.1 s to get there), a little earlier (or just
 # in time) GOOD, waiting in the lane long before OK
 const MOVE_BEST := 0.12
+# four EXCELLENTs in a row and a second voice joins the melody (a duet); each of its notes scores DUET_PTS
+const DUET_AFTER := 4
+const DUET_PTS := 400
 const TIMING := {
 	"ex": {"say": "EXCELLENT", "pts": 300},
 	"gd": {"say": "GOOD", "pts": 200},
@@ -75,6 +78,8 @@ var od_t := 0.0
 var od_n := 0
 var band := 1
 var melody_on := true
+var ex_streak := 0
+var duets := 0
 var J := {"c": 0, "m": 0, "ex": 0, "gd": 0, "ok": 0}
 var lost := 0
 var last_bar := -1
@@ -113,7 +118,7 @@ func reset() -> void:
 	finished_flag = false
 	col = 1; row = HOME; x = LX[1]; y = LY[HOME]; vx = 0.0; vy = 0.0; vt = 0.0; move_t = -9.0
 	form = 2; form_anim = {"kind": "", "t0": -9.0}; respawn = 0.0; invuln = 0.0; rescue = 0.0; deliver_at = INF
-	score = 0; combo = 0; max_combo = 0; flow = 0.0; od_t = 0.0; od_n = 0; band = 1; melody_on = true
+	score = 0; combo = 0; max_combo = 0; flow = 0.0; od_t = 0.0; od_n = 0; band = 1; melody_on = true; ex_streak = 0; duets = 0
 	J = {"c": 0, "m": 0, "ex": 0, "gd": 0, "ok": 0}
 	lost = 0
 	last_bar = -1
@@ -231,6 +236,15 @@ func _judge(g: String, n: Dictionary, was_lost: bool, tg: String = "") -> void:
 		if tg != "":
 			J[tg] += 1
 			pts = TIMING[tg].pts
+			ex_streak = ex_streak + 1 if tg == "ex" else 0
+			if ex_streak == DUET_AFTER:
+				popped.emit("DUET!", "gold")
+		# (notes that need no move, like dropping back after a hop, keep the duet going)
+		n.duet = ex_streak >= DUET_AFTER
+		if n.duet:
+			duets += 1
+			if tg == "ex":
+				pts = DUET_PTS
 		score += pts * tier()
 		_rescue_gain(RESCUE_PER)
 		if od_t <= 0.0:
@@ -240,7 +254,9 @@ func _judge(g: String, n: Dictionary, was_lost: bool, tg: String = "") -> void:
 		if combo > 0 and combo % 50 == 0:
 			popped.emit("%d COMBO" % combo, "gold")
 		judged.emit(tg, n)
-	elif not was_lost:
+	else:
+		ex_streak = 0
+	if g == "m" and not was_lost:
 		flow = maxf(0.0, flow - 25.0)
 		if od_t <= 0.0:
 			rescue = maxf(0.0, rescue - RESCUE_MISS)
@@ -364,7 +380,7 @@ func result() -> Dictionary:
 	var a := accuracy()
 	var g := grade_of(a, lost == 0)
 	return {"score": score, "acc": a, "grade": g, "stars": 3 if g == "S" else 2 if g == "A" else 1,
-		"J": J.duplicate(), "max_combo": max_combo, "lost": lost, "od": od_n, "failed": over}
+		"J": J.duplicate(), "max_combo": max_combo, "lost": lost, "od": od_n, "duets": duets, "failed": over}
 
 ## the same easing the web game uses for the car (a critically damped spring)
 func _smooth(cur: float, target: float, vel: float, st: float, dt: float) -> Vector2:

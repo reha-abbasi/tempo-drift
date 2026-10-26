@@ -1,12 +1,12 @@
 // Bakes an episode of the web game (web/game.html) for the Godot version: the course (every note ring and every
 // vehicle, exactly as the web game lays them out) and the soundtrack as layers, rendered by the web game's own synth.
-// usage: node godot/tools/bake.mjs old 0        (map, episode index)
+// usage: node godot/tools/bake.mjs old 0 [--synth]       (map, episode index)
 import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 
-const [map = 'old', epArg = '0'] = process.argv.slice(2);
+const [map = 'old', epArg = '0'] = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const ep = +epArg;
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
 const outData = path.join(root, 'godot/game/data');
@@ -27,7 +27,7 @@ window.__tdBake=async(map,ep,which)=>{
       for(const h of hazards)if(!H.has(h.id))H.set(h.id,{t:+(h.time-T0).toFixed(4),col:h.col,row:h.row,kind:h.kind,over:!!h.over,under:!!h.under});}
     const S=SONG,bars=[];for(let k=0;k<S.len;k++){const B=S.bar(k);bars.push({sec:B.sec,root:B.chord[0],iv:B.chord[1],lvl:B.lvl||0});}
     const kinds={};for(const k of TH.kindList)kinds[k]={len:KINDS[k].len,rel:KINDS[k].rel};
-    const res={map,ep,name:S.name,bpm:S.bpm,swing:S.swing,lead:S.V.lead,bar:BAR,beat:BEAT,eighth:EIGHTH,speed:SPEED,hang:HANG,
+    const res={map,ep,name:S.name,bpm:S.bpm,swing:S.swing,lead:S.V.lead,V:S.V,scale:EPISODES[map][ep].scale,bar:BAR,beat:BEAT,eighth:EIGHTH,speed:SPEED,hang:HANG,
       intro:S.intro,len:S.len,gate:+(gateT-T0).toFixed(4),diff:{react:S.diff.react,swipe:S.diff.swipe,L:S.diff.L},rescueK:1.6-0.1*ep,
       lanes:LX,rows:LY,home:HOME,roadY:ROAD_Y,kinds,bars,
       notes:[...N.values()].sort((a,b)=>a.t-b.t),hazards:[...H.values()].sort((a,b)=>a.t-b.t),
@@ -77,7 +77,10 @@ const course = await p.evaluate(([m, e]) => window.__tdBake(m, e, 'course'), [ma
 if (!course.ended || course.crashes) throw new Error('course bake did not reach the end');
 fs.writeFileSync(path.join(outData, `${map}_${ep}.json`), JSON.stringify(course));
 console.log(`${course.name}: ${course.notes.length} notes, ${course.hazards.length} hazards, ${course.ghosts.length} band notes, ${course.len} bars`);
-for (const kind of ['core', 'full', 'arp', 'perc', 'od', 'jet', 'ghost', 'melA', 'melB']) {
+// (the Godot version renders its own soundtrack with real instruments, godot/tools/arrange.py; --synth also renders the
+// web game's synth layers)
+const synth = process.argv.includes('--synth');
+for (const kind of synth ? ['core', 'full', 'arp', 'perc', 'od', 'jet', 'ghost', 'melA', 'melB'] : []) {
   const r = await p.evaluate(([m, e, k, c]) => window.__tdBake(m, e, { kind: k, notes: c.notes, ghosts: c.ghosts }), [map, ep, kind, { notes: course.notes, ghosts: course.ghosts }]);
   const wav = path.join(outAudio, kind + '.wav');
   fs.writeFileSync(wav, Buffer.from(r.wav, 'base64'));

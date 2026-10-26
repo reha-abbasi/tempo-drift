@@ -1,6 +1,7 @@
 // Terrace house walls: bricks or stucco, stone bands, and a grid of sash windows on the street side, some lit warm.
 // The pattern is drawn from each wall's size (taken from its transform), so one material serves every house.
-// INSTANCE_CUSTOM: rgb = wall colour, a = style (0 brick, 0.5 stucco ground floor, 1 brick with stone bands);
+// INSTANCE_CUSTOM: rgb = wall colour, a = style (0 brick, 0.25 plaster, 0.5 stucco ground floor, 0.75 ashlar stone,
+// 1 brick with stone bands);
 // a negative style means a plain wall (chimneys, side walls far away): bricks, no windows
 shader_type spatial;
 render_mode cull_back;
@@ -52,8 +53,24 @@ void fragment() {
 	if (face) {
 		float fl = floor(fy / floor_h);
 		float fv = fy - fl * floor_h;
+		// smooth lime plaster over the whole front, a little patchy (Istanbul)
+		if (style > 0.15 && style < 0.35) {
+			col = cd.rgb * (0.9 + 0.1 * h21(floor(uv / vec2(1.7, 1.3)) + seed)) * (0.94 + 0.06 * sin(uv.x * 2.3 + uv.y * 1.1 + seed * 9.0));
+			rough = 0.75;
+			bump = 0.0;
+		}
+		// dressed limestone blocks with fine joints (Paris)
+		if (style > 0.65 && style < 0.85) {
+			vec2 ac = uv / vec2(0.9, 0.42);
+			ac.x += mod(floor(ac.y), 2.0) * 0.5;
+			vec2 af = fract(ac);
+			float j2 = max(1.0 - smoothstep(0.0, 0.025, af.x), 1.0 - smoothstep(0.0, 0.05, af.y)) * (1.0 - fw);
+			col = cd.rgb * (0.92 + 0.12 * h21(floor(ac) + seed)) * (1.0 - j2 * 0.28);
+			rough = 0.7;
+			bump = j2;
+		}
 		// stucco ground floor with rusticated joints
-		if (style > 0.25 && style < 0.75 && fl < 1.0) {
+		if (style > 0.35 && style < 0.65 && fl < 1.0) {
 			col = vec3(0.86, 0.82, 0.74) * (0.92 + 0.08 * h21(floor(uv / vec2(1.0, 0.42)) + seed));
 			float j = 1.0 - smoothstep(0.0, 0.035, abs(fract(fy / 0.42) - 0.5) * 0.42 - 0.17);
 			col *= 1.0 - 0.35 * j;

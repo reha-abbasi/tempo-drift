@@ -42,7 +42,7 @@ func update_traffic(car_z: float, dt: float) -> void:
 			continue
 		var y: float = game.LY[h.row]
 		if h.kind == "oldcar" or h.kind == "dbus":
-			y = WorldLondon.ROAD_Y
+			y = World.ROAD_Y
 		m.position = Vector3(game.LX[h.col], y, car_z + z)
 		if h.kind == "biplane":
 			m.position.y += sin(game.t * 2.0 + i) * 0.06

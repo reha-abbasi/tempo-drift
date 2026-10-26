@@ -5,7 +5,7 @@ extends Node
 ## the Lead bus. The game clock comes from the audio clock, so what you see matches what you hear.
 
 const LAYERS_BAND := ["core", "full", "arp", "perc", "od", "jet", "ghost"]
-const LAYERS_LEAD := ["melA", "melB"]
+const LAYERS_LEAD := ["melA", "melB", "harmA", "harmB"]
 const OFF_DB := -80.0
 
 var band_player: AudioStreamPlayer
@@ -17,6 +17,8 @@ var target := {}
 var gain := {}
 var playing := false
 var _t0_usec := 0
+# extra delay of the speakers or headphones, set in Settings (seconds)
+var offset := 0.0
 var _clock := 0.0
 var _lp: AudioEffectLowPassFilter
 var _hp: AudioEffectHighPassFilter
@@ -94,8 +96,8 @@ func set_paused(p: bool) -> void:
 func song_time() -> float:
 	if not playing:
 		return _clock
-	var pos := band_player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency()
-	var wall := (Time.get_ticks_usec() - _t0_usec) / 1000000.0 - AudioServer.get_output_latency()
+	var pos := band_player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency() - offset
+	var wall := (Time.get_ticks_usec() - _t0_usec) / 1000000.0 - AudioServer.get_output_latency() - offset
 	var t := pos if band_player.get_playback_position() > 0.0 else wall
 	# never run backwards (the mix lands in steps)
 	_clock = maxf(_clock, t)
@@ -113,7 +115,8 @@ func set_band(level: int, overdrive: bool, jetpack: bool) -> void:
 func set_ghosts(on: bool) -> void:
 	target.ghost = 1.0 if on else 0.0
 
-## a melody layer on or off (snappy, so a caught note keeps its attack and a missed one goes quiet at once)
+## a melody layer on or off (snappy, so a caught note keeps its attack and a missed one goes quiet at once);
+## layers 0-1 are the melody, 2-3 the duet voice
 func set_lead(layer: int, on: bool) -> void:
 	var k: String = LAYERS_LEAD[layer]
 	target[k] = 1.0 if on else 0.0
@@ -131,7 +134,7 @@ func _process(delta: float) -> void:
 		return
 	for k in gain.keys():
 		# band layers ease over ~0.15 s, the melody in ~15 ms
-		var rate := 70.0 if k.begins_with("mel") else 9.0
+		var rate := 70.0 if k.begins_with("mel") or k.begins_with("harm") else 9.0
 		gain[k] = move_toward(gain[k], target[k], delta * rate)
 	_apply_all()
 	if _lp:
