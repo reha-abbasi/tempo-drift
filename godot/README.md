@@ -1,6 +1,6 @@
 # Tempo Drift — Godot version
 
-The game remade in Godot 4.7, starting with one slice: **Past · Episode 1 · London 1890**.
+The game remade in Godot 4.7. The Past so far: **London 1890**, **Istanbul 1910** and **Paris 1925**, picked on the title card.
 
 ## Open it
 
@@ -19,23 +19,29 @@ The first open takes a minute while Godot imports the music.
 
 Every note is a ring: swipe into it just before its note for **EXCELLENT** (300), a little earlier for **GOOD** (200), long before for **OK** (100). The closing cue ring shows the best moment.
 
+**Duet:** four EXCELLENTs in a row and a second instrument harmonises your melody (400 a note) until a GOOD, OK or miss.
+
+**Settings** (title card): picture quality (Auto, Low, Medium, High; phones start on Medium and the game steps down if it runs slow) and the audio offset for wireless headphones.
+
 ## What's where
 
 | Folder | What |
 |---|---|
 | `game/scripts/game.gd` | the rules (lanes, grades, Flow, Overdrive, car → jetpack, rescue), carried over from the web game |
 | `game/scripts/music.gd` | the soundtrack: 9 layers played in sync; the band follows your Flow, each note plays only when you're in its ring |
-| `game/scripts/world_london.gd` | the street: terraces, roofs, chimneys, lamps, trees, Big Ben, rain and smoke (batched, so it's fast) |
+| `game/scripts/world.gd` | the streets, one "look" per city: houses, roofs, lamps, trees, landmarks, light and weather (batched, so it's fast) |
+| `game/scripts/quality.gd` | the quality levels |
 | `game/scripts/models.gd` | the car, the pilot, motor cars, the bus, airships, barriers, the finish arch |
 | `game/scripts/rings.gd`, `traffic.gd`, `fx.gd`, `hud.gd` | rings, vehicles, effects, HUD and cards |
 | `game/shaders/` | bricks and windows, wet cobbles, slate, sky, glows, rain, smoke |
-| `game/data/old_0.json` | the course: every ring and vehicle, baked from the web game |
-| `game/audio/old_0/` | the soundtrack layers, baked from the web game's synth |
-| `tools/bake.mjs` | bakes an episode from `web/game.html`: `node godot/tools/bake.mjs old 0` |
+| `game/data/old_N.json` | each course: every ring and vehicle, baked from the web game |
+| `game/audio/old_N/` | each soundtrack, 11 layers played in sync |
+| `tools/bake.mjs` | bakes a course from `web/game.html`: `node godot/tools/bake.mjs old 0` |
+| `tools/arrange.py` | arranges a song for its city's band and renders it with real instruments: `python3 godot/tools/arrange.py old 0` (needs `fluidsynth` and the MuseScore General soundfont) |
 
 ## Tests (command line)
 
 ```
-godot --headless --path godot/game -- --sim                      # plays the episode with a perfect pilot, prints the result
+godot --headless --path godot/game -- --sim --ep=0               # plays an episode with a perfect pilot, prints the result
 godot --path godot/game -- --shots=DIR --at=9,14,30 [--title] [--crash=12] [--results]   # screenshots
 ```
