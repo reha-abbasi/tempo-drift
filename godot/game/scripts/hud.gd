@@ -7,6 +7,8 @@ signal start_pressed
 signal again_pressed
 signal quality_chosen(choice: int)
 signal episode_chosen(i: int)
+signal fly_to(i: int)
+signal dev_toggled(on: bool)
 signal menu_pressed
 signal offset_changed(ms: int)
 
@@ -32,7 +34,6 @@ var judge_age := 9.0
 var pops: VBoxContainer
 var title: Control
 var results: Control
-var cards: GridContainer
 var ep_label: Label
 var _cards := []
 var res_box: VBoxContainer
@@ -177,16 +178,13 @@ func _build_title() -> void:
 	var hint := _label("Every note is a ring. Swipe into each one,\njust before its note for EXCELLENT.", 16, Color(1, 1, 1, 0.8), font_body)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(hint)
-	# the three cities of the Past, one card each: pick one, then FLY
-	cards = GridContainer.new()
-	cards.columns = 4
-	cards.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	cards.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	cards.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	cards.offset_top = -300; cards.offset_bottom = -160
-	cards.add_theme_constant_override("h_separation", 6)
-	cards.add_theme_constant_override("v_separation", 6)
-	title.add_child(cards)
+	# the era map: where you pick the city
+	var mb := _ghost_button("MAP OF THE PAST")
+	mb.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	mb.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	mb.offset_top = -205; mb.offset_bottom = -165
+	mb.pressed.connect(open_map)
+	title.add_child(mb)
 	var b := _button("FLY")
 	b.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	b.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -276,45 +274,116 @@ func _build_settings() -> void:
 	test.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	test.pressed.connect(_open_calibrate)
 	v.add_child(test)
+	dev_check = CheckButton.new()
+	dev_check.text = "All cities open (testing)"
+	dev_check.add_theme_font_override("font", font_body)
+	dev_check.add_theme_font_size_override("font_size", 14)
+	dev_check.toggled.connect(func(on): dev_toggled.emit(on))
+	v.add_child(dev_check)
 	var done := _button("DONE")
 	done.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	done.pressed.connect(func(): settings.visible = false)
 	v.add_child(done)
 
+var ep_list := []
+var ep_sel := 0
+
 func set_episodes(list: Array, sel: int) -> void:
-	for c in cards.get_children():
-		c.queue_free()
-	_cards.clear()
-	for i in list.size():
-		var e: Dictionary = list[i]
-		var b := Button.new()
-		b.toggle_mode = true
-		b.button_pressed = i == sel
-		b.custom_minimum_size = Vector2(118, 62)
-		b.text = "%s\n%s   %s" % [e.city, e.year, "★".repeat(e.stars) + "☆".repeat(3 - e.stars)]
-		b.add_theme_font_override("font", font_body)
-		b.add_theme_font_size_override("font_size", 13)
-		b.add_theme_color_override("font_color", Color(1, 1, 1, 0.85))
-		b.add_theme_color_override("font_pressed_color", Color(0.12, 0.06, 0.02))
-		b.add_theme_color_override("font_hover_pressed_color", Color(0.12, 0.06, 0.02))
-		for st in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
-			var sb := StyleBoxFlat.new()
-			sb.bg_color = GOLD if st.contains("pressed") else Color(0.08, 0.06, 0.12, 0.6)
-			sb.set_corner_radius_all(16)
-			sb.border_color = Color(1, 0.85, 0.5, 0.35)
-			sb.set_border_width_all(1)
-			b.add_theme_stylebox_override(st, sb)
-		var k := i
-		b.pressed.connect(func():
-			for o in _cards:
-				o.button_pressed = o == b
-			episode_chosen.emit(k))
-		cards.add_child(b)
-		_cards.append(b)
+	ep_list = list
+	ep_sel = sel
 	var e: Dictionary = list[sel]
 	ep_label.text = "PAST · EPISODE %d · %s %s%s" % [sel + 1, e.city, e.year, ("   ·   BEST %s" % _thousands(e.best)) if e.best > 0 else ""]
+	if map_panel:
+		wmap.set_cities(_map_cities(), sel)
+		_show_card(sel)
+
+func _map_cities() -> Array:
+	var out := []
+	for e in ep_list:
+		out.append({"name": e.geo, "lat": e.lat, "lon": e.lon, "stars": e.stars, "open": e.open})
+	return out
+
+# ---------------------------------------------------------------- the era map
+
+var map_panel: Control
+var wmap: WorldMap
+var card_name: Label
+var card_info: Label
+var card_fly: Button
+var map_pick := 0
+
+func open_map() -> void:
+	if map_panel == null:
+		_build_map()
+	wmap.set_cities(_map_cities(), ep_sel)
+	_show_card(ep_sel)
+	map_panel.visible = true
+
+func _build_map() -> void:
+	map_panel = Control.new()
+	map_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.add_child(map_panel)
+	var bg := ColorRect.new()
+	bg.color = Color(0.1, 0.07, 0.05, 0.94)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	map_panel.add_child(bg)
+	var head := _label("THE PAST · 1890–1955", 24, Color(1, 0.93, 0.8))
+	head.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.offset_top = 22; head.offset_bottom = 56
+	map_panel.add_child(head)
+	var sub := _label("Eight cities, eight bands. Tap a city.", 14, Color(1, 1, 1, 0.6), font_body)
+	sub.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.offset_top = 58; sub.offset_bottom = 80
+	map_panel.add_child(sub)
+	var back := _ghost_button("‹ BACK")
+	back.position = Vector2(14, 18)
+	back.pressed.connect(func(): map_panel.visible = false)
+	map_panel.add_child(back)
+	var frame := PanelContainer.new()
+	var fsb := StyleBoxFlat.new()
+	fsb.bg_color = Color(0.3, 0.2, 0.12)
+	fsb.set_corner_radius_all(14)
+	fsb.content_margin_left = 4; fsb.content_margin_right = 4; fsb.content_margin_top = 4; fsb.content_margin_bottom = 4
+	frame.add_theme_stylebox_override("panel", fsb)
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.offset_left = 12; frame.offset_right = -12; frame.offset_top = 92; frame.offset_bottom = -210
+	map_panel.add_child(frame)
+	wmap = WorldMap.new()
+	wmap.setup("res://data/world.json", font_body)
+	frame.add_child(wmap)
+	wmap.pin_pressed.connect(_show_card)
+	var card := _card()
+	card.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	card.offset_left = 12; card.offset_right = -12; card.offset_top = -196; card.offset_bottom = -14
+	map_panel.add_child(card)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 6)
+	card.add_child(v)
+	card_name = _label("", 26, Color(1, 0.95, 0.85))
+	v.add_child(card_name)
+	card_info = _label("", 14, Color(1, 1, 1, 0.75), font_body)
+	v.add_child(card_info)
+	card_fly = _button("FLY HERE")
+	card_fly.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	card_fly.pressed.connect(func():
+		map_panel.visible = false
+		fly_to.emit(map_pick))
+	v.add_child(card_fly)
+
+func _show_card(i: int) -> void:
+	map_pick = i
+	wmap.selected = i
+	var e: Dictionary = ep_list[i]
+	card_name.text = "%d · %s %s" % [i + 1, e.city, e.year]
+	var stars: String = "★".repeat(e.stars) + "☆".repeat(3 - e.stars)
+	card_info.text = "%d BPM · %s · %s%s" % [e.bpm, e.band, stars, ("   ·   best %s" % _thousands(e.best)) if e.best > 0 else ""]
+	card_fly.disabled = not e.open
+	card_fly.text = "FLY HERE" if e.open else "CLEAR %s FIRST" % ep_list[i - 1].city
 
 var calib: Calibrate
+var dev_check: CheckButton
 
 func _open_calibrate() -> void:
 	if calib == null:

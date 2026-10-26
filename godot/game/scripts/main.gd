@@ -10,14 +10,14 @@ extends Node3D
 ##   --at=SECONDS       (with --shots) where in the song to take them
 
 const EPISODES := [
-	{"id": "old_0", "city": "LONDON", "year": "1890", "look": "london"},
-	{"id": "old_1", "city": "ISTANBUL", "year": "1910", "look": "istanbul"},
-	{"id": "old_2", "city": "PARIS", "year": "1925", "look": "paris"},
-	{"id": "old_3", "city": "NEW YORK", "year": "1935", "look": "newyork"},
-	{"id": "old_4", "city": "HAVANA", "year": "1955", "look": "havana"},
-	{"id": "old_5", "city": "VIENNA", "year": "1905", "look": "vienna"},
-	{"id": "old_6", "city": "CAIRO", "year": "1925", "look": "cairo"},
-	{"id": "old_7", "city": "ROME", "year": "1948", "look": "rome"},
+	{"id": "old_0", "city": "LONDON", "geo": "London", "year": "1890", "look": "london", "band": "music-hall swing · piano"},
+	{"id": "old_1", "city": "ISTANBUL", "geo": "Istanbul", "year": "1910", "look": "istanbul", "band": "oud, darbuka and kanun"},
+	{"id": "old_2", "city": "PARIS", "geo": "Paris", "year": "1925", "look": "paris", "band": "gypsy jazz · accordion"},
+	{"id": "old_3", "city": "NEW YORK", "geo": "New York", "year": "1935", "look": "newyork", "band": "big band · clarinet"},
+	{"id": "old_4", "city": "HAVANA", "geo": "Havana", "year": "1955", "look": "havana", "band": "son cubano · trumpet"},
+	{"id": "old_5", "city": "VIENNA", "geo": "Vienna", "year": "1905", "look": "vienna", "band": "salon orchestra · violin"},
+	{"id": "old_6", "city": "CAIRO", "geo": "Cairo", "year": "1925", "look": "cairo", "band": "oud and kanun · nay"},
+	{"id": "old_7", "city": "ROME", "geo": "Rome", "year": "1948", "look": "rome", "band": "mandolin and accordion"},
 ]
 const SAVE := "user://save.cfg"
 
@@ -119,6 +119,15 @@ func _ready() -> void:
 	hud.again_pressed.connect(_again)
 	hud.episode_chosen.connect(_choose_episode)
 	hud.menu_pressed.connect(_to_title)
+	hud.fly_to.connect(func(i):
+		_choose_episode(i)
+		_start())
+	hud.dev_toggled.connect(func(on):
+		var sv := ConfigFile.new()
+		sv.load(SAVE)
+		sv.set_value("play", "dev", on)
+		sv.save(SAVE)
+		hud.set_episodes(_episode_cards(), ep))
 	game.judged.connect(_on_judged)
 	game.missed.connect(_on_missed)
 	game.crashed.connect(_on_crashed)
@@ -144,11 +153,23 @@ func _ready() -> void:
 		cf2.set_value("audio", "offset_ms", ms)
 		cf2.save(Quality.SAVE))
 	hud.show_settings_state(quality.choice, quality.label(), int(music.offset * 1000.0))
+	var sv0 := ConfigFile.new()
+	sv0.load(SAVE)
+	hud.dev_check.set_pressed_no_signal(sv0.get_value("play", "dev", true))
 	_place_camera(1.0)
 	hud.show_title(true)
 	if shot_dir != "":
 		DirAccess.make_dir_recursive_absolute(shot_dir)
 		Engine.max_fps = 0
+		if "--map" in OS.get_cmdline_user_args():
+			hud.open_map()
+			for i in 30:
+				await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			get_viewport().get_texture().get_image().save_png(shot_dir + "/map.png")
+			print("SHOT map")
+			get_tree().quit()
+			return
 		if title_shot:
 			for i in 40:
 				await get_tree().process_frame
@@ -187,13 +208,26 @@ func _load_episode(i: int) -> void:
 	save.set_value("play", "episode", ep)
 	save.save(SAVE)
 
+var geo := {}
+var bpms := {}
+
+## what the map and the title show for each city: where it is, its band, its best result, and whether it's open
+## (a city opens when the one before it is cleared, or all at once with the testing switch)
 func _episode_cards() -> Array:
 	var save := ConfigFile.new()
 	save.load(SAVE)
+	if geo.is_empty():
+		geo = JSON.parse_string(FileAccess.open("res://data/world.json", FileAccess.READ).get_as_text()).cities
+		for E in EPISODES:
+			bpms[E.id] = JSON.parse_string(FileAccess.open("res://data/%s.json" % E.id, FileAccess.READ).get_as_text()).bpm
+	var dev: bool = save.get_value("play", "dev", true)
 	var out := []
-	for E in EPISODES:
-		out.append({"city": E.city, "year": E.year, "stars": save.get_value(E.id, "stars", 0), "best": save.get_value(E.id, "best", 0),
-			"grade": save.get_value(E.id, "grade", "")})
+	for i in EPISODES.size():
+		var E: Dictionary = EPISODES[i]
+		var ll: Array = geo[E.geo]
+		out.append({"city": E.city, "geo": E.geo, "year": E.year, "band": E.band, "bpm": bpms[E.id], "lat": ll[0], "lon": ll[1],
+			"stars": save.get_value(E.id, "stars", 0), "best": save.get_value(E.id, "best", 0), "grade": save.get_value(E.id, "grade", ""),
+			"open": dev or i == 0 or save.get_value(EPISODES[i - 1].id, "stars", 0) > 0})
 	return out
 
 func _choose_episode(i: int) -> void:
