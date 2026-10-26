@@ -77,10 +77,11 @@ void fragment() {
 			rough = 0.6;
 		}
 		// stone string course on each floor line, and a cornice band at the top
-		float band = (style > 0.75 ? 1.0 : 0.0) * (1.0 - step(0.16, fv)) * step(0.5, fl);
-		float top = step(sz.y - 0.55, fy);
+		float band = (style > 0.75 ? 1.0 : 0.0) * (1.0 - smoothstep(0.14, 0.18, fv)) * step(0.5, fl);
+		float top = smoothstep(sz.y - 0.57, sz.y - 0.53, fy);
 		col = mix(col, stone_col * (0.9 + 0.1 * seed), max(band, top));
-		// windows: tall sashes, one per bay, with a stone lintel and sill
+		// windows: tall sashes, one per bay, with a stone lintel and sill. Every edge is smoothed over the width of a
+		// pixel and the thin glazing bars fade out with distance, so the windows don't shimmer or crawl as you fly past
 		float nb = max(1.0, floor(sz.z / bay_w));
 		float u = (lp.z + sz.z * 0.5) / sz.z * nb;
 		float bi = floor(u);
@@ -89,35 +90,41 @@ void fragment() {
 		float ww = ground ? 0.95 : 0.74;
 		float w0 = ground ? 0.45 : 0.62;
 		float wh = ground ? 1.75 : 1.5 - 0.12 * max(0.0, fl - 2.0);
-		bool upper_ok = fy < sz.y - 0.75;
+		float upper_ok = 1.0 - smoothstep(sz.y - 0.8, sz.y - 0.7, fy);
 		// the door: one bay on the ground floor
 		bool door = ground && bi == floor(seed * nb);
 		if (door) { ww = 0.86; w0 = 0.0; wh = 2.15; }
-		float inx = step(abs(cu), ww * 0.5);
-		float iny = step(w0, fv) * step(fv, w0 + wh);
-		if (upper_ok && inx * iny > 0.5) {
-			float ex = ww * 0.5 - abs(cu);
-			float ey = min(fv - w0, w0 + wh - fv);
-			float frame = 1.0 - step(0.055, min(ex, ey));
-			// the meeting rail and glazing bars of a sash window
-			float bars = door ? 0.0 : max(1.0 - step(0.03, abs(fv - (w0 + wh * 0.5))), 1.0 - step(0.022, abs(cu)));
-			float lit = step(1.0 - lit_share, h21(vec2(bi, fl) + seed * 31.0));
-			if (door) {
-				col = mix(cd.rgb * 0.25 + vec3(0.05, 0.04, 0.05), frame_col * 0.7, frame);
-				rough = 0.35;
-			} else {
-				vec3 glass = mix(vec3(0.06, 0.07, 0.09), lit_col * 0.4, lit);
-				col = mix(glass, frame_col, max(frame, bars));
-				rough = mix(0.06, 0.5, max(frame, bars));
-				// warm light inside, a little uneven across the pane
-				float pane = (1.0 - max(frame, bars)) * lit;
-				emit = lit_col * lit_energy * pane * (0.75 + 0.5 * h21(vec2(bi * 3.1, fl * 7.3) + seed));
-				bump = 0.0;
-			}
+		// (measured on the smooth coordinates, so the seams between bays and floors don't show as lines)
+		float fp = fwidth(u);
+		float au = max(fp * sz.z / nb, 0.0005);
+		float av = max(fwidth(fy), 0.0005);
+		float detail = 1.0 - smoothstep(0.025, 0.07, max(au, av));
+		float hx = ww * 0.5;
+		float win = smoothstep(hx + au, hx - au, abs(cu)) * smoothstep(w0 - av, w0 + av, fv) * smoothstep(w0 + wh + av, w0 + wh - av, fv) * upper_ok;
+		float fr = 0.055;
+		float glass_m = smoothstep(hx - fr + au, hx - fr - au, abs(cu)) * smoothstep(w0 + fr - av, w0 + fr + av, fv) * smoothstep(w0 + wh - fr + av, w0 + wh - fr - av, fv) * win;
+		// one random light per window up close; far away, where a pixel covers several windows, their average
+		float lit = mix(step(1.0 - lit_share, h21(vec2(bi, fl) + seed * 31.0)), lit_share, smoothstep(0.2, 0.5, fp));
+		if (door) {
+			col = mix(col, mix(frame_col * 0.7, cd.rgb * 0.25 + vec3(0.05, 0.04, 0.05), glass_m), win);
+			rough = mix(rough, 0.35, win);
+		} else {
+			float bars = max(smoothstep(0.03 + av, 0.03 - av, abs(fv - (w0 + wh * 0.5))), smoothstep(0.022 + au, 0.022 - au, abs(cu))) * detail;
+			float pane = glass_m * (1.0 - bars);
+			vec3 glass = mix(vec3(0.06, 0.07, 0.09), lit_col * 0.4, lit);
+			col = mix(col, frame_col, win);
+			col = mix(col, glass, pane);
+			rough = mix(rough, 0.5, win);
+			rough = mix(rough, 0.08, pane);
+			// warm light inside, a little uneven from window to window
+			emit = lit_col * lit_energy * pane * lit * mix(0.75 + 0.5 * h21(vec2(bi * 3.1, fl * 7.3) + seed), 1.0, smoothstep(0.2, 0.5, fp));
+			bump *= 1.0 - win;
+			// lintel and sill
+			float lx = smoothstep(hx + 0.08 + au, hx + 0.08 - au, abs(cu));
+			float ly = smoothstep(w0 + wh - av, w0 + wh + av, fv) * smoothstep(w0 + wh + 0.14 + av, w0 + wh + 0.14 - av, fv)
+				+ smoothstep(w0 - 0.1 - av, w0 - 0.1 + av, fv) * smoothstep(w0 + av, w0 - av, fv);
+			col = mix(col, stone_col, lx * ly * upper_ok * 0.9);
 		}
-		// lintel and sill
-		float lin = step(abs(cu), ww * 0.5 + 0.08) * (step(w0 + wh, fv) * step(fv, w0 + wh + 0.14) + step(w0 - 0.1, fv) * step(fv, w0)) * float(upper_ok && !door);
-		col = mix(col, stone_col, lin * 0.9);
 	}
 	// soot and damp toward the street, and a darker band where the rain runs down
 	float ao = mix(0.5, 1.0, smoothstep(0.0, 2.4, fy));

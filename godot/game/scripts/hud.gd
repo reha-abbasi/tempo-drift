@@ -268,8 +268,12 @@ func _build_settings() -> void:
 	off_label.custom_minimum_size = Vector2(80, 0)
 	off_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	orow.add_child(off_label)
-	var hint := _label("Wireless headphones play sound late. If the notes sound\nlater than the rings, move this to the right.", 12, Color(1, 1, 1, 0.6), font_body)
+	var hint := _label("Wireless headphones play sound late. Tap along to measure\nit, or move the slider right if the notes sound late.", 12, Color(1, 1, 1, 0.6), font_body)
 	v.add_child(hint)
+	var test := _ghost_button("TAP-ALONG TEST")
+	test.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	test.pressed.connect(_open_calibrate)
+	v.add_child(test)
 	var done := _button("DONE")
 	done.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	done.pressed.connect(func(): settings.visible = false)
@@ -307,6 +311,20 @@ func set_episodes(list: Array, sel: int) -> void:
 		_cards.append(b)
 	var e: Dictionary = list[sel]
 	ep_label.text = "PAST · EPISODE %d · %s %s%s" % [sel + 1, e.city, e.year, ("   ·   BEST %s" % _thousands(e.best)) if e.best > 0 else ""]
+
+var calib: Calibrate
+
+func _open_calibrate() -> void:
+	if calib == null:
+		calib = Calibrate.new()
+		root.add_child(calib)
+		calib.setup(font_display, font_body)
+		calib.measured.connect(func(ms):
+			off_slider.set_value_no_signal(ms)
+			off_label.text = "%+d ms" % ms
+			offset_changed.emit(ms))
+		calib.closed.connect(func(): calib.visible = false)
+	calib.visible = true
 
 func show_settings_state(choice: int, label: String, offset_ms: int) -> void:
 	q_buttons[choice + 1].button_pressed = true

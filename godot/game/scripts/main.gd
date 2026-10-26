@@ -376,6 +376,10 @@ func _pose_car(car_z: float, dt: float) -> void:
 		var pf: Array = pilot.get_meta("flames")
 		for f in pf:
 			f.scale = Vector3.ONE * (0.85 + 0.3 * sin(game.t * 45.0 + f.get_instance_id()))
+		# the scarf ripples in the wind, more toward its end
+		var sc: Array = pilot.get_meta("scarf")
+		for k in sc.size():
+			sc[k].rotation = Vector3(sin(game.t * 11.0 - k * 0.9) * 0.22 + 0.05, sin(game.t * 7.0 - k * 0.7) * 0.18, sin(game.t * 9.0 - k) * 0.12)
 	# a moment of blinking while you can't be hit
 	var blink := game.invuln > 0.0 and game.respawn <= 0.0 and int(game.t * 12.0) % 2 == 0
 	car.visible = car.visible and not blink
@@ -385,7 +389,7 @@ func _place_camera(dt: float) -> void:
 	var car_z := -game.t * game.SPEED
 	var jet := 1.0 if game.form < 2 else 0.0
 	var target := Vector3(game.x * 0.7, game.y * 0.45 + 2.0, car_z + 7.2 - jet)
-	var look := Vector3(game.x * 0.6, game.y * 0.4 - 0.7, car_z - 14.0)
+	var look := Vector3(game.x * 0.6, game.y * 0.4 - 0.95, car_z - 14.0)
 	if state == "title":
 		# on the title card the camera sits a little higher and wider, looking down the street
 		target += Vector3(0, 1.0, 2.0)

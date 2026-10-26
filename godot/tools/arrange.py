@@ -299,8 +299,10 @@ def main():
         wav = render(name, tr, c['bpm'], out_dir, dur, 2.3 if name in ('ghost', 'melA', 'melB') else 1.5 if name.startswith('harm') else 0.8)
         ogg = os.path.join(out_dir, name + '.ogg')
         # trim to the song's length (every layer the same, so they stay locked together) and encode
+        # the melody and the band at good quality; the layers that only add colour, lighter (they're quieter and sparse)
+        q = '5' if name in ('core', 'full', 'ghost', 'melA', 'melB') else '2'
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wav, '-af', f'apad=whole_dur={dur}', '-t', str(dur),
-                        '-c:a', 'libvorbis', '-q:a', '6', ogg], check=True)
+                        '-c:a', 'libvorbis', '-q:a', q, ogg], check=True)
         os.unlink(wav)
         print(' ', name)
 

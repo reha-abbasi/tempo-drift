@@ -16,7 +16,8 @@ signal popped(text: String, kind: String)
 
 # lanes left to right, heights low / skyway / high
 var LX: Array = [-1.6, 0.0, 1.6]
-var LY: Array = [-1.7, 0.0, 1.7]
+var LY: Array = [-2.05, 0.0, 2.05]
+var YS := 1.0
 const HOME := 1
 const ROW_COLORS := [Color("4aa8ff"), Color("ffe2b8"), Color("ff5a8c")]
 const DROP_TAIL := 0.22
@@ -88,7 +89,10 @@ func load_course(path: String) -> void:
 	var f := FileAccess.open(path, FileAccess.READ)
 	course = JSON.parse_string(f.get_as_text())
 	LX = course.lanes
-	LY = course.rows
+	# the three heights sit further apart than in the web game (low and high fly well clear of the skyway), and the
+	# vertical tolerances scale with them
+	LY = [-2.05, 0.0, 2.05]
+	YS = 2.05 / absf(float(course.rows[0]))
 	BAR = course.bar
 	BEAT = course.beat
 	SPEED = course.speed
@@ -207,7 +211,7 @@ func _judge_notes() -> void:
 				n.state = 3
 				_judge("m", n, true)
 			continue
-		var near: bool = absf(x - LX[n.col]) < reach() and absf(y - LY[n.row]) < 0.7
+		var near: bool = absf(x - LX[n.col]) < reach() and absf(y - LY[n.row]) < 0.7 * YS
 		if near and t >= n.t - 0.05:
 			n.state = 1
 			combo += 1
@@ -278,10 +282,10 @@ func _check_hazards() -> void:
 			continue
 		var dx: float = absf(x - LX[h.col])
 		var dy: float = absf(y - LY[h.row])
-		if invuln <= 0.0 and dx < 0.75 and dy < (0.45 if h.over else 0.8):
+		if invuln <= 0.0 and dx < 0.75 and dy < (0.45 if h.over else 0.8) * YS:
 			_crash(h)
 			continue
-		if (dx < 1.9 and dy < 0.5) or (dx < 0.5 and dy < 2.0):
+		if (dx < 1.9 and dy < 0.5 * YS) or (dx < 0.5 and dy < 2.0 * YS):
 			h.near = true
 
 ## where a vehicle is along the road, relative to the car (negative = ahead); traffic drives forward, so it closes slower

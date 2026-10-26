@@ -6,8 +6,9 @@ extends Node3D
 ## The whole route is laid out once at load: each kind of piece (walls, roofs, chimneys, lamps...) is one batched mesh,
 ## so the street is a few dozen draw calls however long it is.
 
-const ROAD_Y := -2.3
-const WALK_Y := -2.12
+# the skyway (the car's middle height) flies 3.4 above the cobbles
+const ROAD_Y := -3.4
+const WALK_Y := -3.22
 const ROAD_HW := 4.6      # half the road's width
 const FRONT := 6.8        # where the house fronts stand
 const DEPTH := 9.0        # how deep a house is
