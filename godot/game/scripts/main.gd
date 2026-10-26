@@ -91,13 +91,11 @@ func _ready() -> void:
 	fx = Fx.new()
 	add_child(fx)
 	fx.setup()
-	car = Models.car()
-	add_child(car)
-	pilot = Models.pilot()
-	pilot.visible = false
-	add_child(pilot)
-	for n in [car, pilot]:
-		_set_layers(n, 1 | 2)
+	var sv := ConfigFile.new()
+	sv.load(SAVE)
+	sel_car = sv.get_value("garage", "car", "roadster")
+	sel_pilot = sv.get_value("garage", "pilot", "aviator")
+	_rebuild_vehicles(sel_car, sel_pilot)
 	var fill := DirectionalLight3D.new()
 	fill.light_color = Color(0.86, 0.9, 1.0)
 	fill.light_energy = 0.85
@@ -119,14 +117,27 @@ func _ready() -> void:
 	hud.again_pressed.connect(_again)
 	hud.episode_chosen.connect(_choose_episode)
 	hud.menu_pressed.connect(_to_title)
+	hud.garage_opened.connect(func():
+		state = "garage"
+		hud.open_garage(_garage_data()))
+	hud.garage_browse.connect(_garage_browse)
+	hud.garage_action.connect(_garage_action)
+	hud.garage_closed.connect(func():
+		state = "title"
+		garage_tab = "cars"
+		_rebuild_vehicles(sel_car, sel_pilot))
+	hud.dev_coins.connect(func():
+		_wallet_add(5000)
+		hud.refresh_garage(_garage_data()))
+	game.shielded.connect(func(): fx.note_hit(car.global_position, Color(0.56, 0.96, 1.0) * 2.5, true))
 	hud.fly_to.connect(func(i):
 		_choose_episode(i)
 		_start())
 	hud.dev_toggled.connect(func(on):
-		var sv := ConfigFile.new()
-		sv.load(SAVE)
-		sv.set_value("play", "dev", on)
-		sv.save(SAVE)
+		var dsv := ConfigFile.new()
+		dsv.load(SAVE)
+		dsv.set_value("play", "dev", on)
+		dsv.save(SAVE)
 		hud.set_episodes(_episode_cards(), ep))
 	game.judged.connect(_on_judged)
 	game.missed.connect(_on_missed)
@@ -161,6 +172,24 @@ func _ready() -> void:
 	if shot_dir != "":
 		DirAccess.make_dir_recursive_absolute(shot_dir)
 		Engine.max_fps = 0
+		if "--garage" in OS.get_cmdline_user_args():
+			# every car and every pilot in the showroom
+			state = "garage"
+			hud.open_garage(_garage_data())
+			for tab in ["cars", "pilots"]:
+				var src: Dictionary = Models.CARS if tab == "cars" else Models.PILOTS
+				hud._g_show_tab(tab)
+				for k in src:
+					hud.g_i = src.keys().find(k)
+					hud._g_show()
+					_garage_browse(tab, k)
+					for i in 45:
+						await get_tree().process_frame
+					await RenderingServer.frame_post_draw
+					get_viewport().get_texture().get_image().save_png("%s/garage_%s_%s.png" % [shot_dir, tab, k])
+					print("SHOT garage ", k)
+			get_tree().quit()
+			return
 		if "--map" in OS.get_cmdline_user_args():
 			hud.open_map()
 			for i in 30:
@@ -246,6 +275,7 @@ func _to_title() -> void:
 	hud.set_episodes(_episode_cards(), ep)
 
 func _start() -> void:
+	game.perk = Models.CARS[sel_car].perk
 	game.reset()
 	game.running = true
 	state = "play"
@@ -279,8 +309,21 @@ func _save_result(r: Dictionary) -> void:
 
 func _finish(r: Dictionary, cleared: bool) -> void:
 	state = "results"
+	var stars_before := 0
+	if shot_dir == "":
+		var sv := ConfigFile.new()
+		sv.load(SAVE)
+		stars_before = sv.get_value(EPISODES[ep].id, "stars", 0)
 	if cleared and shot_dir == "":
 		_save_result(r)
+	if shot_dir == "":
+		# coins: one for every note played (the Manta adds a quarter), and STAR_PAY for every new star
+		var n := int(round(r.J.c * (1.25 if game.perk == "coins" else 1.0)))
+		if cleared:
+			n += maxi(0, r.stars - stars_before) * STAR_PAY
+		_wallet_add(n)
+		r.coins = n
+		r.wallet = _wallet()
 	if shot_dir != "":
 		print("RESULT ", JSON.stringify(r))
 		if results_shot:
@@ -321,6 +364,87 @@ func _make_streaks() -> GPUParticles3D:
 	q.material = m
 	p.draw_pass_1 = q
 	return p
+
+# ---------------------------------------------------------------- the garage and the wallet
+
+const STAR_PAY := 100
+var sel_car := "roadster"
+var sel_pilot := "aviator"
+var garage_tab := "cars"
+
+func _wallet() -> int:
+	var sv := ConfigFile.new()
+	sv.load(SAVE)
+	return sv.get_value("wallet", "coins", 0)
+
+func _wallet_add(n: int) -> void:
+	var sv := ConfigFile.new()
+	sv.load(SAVE)
+	sv.set_value("wallet", "coins", maxi(0, sv.get_value("wallet", "coins", 0) + n))
+	sv.save(SAVE)
+
+func _owned(tab: String) -> Array:
+	var sv := ConfigFile.new()
+	sv.load(SAVE)
+	return sv.get_value("garage", "owned_" + tab, ["roadster"] if tab == "cars" else ["aviator"])
+
+func _garage_data() -> Dictionary:
+	var sv := ConfigFile.new()
+	sv.load(SAVE)
+	var d := {"wallet": _wallet(), "dev": sv.get_value("play", "dev", true), "cars": {}, "pilots": {}}
+	for tab in ["cars", "pilots"]:
+		var src: Dictionary = Models.CARS if tab == "cars" else Models.PILOTS
+		var own := _owned(tab)
+		for k in src:
+			var it: Dictionary = src[k].duplicate()
+			it.owned = own.has(k) or it.price == 0
+			it.selected = k == (sel_car if tab == "cars" else sel_pilot)
+			d[tab][k] = it
+	return d
+
+func _garage_browse(tab: String, key: String) -> void:
+	garage_tab = tab
+	if tab == "cars":
+		_rebuild_vehicles(key, sel_pilot)
+	else:
+		_rebuild_vehicles(sel_car, key)
+
+func _garage_action(tab: String, key: String) -> void:
+	var src: Dictionary = Models.CARS if tab == "cars" else Models.PILOTS
+	var sv := ConfigFile.new()
+	sv.load(SAVE)
+	var own := _owned(tab)
+	if not own.has(key) and src[key].price > 0:
+		if _wallet() < src[key].price:
+			return
+		_wallet_add(-src[key].price)
+		sv.load(SAVE)
+		own.append(key)
+		sv.set_value("garage", "owned_" + tab, own)
+	if tab == "cars":
+		sel_car = key
+		sv.set_value("garage", "car", key)
+	else:
+		sel_pilot = key
+		sv.set_value("garage", "pilot", key)
+	sv.save(SAVE)
+	hud.refresh_garage(_garage_data())
+	Input.vibrate_handheld(30)
+
+## swaps in a car and a pilot (the car's cockpit shows that pilot)
+func _rebuild_vehicles(car_key: String, pilot_key: String) -> void:
+	for n in [car, pilot]:
+		if n:
+			n.queue_free()
+	car = Models.car(car_key, pilot_key)
+	add_child(car)
+	pilot = Models.pilot(pilot_key)
+	pilot.visible = false
+	add_child(pilot)
+	for n in [car, pilot]:
+		_set_layers(n, 1 | 2)
+	if quality and quality.main:
+		quality.apply()
 
 func _set_layers(n: Node, mask: int) -> void:
 	if n is VisualInstance3D:
@@ -424,11 +548,21 @@ func _pose_car(car_z: float, dt: float) -> void:
 		pilot.visible = fa.kind == "deliver" and since < 0.3
 		car.position = p + Vector3(0, bob, fly_in)
 		car.rotation = Vector3(pitch, 0, bank)
+		var body: Node3D = car.get_meta("body")
+		if body.has_meta("fans"):
+			for fan in body.get_meta("fans"):
+				fan.rotation.y += dt * 30.0
+		if state == "garage" and garage_tab == "pilots":
+			# the pilot shows off their jetpack where the car would be
+			car.visible = false
+			pilot.visible = true
+			pilot.position = p + Vector3(0, 0.2 + bob, 0)
+			pilot.rotation = Vector3.ZERO
 		var flames: Array = car.get_meta("flames")
 		var boost := 1.0 + (0.7 if game.row != Game.HOME else 0.0)
 		for f in flames:
 			f.scale = Vector3(1, 1, 1) * (0.8 + 0.25 * sin(game.t * 40.0 + f.get_instance_id()) + boost * 0.3)
-		if pilot.visible:
+		if fa.kind == "deliver" and since < 0.3:
 			pilot.position = p + Vector3(0, 0.6 * (1.0 - since / 0.3), 0)
 	else:
 		car.visible = false
@@ -464,6 +598,19 @@ func _place_camera(dt: float) -> void:
 		# on the title card the camera sits a little higher and wider, looking down the street
 		target += Vector3(0, 1.0, 2.0)
 		look += Vector3(0, 1.6, 0)
+	elif state == "garage":
+		# the showroom: a slow turn around the car (or the pilot), a little above it
+		var a := Time.get_ticks_msec() / 1000.0 * 0.35
+		var c := Vector3(game.x, game.y, car_z)
+		# (a phone screen is narrow: the camera stands back far enough for the whole car to fit across it)
+		var r := 4.0 if garage_tab == "pilots" else 7.0
+		target = c + Vector3(sin(a) * r, 1.6 if garage_tab == "cars" else 0.6, cos(a) * r)
+		look = c + Vector3(0, -0.9 if garage_tab == "cars" else -0.1, 0)
+		cam_pos = cam_pos.lerp(target, clampf(dt * 3.0, 0.0, 1.0))
+		cam.position = cam_pos
+		cam.look_at(look, Vector3.UP)
+		cam.fov = 50.0
+		return
 	var k := clampf(1.0 - exp(-dt * 7.0), 0.0, 1.0)
 	# along the street the camera keeps exact pace with the car; only the sideways and up-down moves are eased
 	cam_pos = Vector3(lerpf(cam_pos.x, target.x, k), lerpf(cam_pos.y, target.y, k), target.z)

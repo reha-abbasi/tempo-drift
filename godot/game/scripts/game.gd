@@ -13,6 +13,7 @@ signal finished
 signal cleared(result: Dictionary)
 signal game_over(result: Dictionary)
 signal popped(text: String, kind: String)
+signal shielded
 
 # lanes left to right, heights low / skyway / high
 var LX: Array = [-1.6, 0.0, 1.6]
@@ -84,6 +85,9 @@ var duets := 0
 var J := {"c": 0, "m": 0, "ex": 0, "gd": 0, "ok": 0}
 var lost := 0
 var last_bar := -1
+# the car's perk ("", "rescue", "reach", "shield", "coins"), set before a run, and the shield it may start with
+var perk := ""
+var shield := false
 
 func load_course(path: String) -> void:
 	var f := FileAccess.open(path, FileAccess.READ)
@@ -126,9 +130,12 @@ func reset() -> void:
 	J = {"c": 0, "m": 0, "ex": 0, "gd": 0, "ok": 0}
 	lost = 0
 	last_bar = -1
+	shield = perk == "shield"
 
 func reach() -> float:
-	return 0.62 if form == 2 else 0.56
+	if form != 2:
+		return 0.56
+	return 0.78 if perk == "reach" else 0.62
 
 func tier() -> int:
 	return 8 if od_t > 0.0 else 1 + mini(3, int(flow / 30.0))
@@ -297,6 +304,13 @@ func note_z(n: Dictionary) -> float:
 
 func _crash(h: Dictionary) -> void:
 	h.state = 1
+	if shield:
+		# the shield takes the hit: no life lost, a moment to get clear
+		shield = false
+		invuln = 1.2
+		shielded.emit()
+		popped.emit("SHIELD SAVED YOU", "gold")
+		return
 	combo = 0
 	melody_on = false
 	lost += 1
@@ -325,7 +339,7 @@ func _crash(h: Dictionary) -> void:
 func _rescue_gain(n: float) -> void:
 	if form >= 2 or deliver_at < INF:
 		return
-	rescue = clampf(rescue + n * float(course.rescueK), 0.0, 100.0)
+	rescue = clampf(rescue + n * float(course.rescueK) * (1.3 if perk == "rescue" else 1.0), 0.0, 100.0)
 	if rescue >= 100.0:
 		deliver_at = ceil((t + 0.35) / BEAT) * BEAT
 		popped.emit("RESCUE INBOUND · YOUR CAR", "gold")

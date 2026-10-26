@@ -9,6 +9,11 @@ signal quality_chosen(choice: int)
 signal episode_chosen(i: int)
 signal fly_to(i: int)
 signal dev_toggled(on: bool)
+signal garage_opened
+signal garage_browse(tab: String, key: String)
+signal garage_action(tab: String, key: String)
+signal garage_closed
+signal dev_coins
 signal menu_pressed
 signal offset_changed(ms: int)
 
@@ -178,6 +183,10 @@ func _build_title() -> void:
 	var hint := _label("Every note is a ring. Swipe into each one,\njust before its note for EXCELLENT.", 16, Color(1, 1, 1, 0.8), font_body)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(hint)
+	var gb := _ghost_button("GARAGE")
+	gb.position = Vector2(16, 16)
+	gb.pressed.connect(func(): garage_opened.emit())
+	title.add_child(gb)
 	# the era map: where you pick the city
 	var mb := _ghost_button("MAP OF THE PAST")
 	mb.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
@@ -302,6 +311,153 @@ func _map_cities() -> Array:
 	for e in ep_list:
 		out.append({"name": e.geo, "lat": e.lat, "lon": e.lon, "stars": e.stars, "open": e.open})
 	return out
+
+# ---------------------------------------------------------------- the garage: cars and pilots
+
+var garage: Control
+var g_data := {}
+var g_tab := "cars"
+var g_i := 0
+var g_name: Label
+var g_about: Label
+var g_perk: Label
+var g_wallet: Label
+var g_action: Button
+var g_tabs := {}
+var g_dev: Button
+
+func open_garage(data: Dictionary) -> void:
+	g_data = data
+	if garage == null:
+		_build_garage()
+	title.visible = false
+	garage.visible = true
+	_g_show_tab(g_tab)
+
+func refresh_garage(data: Dictionary) -> void:
+	g_data = data
+	_g_show()
+
+func _build_garage() -> void:
+	garage = Control.new()
+	garage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	garage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(garage)
+	var back := _ghost_button("‹ BACK")
+	back.position = Vector2(16, 16)
+	back.pressed.connect(func():
+		garage.visible = false
+		title.visible = true
+		garage_closed.emit())
+	garage.add_child(back)
+	var head := _label("GARAGE", 28, Color(1, 0.95, 0.85))
+	head.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.offset_left = -150; head.offset_right = 150; head.offset_top = 18
+	garage.add_child(head)
+	g_wallet = _label("", 18, GOLD, font_body)
+	g_wallet.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	g_wallet.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	g_wallet.offset_left = -200; g_wallet.offset_right = -18; g_wallet.offset_top = 24
+	garage.add_child(g_wallet)
+	var card := _card()
+	card.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	card.offset_left = 12; card.offset_right = -12; card.offset_top = -300; card.offset_bottom = -14
+	garage.add_child(card)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 8)
+	card.add_child(v)
+	var tabs := HBoxContainer.new()
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", 8)
+	v.add_child(tabs)
+	var group := ButtonGroup.new()
+	for t in ["cars", "pilots"]:
+		var b := _ghost_button(t.to_upper())
+		b.toggle_mode = true
+		b.button_group = group
+		b.pressed.connect(func(): _g_show_tab(t))
+		tabs.add_child(b)
+		g_tabs[t] = b
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_child(row)
+	var prev := _ghost_button("‹")
+	prev.custom_minimum_size = Vector2(56, 56)
+	prev.add_theme_font_size_override("font_size", 28)
+	prev.pressed.connect(func(): _g_step(-1))
+	row.add_child(prev)
+	var mid := VBoxContainer.new()
+	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(mid)
+	g_name = _label("", 30, Color(1, 0.95, 0.85))
+	g_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mid.add_child(g_name)
+	g_about = _label("", 14, Color(1, 1, 1, 0.75), font_body)
+	g_about.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	g_about.autowrap_mode = TextServer.AUTOWRAP_WORD
+	mid.add_child(g_about)
+	g_perk = _label("", 14, GOLD, font_body)
+	g_perk.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mid.add_child(g_perk)
+	var nxt := _ghost_button("›")
+	nxt.custom_minimum_size = Vector2(56, 56)
+	nxt.add_theme_font_size_override("font_size", 28)
+	nxt.pressed.connect(func(): _g_step(1))
+	row.add_child(nxt)
+	g_action = _button("SELECT")
+	g_action.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	g_action.pressed.connect(func(): garage_action.emit(g_tab, _g_key()))
+	v.add_child(g_action)
+	g_dev = _ghost_button("+5,000 COINS (TESTING)")
+	g_dev.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	g_dev.pressed.connect(func(): dev_coins.emit())
+	v.add_child(g_dev)
+
+func _g_keys() -> Array:
+	return g_data[g_tab].keys()
+
+func _g_key() -> String:
+	return _g_keys()[g_i]
+
+func _g_show_tab(t: String) -> void:
+	g_tab = t
+	g_tabs[t].button_pressed = true
+	# start on the one you have selected
+	var keys := _g_keys()
+	g_i = 0
+	for k in keys.size():
+		if g_data[t][keys[k]].selected:
+			g_i = k
+	_g_show()
+	garage_browse.emit(g_tab, _g_key())
+
+func _g_step(d: int) -> void:
+	g_i = posmod(g_i + d, _g_keys().size())
+	_g_show()
+	garage_browse.emit(g_tab, _g_key())
+
+func _g_show() -> void:
+	var it: Dictionary = g_data[g_tab][_g_key()]
+	var w: int = g_data.wallet
+	g_wallet.text = "◉ %s" % _thousands(w)
+	g_name.text = it.name
+	g_about.text = it.about
+	g_perk.text = it.get("say", "")
+	g_perk.visible = g_tab == "cars"
+	if it.selected:
+		g_action.text = "SELECTED"
+		g_action.disabled = true
+	elif it.owned:
+		g_action.text = "SELECT"
+		g_action.disabled = false
+	elif w >= it.price:
+		g_action.text = "BUY · ◉ %s" % _thousands(it.price)
+		g_action.disabled = false
+	else:
+		g_action.text = "NEED ◉ %s MORE" % _thousands(it.price - w)
+		g_action.disabled = true
+	g_dev.visible = g_data.get("dev", false)
 
 # ---------------------------------------------------------------- the era map
 
@@ -450,6 +606,10 @@ func show_results(r: Dictionary, cleared: bool, place := "") -> void:
 	var sc := _label("SCORE %s   ·   MAX COMBO %d   ·   DUET NOTES %d" % [_thousands(r.score), r.max_combo, r.get("duets", 0)], 15, Color(1, 1, 1, 0.9), font_body)
 	sc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	res_box.add_child(sc)
+	if r.has("coins"):
+		var cn := _label("+◉ %s   ·   you have ◉ %s" % [_thousands(r.coins), _thousands(r.wallet)], 16, GOLD, font_body)
+		cn.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		res_box.add_child(cn)
 	var gap := Control.new()
 	gap.custom_minimum_size = Vector2(0, 8)
 	res_box.add_child(gap)
