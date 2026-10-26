@@ -9,7 +9,8 @@ uniform vec3 hor_col : source_color = vec3(1.0, 0.78, 0.52);
 uniform vec3 sun_col : source_color = vec3(1.0, 0.82, 0.58);
 uniform vec3 cloud_col : source_color = vec3(0.4, 0.4, 0.44);
 uniform float cover = 0.55;
-float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// a hash without sine (stable on every GPU, phones included)
+float h21(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vn(vec2 p) {
 	vec2 i = floor(p), f = fract(p);
 	f = f * f * (3.0 - 2.0 * f);

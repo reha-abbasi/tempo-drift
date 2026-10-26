@@ -33,7 +33,8 @@ void fragment() {
 	if (lights > 0.0) {
 		vec2 g = vec2(wp.x + wp.z, wp.y) / vec2(1.6, 2.2);
 		vec2 f = fract(g);
-		float on = step(1.0 - 0.45 * lights, fract(sin(dot(floor(g), vec2(12.9898, 78.233))) * 43758.5453));
+		vec3 p3 = fract(vec3(floor(g).xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33);
+		float on = step(1.0 - 0.45 * lights, fract((p3.x + p3.y) * p3.z));
 		float win = step(0.25, f.x) * step(f.x, 0.75) * step(0.3, f.y) * step(f.y, 0.8);
 		EMISSION = vec3(1.0, 0.78, 0.45) * on * win * 1.6 * (1.0 - depth * 0.6);
 	}

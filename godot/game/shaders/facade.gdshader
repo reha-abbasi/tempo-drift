@@ -16,11 +16,14 @@ uniform vec3 frame_col : source_color = vec3(0.86, 0.84, 0.78);
 
 varying vec3 lp;
 varying vec3 ln;
-varying vec3 sz;
-varying vec4 cd;
-varying vec3 org;
+// (flat: the same exact value on every pixel of a wall; interpolated, these carry tiny rounding differences that the
+// hash below would blow up into per-pixel noise, speckling the windows)
+varying flat vec3 sz;
+varying flat vec4 cd;
+varying flat vec3 org;
 
-float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// a hash without sine (stable on every GPU, phones included)
+float h21(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 
 void vertex() {
 	sz = vec3(length(MODEL_MATRIX[0].xyz), length(MODEL_MATRIX[1].xyz), length(MODEL_MATRIX[2].xyz));
@@ -33,7 +36,7 @@ void vertex() {
 void fragment() {
 	float style = cd.a;
 	bool plain = style < 0.0;
-	float seed = h21(org.xz * 0.37);
+	float seed = h21(floor(org.xz * 4.0) * 0.37);
 	vec2 uv = abs(ln.x) > 0.5 ? vec2(lp.z, lp.y + sz.y * 0.5) : vec2(lp.x, lp.y + sz.y * 0.5);
 	bool face = abs(ln.x) > 0.5 && !plain;
 	// running-bond bricks with mortar lines (fading out with distance so they don't shimmer)
@@ -41,10 +44,11 @@ void fragment() {
 	float brow = floor(bc.y);
 	bc.x += mod(brow, 2.0) * 0.5;
 	vec2 bf = fract(bc);
-	float fw = clamp(fwidth(bc.y) * 2.0, 0.0, 1.0);
+	// how much of a brick one pixel covers: past about half a brick the bricks blend into their average colour
+	float fw = smoothstep(0.2, 0.6, fwidth(bc.y));
 	float mortar = max(1.0 - smoothstep(0.0, 0.07 + fw * 0.2, bf.x), 1.0 - smoothstep(0.0, 0.16 + fw * 0.2, bf.y)) * (1.0 - fw);
 	float bn = h21(floor(bc) + seed * 17.0);
-	vec3 brick = cd.rgb * (0.78 + 0.36 * bn);
+	vec3 brick = cd.rgb * (0.78 + 0.36 * mix(bn, 0.5, fw));
 	vec3 col = mix(brick, cd.rgb * 0.55 + vec3(0.18, 0.17, 0.15), mortar * 0.8);
 	float rough = 0.82;
 	float bump = mortar;
@@ -65,7 +69,8 @@ void fragment() {
 			ac.x += mod(floor(ac.y), 2.0) * 0.5;
 			vec2 af = fract(ac);
 			float j2 = max(1.0 - smoothstep(0.0, 0.025, af.x), 1.0 - smoothstep(0.0, 0.05, af.y)) * (1.0 - fw);
-			col = cd.rgb * (0.92 + 0.12 * h21(floor(ac) + seed)) * (1.0 - j2 * 0.28);
+			float af_w = smoothstep(0.2, 0.6, fwidth(ac.y));
+			col = cd.rgb * (0.92 + 0.12 * mix(h21(floor(ac) + seed), 0.5, af_w)) * (1.0 - j2 * 0.28);
 			rough = 0.7;
 			bump = j2;
 		}

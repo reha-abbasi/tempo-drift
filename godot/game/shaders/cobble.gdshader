@@ -6,7 +6,8 @@ uniform vec3 stone_b : source_color = vec3(0.44, 0.39, 0.33);
 uniform float puddles = 0.42;
 uniform float half_w = 4.6;
 varying vec3 wp;
-float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// a hash without sine (stable on every GPU, phones included)
+float h21(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vn(vec2 p) {
 	vec2 i = floor(p), f = fract(p);
 	f = f * f * (3.0 - 2.0 * f);

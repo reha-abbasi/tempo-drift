@@ -542,7 +542,8 @@ shader_type spatial;
 uniform vec3 dark : source_color = vec3(0.16, 0.22, 0.09);
 uniform vec3 light : source_color = vec3(0.36, 0.42, 0.16);
 varying vec3 wp;
-float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// a hash without sine (stable on every GPU, phones included)
+float h21(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vn(vec3 p) {
 	vec3 i = floor(p), f = fract(p);
 	f = f * f * (3.0 - 2.0 * f);

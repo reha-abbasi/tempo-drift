@@ -3,7 +3,8 @@ shader_type spatial;
 render_mode unshaded, depth_draw_never, cull_disabled, shadows_disabled;
 uniform vec3 tint : source_color = vec3(0.62, 0.6, 0.58);
 uniform float alpha = 0.35;
-float h21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// a hash without sine (stable on every GPU, phones included)
+float h21(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vn(vec2 p) {
 	vec2 i = floor(p), f = fract(p);
 	f = f * f * (3.0 - 2.0 * f);
