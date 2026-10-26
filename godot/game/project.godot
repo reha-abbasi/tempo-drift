@@ -1,0 +1,41 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+
+config/name="Tempo Drift"
+config/description="A flying-car rhythm runner: every melody note is a ring you swipe into."
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.7", "Mobile")
+boot_splash/bg_color=Color(0.07, 0.05, 0.11, 1)
+
+[audio]
+
+driver/output_latency=15
+
+[display]
+
+window/size/viewport_width=540
+window/size/viewport_height=960
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[physics]
+
+common/physics_ticks_per_second=60
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+anti_aliasing/quality/msaa_3d=2
+lights_and_shadows/directional_shadow/size=4096
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
+lights_and_shadows/directional_shadow/16_bits=true
+textures/default_filters/anisotropic_filtering_level=3
+environment/defaults/default_clear_color=Color(0.3, 0.3, 0.35, 1)
