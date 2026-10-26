@@ -2,6 +2,10 @@
 
 The game remade in Godot 4.7. The whole Past: **London 1890, Istanbul 1910, Paris 1925, New York 1935, Havana 1955, Vienna 1905, Cairo 1925 and Rome 1948**, picked on the title card. Each city has its own street, light, landmark and band.
 
+## Play it on a phone
+
+https://reha-abbasi.github.io/tempo-drift/godot/ (the web build, runs in Safari; about 120 MB to load). Publish a new one with `tools/publish_godot_web.sh`.
+
 ## Open it
 
 1. Start Godot 4.7 (`D:\Claude-sandbox\Software`).
