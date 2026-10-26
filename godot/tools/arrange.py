@@ -152,10 +152,6 @@ def arrange_swing(S):
     L['od'].program(5, 61)                   # brass section
     L['jet'].program(6, 47)                  # timpani
     L['jet'].program(7, 122)                 # wind (seashore)
-    lead = LEADS.get(S.c['lead'], 0)
-    for k in ['ghost', 'melA', 'melB']:
-        L[k].program(0, lead)
-        L[k].cc(0, 91, 64)
     n_bars = len(S.bars)
     q = PPQ  # a quarter note
     T = S.tick
@@ -289,7 +285,15 @@ def arrange_swing(S):
         for beat in range(4):
             L['jet'].note(6, T(S.at(b, beat * 2)), q // 2, root - 24 if beat % 2 == 0 else root - 17, 46 if beat % 2 == 0 else 34)
         L['jet'].note(7, bt, q * 4, 60, 40)
-    # the melody: every ring's note on its layer, and the notes the band plays between them
+    add_melody(S, L, st, LEADS.get(S.c['lead'], 0))
+    return L
+
+def add_melody(S, L, st, lead):
+    """the melody: every ring's note on its layer, the notes the band plays between them, and the duet voice"""
+    T = S.tick
+    for k in ['ghost', 'melA', 'melB']:
+        L[k].program(0, lead)
+        L[k].cc(0, 91, 64)
     ring = RING.get(S.c['lead'], 1.25)
     eighth = S.beat / 2.0
     for i, n in enumerate(S.c['notes']):
@@ -307,7 +311,6 @@ def arrange_swing(S):
         if p is not None:
             d = max(0.4, n['len'] * eighth * 1.5)
             L['harmA' if i % 2 == 0 else 'harmB'].note(0, T(n['t']), T(d), p, 78)
-    return L
 
 def harmony(S, n):
     b = min(len(S.bars) - 1, max(0, int(n['t'] // S.bar)))
@@ -317,6 +320,244 @@ def harmony(S, n):
         if (n['note'] - down) % 12 in tones:
             return n['note'] - down
     return n['note'] - 5
+
+# ---------------------------------------------------------------- the Present and the Future: modern bands
+
+# kit (drum pattern), bass, comp (what accompanies), and the programs: comp, pad, arp, duet, lead, the Overdrive stabs, the
+# jetpack's pulse; kit_prog picks the drum kit (0 standard, 24 electronic, 25 TR-808)
+MODERN = {
+    ('sunset', 0): dict(kit='arabic', kit_prog=0, bass='eighths', bass_prog=38, comp='pulse', comp_prog=50, pad=89, arp=46, duet=73, lead=46, od=62, jet=38),
+    ('sunset', 1): dict(kit='bossa', kit_prog=0, bass='rootfifth', bass_prog=32, comp='strum', comp_prog=24, pad=49, arp=12, duet=65, lead=56, od=61, jet=47),
+    ('sunset', 2): dict(kit='pop', kit_prog=0, bass='eighths', bass_prog=38, comp='epiano', comp_prog=4, pad=89, arp=12, duet=11, lead=8, od=62, jet=38),
+    ('sunset', 3): dict(kit='pop', kit_prog=0, bass='rootfifth', bass_prog=33, comp='strum', comp_prog=25, pad=52, arp=11, duet=73, lead=9, od=61, jet=47),
+    ('sunset', 4): dict(kit='house', kit_prog=0, bass='offbeat', bass_prog=38, comp='stabs', comp_prog=0, pad=90, arp=80, duet=89, lead=81, od=62, jet=38),
+    ('sunset', 5): dict(kit='afro', kit_prog=0, bass='rootfifth', bass_prog=33, comp='pulse', comp_prog=12, pad=89, arp=108, duet=75, lead=80, od=61, jet=47),
+    ('sunset', 6): dict(kit='flamenco', kit_prog=0, bass='rootfifth', bass_prog=32, comp='strum', comp_prog=24, pad=49, arp=46, duet=40, lead=56, od=61, jet=47),
+    ('sunset', 7): dict(kit='ambient', kit_prog=24, bass='long', bass_prog=38, comp='pads', comp_prog=95, pad=52, arp=98, duet=54, lead=63, od=62, jet=38),
+    ('rain', 0): dict(kit='synthwave', kit_prog=24, bass='octave16', bass_prog=39, comp='pulse', comp_prog=50, pad=90, arp=81, duet=54, lead=98, od=62, jet=39),
+    ('rain', 1): dict(kit='trap', kit_prog=25, bass='808', bass_prog=39, comp='pads', comp_prog=89, pad=91, arp=9, duet=77, lead=107, od=62, jet=39),
+    ('rain', 2): dict(kit='synthwave', kit_prog=24, bass='octave16', bass_prog=39, comp='epiano', comp_prog=4, pad=89, arp=81, duet=65, lead=66, od=61, jet=39),
+    ('rain', 3): dict(kit='techno', kit_prog=24, bass='rolling', bass_prog=38, comp='stabs', comp_prog=62, pad=95, arp=81, duet=52, lead=98, od=62, jet=39),
+    ('rain', 4): dict(kit='pop', kit_prog=25, bass='eighths', bass_prog=38, comp='stabs', comp_prog=62, pad=90, arp=80, duet=54, lead=73, od=62, jet=39),
+    ('rain', 5): dict(kit='techno', kit_prog=24, bass='rolling', bass_prog=87, comp='pads', comp_prog=50, pad=95, arp=81, duet=63, lead=81, od=62, jet=39),
+    ('rain', 6): dict(kit='synthwave', kit_prog=24, bass='octave16', bass_prog=39, comp='pulse', comp_prog=90, pad=89, arp=80, duet=66, lead=81, od=62, jet=39),
+    ('rain', 7): dict(kit='house', kit_prog=25, bass='offbeat', bass_prog=38, comp='stabs', comp_prog=61, pad=90, arp=81, duet=62, lead=80, od=62, jet=39),
+}
+
+def modern_drums(S, tr, st, b, bright):
+    """one bar of drums in a modern style (eighths are straight here; sixteenths where the style needs them)"""
+    DR, q, T = 9, PPQ, S.tick
+    t8 = lambda e: T(S.at(b, e))
+    t16 = lambda i: T(b * S.bar + i * S.beat / 4.0)
+    k = st['kit']
+    def hit(t, p, v, d=q // 4):
+        tr.note(DR, t, d, p, S.hv(v, 5))
+    if k == 'pop':
+        for e in (0, 3, 4):
+            hit(t8(e), 36, 92 if e != 3 else 70)
+        for e in (2, 6):
+            hit(t8(e), 38, 90); hit(t8(e), 39, 60)
+        for e in range(8):
+            hit(t8(e), 42, 58 if e % 2 == 0 else 44)
+        if bright:
+            hit(t8(7), 46, 60)
+    elif k == 'house':
+        for e in (0, 2, 4, 6):
+            hit(t8(e), 36, 100)
+        for e in (2, 6):
+            hit(t8(e), 39, 82)
+        for e in (1, 3, 5, 7):
+            hit(t8(e), 46, 64)
+        for i in range(16):
+            hit(t16(i), 42, 40 if i % 2 else 30)
+    elif k == 'bossa':
+        for e in (0, 3, 4, 7):
+            hit(t8(e), 36, 70 if e in (0, 4) else 52)
+        for e in ([0, 3, 6] if b % 2 == 0 else [2, 5]):
+            hit(t8(e), 37, 70)
+        for e in range(8):
+            hit(t8(e), 70, 48 if e % 2 else 60)
+    elif k == 'afro':
+        for e in (0, 2, 4, 6):
+            hit(t8(e), 36, 92)
+        for e, p, v in [(1, 62, 60), (3, 63, 72), (5, 62, 58), (6, 64, 70), (7, 63, 66)]:
+            hit(t8(e), p, v)
+        for i in range(16):
+            hit(t16(i), 70, 46 if i % 2 else 36)
+    elif k == 'arabic':
+        for e, p, v in [(0, 36, 96), (1, 62, 58), (3, 63, 72), (4, 36, 86), (5, 62, 56), (6, 63, 66), (7, 62, 50)]:
+            hit(t8(e), p, v)
+        for e in (2, 6):
+            hit(t8(e), 39, 70)
+        for e in (1, 3, 5, 7):
+            hit(t8(e), 54, 36)
+    elif k == 'flamenco':
+        for e, v in [(0, 88), (3, 70), (5, 76)]:
+            hit(t8(e), 36, v)
+        for e in (2, 6):
+            hit(t8(e), 38, 64)
+        for e in (1, 3, 4, 6, 7):
+            hit(t8(e), 39, 66 if e in (3, 6) else 48)
+    elif k == 'ambient':
+        hit(t8(0), 36, 60)
+        hit(t8(4), 37, 48)
+        for e in (2, 6):
+            hit(t8(e), 42, 38)
+        if b % 2 == 1:
+            hit(t8(7), 46, 40)
+    elif k == 'synthwave':
+        for e in (0, 4):
+            hit(t8(e), 36, 100)
+        if b % 2 == 1:
+            hit(t8(7), 36, 70)
+        for e in (2, 6):
+            hit(t8(e), 38, 104, q // 2)
+        for e in range(8):
+            hit(t8(e), 42, 56 if e % 2 == 0 else 42)
+    elif k == 'trap':
+        hit(t8(0), 36, 100, q)
+        hit(t8(3), 36, 80, q)
+        if b % 2 == 1:
+            hit(t8(5), 36, 76, q)
+        hit(t8(4), 38, 96); hit(t8(4), 39, 80)
+        for i in range(16):
+            # hi-hats in sixteenths, with a quick roll at the end of every other bar
+            hit(t16(i), 42, 52 if i % 4 == 0 else 38)
+        if b % 2 == 0:
+            for r in range(4):
+                hit(t16(14) + r * q // 8, 42, 50)
+    elif k == 'techno':
+        for e in (0, 2, 4, 6):
+            hit(t8(e), 36, 104)
+        for e in (2, 6):
+            hit(t8(e), 39, 76)
+        for e in (1, 3, 5, 7):
+            hit(t8(e), 46, 58)
+        for i in range(16):
+            hit(t16(i), 42, 44 if i % 2 else 30)
+
+def modern_bass(S, tr, st, b, root, iv, nxt_root):
+    T, q = S.tick, PPQ
+    t8 = lambda e: T(S.at(b, e))
+    t16 = lambda i: T(b * S.bar + i * S.beat / 4.0)
+    base = root - 24
+    while base < 28:
+        base += 12
+    k = st['bass']
+    ch = 1
+    if k == 'eighths':
+        for e in range(8):
+            tr.note(ch, t8(e), q * 0.45, base + (12 if e == 7 else 0), S.hv(84 if e % 2 == 0 else 70, 4))
+    elif k == 'offbeat':
+        for e in (1, 3, 5, 7):
+            tr.note(ch, t8(e), q * 0.4, base, S.hv(90, 4))
+    elif k == 'rootfifth':
+        for e, p in [(0, base), (3, base + 7), (4, base), (6, base + 7)]:
+            tr.note(ch, t8(e), q * 0.8, p, S.hv(84, 4))
+    elif k == 'octave16':
+        for i in range(16):
+            tr.note(ch, t16(i), q * 0.22, base + (12 if i % 2 else 0), S.hv(82 if i % 4 == 0 else 66, 4))
+    elif k == '808':
+        tr.note(ch, t8(0), q * 1.4, base, 100)
+        tr.note(ch, t8(3), q * 1.4, base, 92)
+        if b % 2 == 1:
+            tr.note(ch, t8(6), q * 0.8, base + 7, 88)
+    elif k == 'rolling':
+        for i in range(16):
+            if i % 4 != 0:
+                tr.note(ch, t16(i), q * 0.2, base + (7 if i % 8 == 7 else 0), S.hv(80, 4))
+    else:   # 'long'
+        tr.note(ch, t8(0), q * 3.8, base, 80)
+
+def arrange_modern(S, st):
+    """the Present and the Future: a modern band in the city's style"""
+    L = {k: Track() for k in ['core', 'full', 'arp', 'perc', 'od', 'jet', 'ghost', 'melA', 'melB', 'harmA', 'harmB']}
+    DR, q, T = 9, PPQ, S.tick
+    for k in L:
+        L[k].cc(0, 91, 50); L[k].cc(1, 91, 30); L[k].cc(2, 91, 60); L[k].cc(3, 91, 80); L[k].cc(DR, 91, 30)
+    for k in ['core', 'full']:
+        L[k].program(DR, st['kit_prog'], 128)
+        L[k].program(1, st['bass_prog'])
+    L['full'].program(2, st['comp_prog'])
+    L['full'].program(3, st['pad'])
+    L['arp'].program(4, st['arp'])
+    L['arp'].cc(4, 91, 80)
+    L['perc'].program(DR, 0, 128)
+    L['od'].program(DR, st['kit_prog'], 128)
+    L['od'].program(5, st['od'])
+    L['jet'].program(6, st['jet'])
+    L['jet'].program(7, 122)
+    n_bars = len(S.bars)
+    for b in range(n_bars):
+        B = S.bars[b]
+        sec = B['sec']
+        root, iv = S.chord(b)
+        nxt_root = S.chord(min(b + 1, n_bars - 1))[0]
+        bt = T(b * S.bar)
+        if sec == 'E':
+            for k in ['core', 'full']:
+                L[k].note(DR, bt, q, 49, 96)
+                L[k].note(DR, bt, q, 36, 100)
+                L[k].note(1, bt, q * 4, root - 24 if root - 24 >= 28 else root - 12, 96)
+            for p in voicing(root, iv, 60, 74):
+                L['full'].note(2, bt, q * 4, p, 70)
+                L['full'].note(3, bt, q * 4, p, 64)
+            continue
+        lvl = B.get('lvl', 0) if sec == 'I' else 0
+        bright = sec in ('B', 'C')
+        for k in ['core', 'full']:
+            modern_drums(S, L[k], st, b, bright)
+            if not (sec == 'I' and lvl < 2):
+                modern_bass(S, L[k], st, b, root, iv, nxt_root)
+        if sec == 'I':
+            continue
+        v = voicing(root, iv, 58 if bright else 55, 72 if bright else 69)
+        comp = st['comp']
+        if comp == 'pulse':
+            for e in range(8):
+                for p in v:
+                    L['full'].note(2, T(S.at(b, e)), q * 0.42, p, S.hv(56 if e % 2 == 0 else 46, 4))
+        elif comp == 'epiano':
+            for e, dur in ([(0, 3), (3, 1)] if not bright else [(2, 1), (6, 1), (7, 1)]):
+                for p in v:
+                    L['full'].note(2, T(S.at(b, e)) + S.rng.randint(-10, 10), q * dur * 0.5 * 0.95, p, S.hv(60, 5))
+        elif comp == 'stabs':
+            for e in (1, 3, 5, 7):
+                for p in v:
+                    L['full'].note(2, T(S.at(b, e)), q * 0.25, p, S.hv(70, 5))
+        elif comp == 'strum':
+            # down on the beats, up between them, the chord spread like a pick across the strings
+            gv = voicing(root, iv, 52, 67, color=False)
+            for e in range(8):
+                down = e % 2 == 0
+                ps = gv if down else gv[::-1]
+                for j, p in enumerate(ps):
+                    L['full'].note(2, T(S.at(b, e)) + j * 12, q * 0.45, p, S.hv((66 if e in (0, 3, 6) else 50) - j * 2, 4))
+        # 'pads': the pad alone carries the harmony
+        for p in voicing(root, iv, 60, 76, color=False):
+            L['full'].note(3, bt, q * 4 * 0.98, p, 50 if not bright else 58)
+        # the arpeggio in sixteenths (band 3)
+        ap = voicing(root, iv, 67, 84)
+        for i in range(16):
+            L['arp'].note(4, T(b * S.bar + i * S.beat / 4.0), q * 0.22, ap[i % len(ap)] + (12 if (i // 4) % 2 else 0), S.hv(50 if i % 2 else 60, 4))
+        # claps and a shaker (band 4)
+        for e in range(8):
+            L['perc'].note(DR, T(S.at(b, e)), q // 4, 70, S.hv(38 if e % 2 else 52, 4))
+        for e in (2, 6):
+            L['perc'].note(DR, T(S.at(b, e)), q // 4, 39, S.hv(64, 5))
+        # Overdrive: big synth stabs, a crash on each bar, the kick on every beat
+        L['od'].note(DR, bt, q, 49, 84)
+        for e in (0, 2, 4, 6):
+            L['od'].note(DR, T(S.at(b, e)), q // 2, 36, 80)
+        for e, dur in [(0, 2), (3, 1), (6, 2)]:
+            for p in voicing(root, iv, 60, 76):
+                L['od'].note(5, T(S.at(b, e)), q * dur * 0.5 * 0.9, p, S.hv(80, 5))
+        # on the jetpack: a low pulse on every beat and the wind
+        for e in (0, 2, 4, 6):
+            L['jet'].note(6, T(S.at(b, e)), q // 2, root - 24 if root - 24 >= 28 else root - 12, 52 if e % 4 == 0 else 38)
+        L['jet'].note(7, bt, q * 4, 60, 40)
+    add_melody(S, L, st, st['lead'])
+    return L
 
 def render(name, track, bpm, out_dir, dur, gain):
     mid = os.path.join(out_dir, name + '.mid')
@@ -333,7 +574,7 @@ def main():
     mp, ep = sys.argv[1], int(sys.argv[2])
     c = json.load(open(os.path.join(ROOT, f'godot/game/data/{mp}_{ep}.json')))
     S = Song(c)
-    L = arrange_swing(S)
+    L = arrange_modern(S, MODERN[(mp, ep)]) if (mp, ep) in MODERN else arrange_swing(S)
     out_dir = os.path.join(ROOT, f'godot/game/audio/{mp}_{ep}')
     os.makedirs(out_dir, exist_ok=True)
     dur = c['len'] * c['bar'] + 3

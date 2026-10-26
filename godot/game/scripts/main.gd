@@ -1,10 +1,10 @@
 extends Node3D
-## Tempo Drift, the Past: eight cities from London 1890 to Rome 1948.
+## Tempo Drift: three eras of eight cities each, from London 1890 to Las Vegas 2099.
 ## Puts the pieces together: the baked course and soundtrack, the street, the car, the rings, the traffic, the HUD,
 ## and the camera, and runs a song from the title card to the results.
 ##
 ## Command-line options (after "--"), for testing:
-##   --ep=N             which episode (0 London ... 7 Rome)
+##   --ep=N             which episode (0 London ... 7 Rome, 8 Dubai ... 15 Reykjavik, 16 Hong Kong ... 23 Las Vegas)
 ##   --sim              play the whole episode at once with a perfect pilot and print the result
 ##   --shots=DIR        play it with the perfect pilot at a fixed frame rate and save screenshots in DIR
 ##   --at=SECONDS       (with --shots) where in the song to take them
@@ -18,7 +18,28 @@ const EPISODES := [
 	{"id": "old_5", "city": "VIENNA", "geo": "Vienna", "year": "1905", "look": "vienna", "band": "salon orchestra · violin"},
 	{"id": "old_6", "city": "CAIRO", "geo": "Cairo", "year": "1925", "look": "cairo", "band": "oud and kanun · nay"},
 	{"id": "old_7", "city": "ROME", "geo": "Rome", "year": "1948", "look": "rome", "band": "mandolin and accordion"},
+	{"id": "sunset_0", "city": "DUBAI", "geo": "Dubai", "year": "", "look": "dubai", "band": "Arabic pop · harp"},
+	{"id": "sunset_1", "city": "RIO", "geo": "Rio de Janeiro", "year": "", "look": "rio", "band": "bossa nova · trumpet"},
+	{"id": "sunset_2", "city": "SINGAPORE", "geo": "Singapore", "year": "", "look": "singapore", "band": "synth pop · celesta"},
+	{"id": "sunset_3", "city": "SAN FRANCISCO", "geo": "San Francisco", "year": "", "look": "sanfrancisco", "band": "guitar pop · glockenspiel"},
+	{"id": "sunset_4", "city": "SYDNEY", "geo": "Sydney", "year": "", "look": "sydney", "band": "house · supersaw"},
+	{"id": "sunset_5", "city": "CAPE TOWN", "geo": "Cape Town", "year": "", "look": "capetown", "band": "afro house · marimba"},
+	{"id": "sunset_6", "city": "BARCELONA", "geo": "Barcelona", "year": "", "look": "barcelona", "band": "flamenco pop · guitar"},
+	{"id": "sunset_7", "city": "REYKJAVIK", "geo": "Reykjavík", "year": "", "look": "reykjavik", "band": "ambient electronica"},
+	{"id": "rain_0", "city": "HONG KONG", "geo": "Hong Kong", "year": "2049", "look": "hongkong", "band": "synthwave · crystal"},
+	{"id": "rain_1", "city": "TOKYO", "geo": "Tokyo", "year": "2060", "look": "tokyo", "band": "808 trap · koto"},
+	{"id": "rain_2", "city": "LOS ANGELES", "geo": "Los Angeles", "year": "2070", "look": "losangeles", "band": "synthwave · tenor sax"},
+	{"id": "rain_3", "city": "SHANGHAI", "geo": "Shanghai", "year": "2085", "look": "shanghai", "band": "techno · crystal"},
+	{"id": "rain_4", "city": "SEOUL", "geo": "Seoul", "year": "2099", "look": "seoul", "band": "future k-pop · flute"},
+	{"id": "rain_5", "city": "BERLIN", "geo": "Berlin", "year": "2075", "look": "berlin", "band": "acid techno"},
+	{"id": "rain_6", "city": "MIAMI", "geo": "Miami", "year": "2088", "look": "miami", "band": "outrun · supersaw"},
+	{"id": "rain_7", "city": "LAS VEGAS", "geo": "Las Vegas", "year": "2099", "look": "vegas", "band": "electro house · chiptune"},
 ]
+# the three eras: an era opens with ERA_NEED stars in the one before it
+const ERAS := {"old": {"name": "THE PAST", "years": "1890–1955"}, "sunset": {"name": "THE PRESENT", "years": "today"},
+	"rain": {"name": "THE FUTURE", "years": "2049–2099"}}
+const ERA_ORDER := ["old", "sunset", "rain"]
+const ERA_NEED := 10
 const SAVE := "user://save.cfg"
 
 var ep := 0
@@ -131,7 +152,7 @@ func _ready() -> void:
 		hud.refresh_garage(_garage_data()))
 	game.shielded.connect(func(): fx.note_hit(car.global_position, Color(0.56, 0.96, 1.0) * 2.5, true))
 	hud.fly_to.connect(func(i):
-		_choose_episode(i)
+		await _choose_episode(i)
 		_start())
 	hud.dev_toggled.connect(func(on):
 		var dsv := ConfigFile.new()
@@ -149,7 +170,7 @@ func _ready() -> void:
 	game.finished.connect(func(): hud.pop("FINISH!", "gold"))
 	quality = Quality.new()
 	add_child(quality)
-	_load_episode(ep)
+	await _load_episode(ep)
 	quality.setup(self)
 	var cf := ConfigFile.new()
 	cf.load(Quality.SAVE)
@@ -208,7 +229,38 @@ func _ready() -> void:
 		_start()
 
 ## builds an episode: its course and soundtrack, its city, its rings and traffic, its finish arch
+## on the web the Present and the Future come as their own downloads (each about 75 MB of music), fetched the first time
+## you fly there and kept on the device; the Past ships with the game
+func _ensure_era(era: String) -> void:
+	if not OS.has_feature("web") or era == "old" or ResourceLoader.exists("res://audio/%s_0/core.ogg" % era):
+		return
+	var file := "user://%s.pck" % era
+	if not FileAccess.file_exists(file):
+		var base: String = str(JavaScriptBridge.eval("location.href.replace(/[^/]*$/, '')"))
+		var http := HTTPRequest.new()
+		http.download_file = file
+		add_child(http)
+		var done := [false, 0]
+		http.request_completed.connect(func(res, code, _h, _b):
+			done[0] = true
+			done[1] = code)
+		http.request(base + era + ".pck")
+		while not done[0]:
+			var total := http.get_body_size()
+			hud.show_loading("DOWNLOADING %s" % ERAS[era].name, float(http.get_downloaded_bytes()) / total if total > 0 else 0.0)
+			await get_tree().process_frame
+		http.queue_free()
+		if done[1] != 200:
+			DirAccess.remove_absolute(file)
+			hud.show_loading("COULDN'T DOWNLOAD %s · CHECK THE CONNECTION" % ERAS[era].name, 0.0)
+			await get_tree().create_timer(2.5).timeout
+			hud.hide_loading()
+			return
+	ProjectSettings.load_resource_pack(file)
+	hud.hide_loading()
+
 func _load_episode(i: int) -> void:
+	await _ensure_era(EPISODES[i].id.split("_")[0])
 	ep = i
 	var E: Dictionary = EPISODES[i]
 	for n in [world, rings, traffic, arch]:
@@ -250,19 +302,30 @@ func _episode_cards() -> Array:
 		for E in EPISODES:
 			bpms[E.id] = JSON.parse_string(FileAccess.open("res://data/%s.json" % E.id, FileAccess.READ).get_as_text()).bpm
 	var dev: bool = save.get_value("play", "dev", true)
+	# stars per era, for opening the next era
+	var era_stars := {}
+	for E in EPISODES:
+		var er: String = E.id.split("_")[0]
+		era_stars[er] = era_stars.get(er, 0) + save.get_value(E.id, "stars", 0)
 	var out := []
 	for i in EPISODES.size():
 		var E: Dictionary = EPISODES[i]
+		var era: String = E.id.split("_")[0]
+		var k := int(E.id.split("_")[1])
 		var ll: Array = geo[E.geo]
+		var ei := ERA_ORDER.find(era)
+		var era_open: bool = ei == 0 or era_stars.get(ERA_ORDER[ei - 1], 0) >= ERA_NEED
+		var open: bool = dev or (era_open and (k == 0 or save.get_value(EPISODES[i - 1].id, "stars", 0) > 0))
 		out.append({"city": E.city, "geo": E.geo, "year": E.year, "band": E.band, "bpm": bpms[E.id], "lat": ll[0], "lon": ll[1],
 			"stars": save.get_value(E.id, "stars", 0), "best": save.get_value(E.id, "best", 0), "grade": save.get_value(E.id, "grade", ""),
-			"open": dev or i == 0 or save.get_value(EPISODES[i - 1].id, "stars", 0) > 0})
+			"open": open, "era": era, "k": k, "era_name": ERAS[era].name, "era_years": ERAS[era].years,
+			"era_lock": "" if (dev or era_open) else "%d★ IN %s TO OPEN" % [ERA_NEED, ERAS[ERA_ORDER[maxi(ei - 1, 0)]].name]})
 	return out
 
 func _choose_episode(i: int) -> void:
 	if i == ep or state == "play":
 		return
-	_load_episode(i)
+	await _load_episode(i)
 	game.t = -0.05
 	_place_camera(1.0)
 
@@ -327,7 +390,7 @@ func _finish(r: Dictionary, cleared: bool) -> void:
 	if shot_dir != "":
 		print("RESULT ", JSON.stringify(r))
 		if results_shot:
-			hud.show_results(r, cleared, EPISODES[ep].city + " " + EPISODES[ep].year)
+			hud.show_results(r, cleared, (EPISODES[ep].city + " " + EPISODES[ep].year).strip_edges())
 			for i in 20:
 				await get_tree().process_frame
 			await RenderingServer.frame_post_draw
@@ -336,7 +399,7 @@ func _finish(r: Dictionary, cleared: bool) -> void:
 		get_tree().quit()
 		return
 	await get_tree().create_timer(0.9 if cleared else 1.4).timeout
-	hud.show_results(r, cleared, EPISODES[ep].city + " " + EPISODES[ep].year)
+	hud.show_results(r, cleared, (EPISODES[ep].city + " " + EPISODES[ep].year).strip_edges())
 
 ## Overdrive's light streaks: long warm lines flying past on both sides
 func _make_streaks() -> GPUParticles3D:

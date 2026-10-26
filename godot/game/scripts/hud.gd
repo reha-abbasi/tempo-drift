@@ -188,7 +188,7 @@ func _build_title() -> void:
 	gb.pressed.connect(func(): garage_opened.emit())
 	title.add_child(gb)
 	# the era map: where you pick the city
-	var mb := _ghost_button("MAP OF THE PAST")
+	var mb := _ghost_button("WORLD MAP")
 	mb.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	mb.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	mb.offset_top = -205; mb.offset_bottom = -165
@@ -301,16 +301,37 @@ func set_episodes(list: Array, sel: int) -> void:
 	ep_list = list
 	ep_sel = sel
 	var e: Dictionary = list[sel]
-	ep_label.text = "PAST · EPISODE %d · %s %s%s" % [sel + 1, e.city, e.year, ("   ·   BEST %s" % _thousands(e.best)) if e.best > 0 else ""]
-	if map_panel:
-		wmap.set_cities(_map_cities(), sel)
-		_show_card(sel)
+	map_era = e.era
+	ep_label.text = ("%s · EPISODE %d · %s %s" % [e.era_name.replace("THE ", ""), e.k + 1, e.city, e.year]).strip_edges() + (("   ·   BEST %s" % _thousands(e.best)) if e.best > 0 else "")
+	if map_panel and map_panel.visible:
+		_refresh_map()
+
+var map_era := "old"
+
+## the indices (in the whole list) of the cities of the era on the map
+func _era_idx() -> Array:
+	var out := []
+	for i in ep_list.size():
+		if ep_list[i].era == map_era:
+			out.append(i)
+	return out
 
 func _map_cities() -> Array:
 	var out := []
-	for e in ep_list:
+	for i in _era_idx():
+		var e: Dictionary = ep_list[i]
 		out.append({"name": e.geo, "lat": e.lat, "lon": e.lon, "stars": e.stars, "open": e.open})
 	return out
+
+func _refresh_map() -> void:
+	var idx := _era_idx()
+	var e0: Dictionary = ep_list[idx[0]]
+	map_head.text = "%s · %s" % [e0.era_name, e0.era_years]
+	map_sub.text = e0.era_lock if e0.era_lock != "" else "Eight cities, eight bands. Tap a city."
+	wmap.set_style(map_era)
+	var sel := maxi(0, idx.find(ep_sel))
+	wmap.set_cities(_map_cities(), sel)
+	_show_card(sel)
 
 # ---------------------------------------------------------------- the garage: cars and pilots
 
@@ -463,6 +484,8 @@ func _g_show() -> void:
 
 var map_panel: Control
 var wmap: WorldMap
+var map_head: Label
+var map_sub: Label
 var card_name: Label
 var card_info: Label
 var card_fly: Button
@@ -471,9 +494,14 @@ var map_pick := 0
 func open_map() -> void:
 	if map_panel == null:
 		_build_map()
-	wmap.set_cities(_map_cities(), ep_sel)
-	_show_card(ep_sel)
+	map_era = ep_list[ep_sel].era
 	map_panel.visible = true
+	_refresh_map()
+
+func _step_era(d: int) -> void:
+	var order := ["old", "sunset", "rain"]
+	map_era = order[posmod(order.find(map_era) + d, 3)]
+	_refresh_map()
 
 func _build_map() -> void:
 	map_panel = Control.new()
@@ -483,16 +511,26 @@ func _build_map() -> void:
 	bg.color = Color(0.1, 0.07, 0.05, 0.94)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	map_panel.add_child(bg)
-	var head := _label("THE PAST · 1890–1955", 24, Color(1, 0.93, 0.8))
-	head.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.offset_top = 22; head.offset_bottom = 56
-	map_panel.add_child(head)
-	var sub := _label("Eight cities, eight bands. Tap a city.", 14, Color(1, 1, 1, 0.6), font_body)
-	sub.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub.offset_top = 58; sub.offset_bottom = 80
-	map_panel.add_child(sub)
+	map_head = _label("", 22, Color(1, 0.93, 0.8))
+	map_head.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	map_head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	map_head.offset_top = 22; map_head.offset_bottom = 56
+	map_panel.add_child(map_head)
+	map_sub = _label("", 14, Color(1, 1, 1, 0.6), font_body)
+	map_sub.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	map_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	map_sub.offset_top = 58; map_sub.offset_bottom = 80
+	map_panel.add_child(map_sub)
+	# arrows to the other eras
+	for d in [-1, 1]:
+		var ab := _ghost_button("‹" if d < 0 else "›")
+		ab.custom_minimum_size = Vector2(44, 44)
+		ab.add_theme_font_size_override("font_size", 24)
+		ab.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		ab.offset_left = -110 + (0 if d < 0 else 52); ab.offset_right = ab.offset_left + 44; ab.offset_top = 16; ab.offset_bottom = 60
+		var dd: int = d
+		ab.pressed.connect(func(): _step_era(dd))
+		map_panel.add_child(ab)
 	var back := _ghost_button("‹ BACK")
 	back.position = Vector2(14, 18)
 	back.pressed.connect(func(): map_panel.visible = false)
@@ -528,15 +566,17 @@ func _build_map() -> void:
 		fly_to.emit(map_pick))
 	v.add_child(card_fly)
 
+## i is the pin's number in the era on the map
 func _show_card(i: int) -> void:
-	map_pick = i
+	var gi: int = _era_idx()[i]
+	map_pick = gi
 	wmap.selected = i
-	var e: Dictionary = ep_list[i]
-	card_name.text = "%d · %s %s" % [i + 1, e.city, e.year]
+	var e: Dictionary = ep_list[gi]
+	card_name.text = ("%d · %s %s" % [e.k + 1, e.city, e.year]).strip_edges()
 	var stars: String = "★".repeat(e.stars) + "☆".repeat(3 - e.stars)
 	card_info.text = "%d BPM · %s · %s%s" % [e.bpm, e.band, stars, ("   ·   best %s" % _thousands(e.best)) if e.best > 0 else ""]
 	card_fly.disabled = not e.open
-	card_fly.text = "FLY HERE" if e.open else "CLEAR %s FIRST" % ep_list[i - 1].city
+	card_fly.text = "FLY HERE" if e.open else (e.era_lock if e.era_lock != "" else "CLEAR %s FIRST" % ep_list[gi - 1].city)
 
 var calib: Calibrate
 var dev_check: CheckButton
@@ -633,6 +673,37 @@ func _thousands(n: int) -> String:
 		out = "," + s.substr(s.length() - 3) + out
 		s = s.substr(0, s.length() - 3)
 	return s + out
+
+# ---------------------------------------------------------------- downloading an era (web)
+
+var loading: Control
+var load_label: Label
+var load_bar: ColorRect
+
+func show_loading(text: String, frac: float) -> void:
+	if loading == null:
+		loading = ColorRect.new()
+		(loading as ColorRect).color = Color(0.05, 0.04, 0.08, 0.9)
+		loading.set_anchors_preset(Control.PRESET_FULL_RECT)
+		root.add_child(loading)
+		load_label = _label("", 20, Color(1, 0.95, 0.85))
+		load_label.set_anchors_preset(Control.PRESET_CENTER)
+		load_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		load_label.offset_left = -240; load_label.offset_right = 240; load_label.offset_top = -40; load_label.offset_bottom = -10
+		loading.add_child(load_label)
+		var bg := _rect(Color(1, 1, 1, 0.15))
+		bg.set_anchors_preset(Control.PRESET_CENTER)
+		bg.offset_left = -140; bg.offset_right = 140; bg.offset_top = 10; bg.offset_bottom = 16
+		loading.add_child(bg)
+		load_bar = _rect(GOLD)
+		bg.add_child(load_bar)
+	loading.visible = true
+	load_label.text = text + ("   %d%%" % int(frac * 100.0) if frac > 0.0 else "")
+	load_bar.size = Vector2(280.0 * clampf(frac, 0.0, 1.0), 6)
+
+func hide_loading() -> void:
+	if loading:
+		loading.visible = false
 
 func judge(text: String, col: Color) -> void:
 	judge_l.text = text

@@ -9,6 +9,10 @@ uniform vec3 hor_col : source_color = vec3(1.0, 0.78, 0.52);
 uniform vec3 sun_col : source_color = vec3(1.0, 0.82, 0.58);
 uniform vec3 cloud_col : source_color = vec3(0.4, 0.4, 0.44);
 uniform float cover = 0.55;
+// an aurora over the north (Reykjavik), and the glow of a big city on the horizon at night (the Future)
+uniform float aurora = 0.0;
+uniform vec3 city_glow : source_color = vec3(0.0);
+uniform float stars = 0.0;
 // a hash without sine (stable on every GPU, phones included)
 float h21(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 float vn(vec2 p) {
@@ -44,5 +48,18 @@ void sky() {
 		c = mix(hor_col, low_col * 0.7, smoothstep(0.0, -0.25, e));
 	}
 	c += sun_col * (pow(sd, 6.0) * 0.35 + pow(sd, 60.0) * 1.2 + pow(sd, 900.0) * 6.0);
+	if (aurora > 0.0 && e > 0.0) {
+		// curtains of light: bands that wave across the sky, green below and violet at the top
+		vec2 ap = d.xz / (e + 0.25);
+		float band = sin(ap.x * 2.0 + fbm(ap * 0.7) * 6.0) * 0.5 + 0.5;
+		float curtain = pow(band, 6.0) * smoothstep(0.05, 0.3, e) * smoothstep(0.85, 0.35, e) * (0.6 + 0.8 * fbm(ap * vec2(5.0, 0.5)));
+		c += mix(vec3(0.2, 1.0, 0.55), vec3(0.6, 0.3, 1.0), smoothstep(0.2, 0.6, e)) * curtain * aurora;
+	}
+	if (stars > 0.0 && e > 0.05) {
+		vec2 sp = d.xz / (e + 0.2) * 60.0;
+		float st = step(0.996, h21(floor(sp))) * smoothstep(0.05, 0.3, e);
+		c += vec3(st) * stars;
+	}
+	c += city_glow * smoothstep(0.25, 0.0, abs(e - 0.02)) * 1.2;
 	COLOR = c;
 }

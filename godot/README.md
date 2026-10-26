@@ -1,10 +1,16 @@
 # Tempo Drift — Godot version
 
-The game remade in Godot 4.7. The whole Past: **London 1890, Istanbul 1910, Paris 1925, New York 1935, Havana 1955, Vienna 1905, Cairo 1925 and Rome 1948**, picked on the title card. Each city has its own street, light, landmark and band.
+The game remade in Godot 4.7: three eras of eight cities, each with its own street, light, landmark and band, picked on the world map.
+
+- **The Past:** London, Istanbul, Paris, New York, Havana, Vienna, Cairo, Rome (1890–1955)
+- **The Present:** Dubai, Rio, Singapore, San Francisco, Sydney, Cape Town, Barcelona, Reykjavik
+- **The Future:** Hong Kong, Tokyo, Los Angeles, Shanghai, Seoul, Berlin, Miami, Las Vegas (2049–2099)
+
+An era opens with 10 stars in the one before (or all at once with the testing switch in Settings). The **garage** has five cars with perks and six pilots, bought with the coins you earn: one per note played, 100 per new star.
 
 ## Play it on a phone
 
-https://reha-abbasi.github.io/tempo-drift/godot/ (the web build, runs in Safari; about 120 MB to load). Publish a new one with `tools/publish_godot_web.sh`.
+https://reha-abbasi.github.io/tempo-drift/godot/ (the web build, runs in Safari; about 120 MB to load, and the Present and the Future download about 75 MB each the first time you fly there). Publish a new one with `tools/publish_godot_web.sh`.
 
 ## Open it
 

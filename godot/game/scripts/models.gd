@@ -550,6 +550,120 @@ static func airship(col: Color) -> Node3D:
 	root.set_meta("prop", prop)
 	return root
 
+# ---------------------------------------------------------------- modern traffic (the Present and the Future)
+
+## a glowing strip under a Future vehicle, in neon
+static func _underglow(root: Node3D, w: float, l: float, col: Color) -> void:
+	part(root, box(w, 0.02, l), glow(col, 2.2), Vector3(0, 0.12, 0))
+	add_glow_sprite(root, Vector3(0, 0.15, 0), maxf(w, l) * 1.2, col, 0.5)
+
+static func taxi(col: Color, future := false) -> Node3D:
+	var root := Node3D.new()
+	var p := paint(col)
+	var black := mat(Color(0.03, 0.03, 0.03), 0.6)
+	var glass := mat(Color(0.08, 0.1, 0.12), 0.05, 0.6)
+	part(root, box(1.3, 0.48, 2.2), p, Vector3(0, 0.62, 0))
+	part(root, box(1.16, 0.42, 1.2), glass, Vector3(0, 1.06, 0.1))
+	part(root, box(1.18, 0.06, 1.16), p, Vector3(0, 1.29, 0.1))
+	part(root, box(0.36, 0.12, 0.16), glow(Color(1.0, 0.9, 0.5), 2.0), Vector3(0, 1.38, 0.1))
+	for sx in [-1.0, 1.0]:
+		for sz in [-0.72, 0.72]:
+			part(root, cyl(0.3, 0.3, 0.2), black, Vector3(sx * 0.62, 0.3, sz), Vector3.ONE, Vector3(0, 0, PI * 0.5))
+		part(root, box(0.3, 0.07, 0.04), glow(Color(1.0, 0.15, 0.1), 2.8), Vector3(sx * 0.42, 0.72, 1.11))
+		part(root, box(0.26, 0.07, 0.04), glow(Color(1.0, 0.95, 0.85), 3.0), Vector3(sx * 0.42, 0.66, -1.11))
+	if future:
+		_underglow(root, 1.1, 2.0, Color(1.0, 0.25, 0.7))
+	return root
+
+static func truck(col: Color, future := false) -> Node3D:
+	var root := Node3D.new()
+	var cab := paint(col)
+	var boxm := mat(Color(0.88, 0.88, 0.86), 0.6)
+	var black := mat(Color(0.03, 0.03, 0.03), 0.6)
+	part(root, box(1.45, 2.0, 2.9), boxm, Vector3(0, 1.45, 0.45))
+	part(root, box(1.45, 1.4, 1.1), cab, Vector3(0, 1.1, -1.5))
+	part(root, box(1.3, 0.5, 0.05), mat(Color(0.1, 0.12, 0.14), 0.05, 0.6), Vector3(0, 1.45, -2.06))
+	for sx in [-1.0, 1.0]:
+		for sz in [-1.5, 0.3, 1.4]:
+			part(root, cyl(0.38, 0.38, 0.26), black, Vector3(sx * 0.66, 0.38, sz), Vector3.ONE, Vector3(0, 0, PI * 0.5))
+		part(root, box(0.12, 0.25, 0.04), glow(Color(1.0, 0.15, 0.1), 2.8), Vector3(sx * 0.6, 0.6, 1.92))
+	if future:
+		part(root, box(1.47, 0.08, 2.92), glow(Color(0.2, 0.95, 1.0), 2.2), Vector3(0, 2.2, 0.45))
+	return root
+
+static func city_bus(col: Color, future := false) -> Node3D:
+	var root := Node3D.new()
+	var p := paint(col)
+	var win := mat(Color(0.95, 0.9, 0.75), 0.2, 0.0, Color(0.9, 0.95, 1.0) if future else Color(1.0, 0.85, 0.6), 1.4)
+	var black := mat(Color(0.03, 0.03, 0.03), 0.6)
+	part(root, box(1.5, 2.1, 4.2), p, Vector3(0, 1.35, 0))
+	part(root, box(1.52, 0.7, 3.9), win, Vector3(0, 1.7, 0.05))
+	part(root, box(1.4, 0.9, 0.05), mat(Color(0.1, 0.12, 0.14), 0.05, 0.6), Vector3(0, 1.6, -2.11))
+	for sx in [-1.0, 1.0]:
+		for sz in [-1.4, 1.4]:
+			part(root, cyl(0.36, 0.36, 0.24), black, Vector3(sx * 0.66, 0.36, sz), Vector3.ONE, Vector3(0, 0, PI * 0.5))
+		part(root, box(0.12, 0.3, 0.04), glow(Color(1.0, 0.15, 0.1), 2.8), Vector3(sx * 0.62, 0.8, 2.11))
+	if future:
+		_underglow(root, 1.3, 4.0, Color(0.2, 0.95, 1.0))
+	return root
+
+## a flying cab: a rounded pod with four ducted fans
+static func hovercab(col: Color) -> Node3D:
+	var root := Node3D.new()
+	var p := paint(col)
+	part(root, sphere(0.5, 24), p, Vector3.ZERO, Vector3(1.4, 0.8, 2.6))
+	part(root, sphere(0.42, 20), mat(Color(0.08, 0.1, 0.14), 0.04, 0.6), Vector3(0, 0.18, -0.25), Vector3(1.3, 0.7, 1.4))
+	var duct := TorusMesh.new()
+	duct.inner_radius = 0.2; duct.outer_radius = 0.27; duct.rings = 20; duct.ring_segments = 6
+	for sx in [-1.0, 1.0]:
+		for sz in [-1.0, 1.0]:
+			part(root, duct, mat(Color(0.85, 0.85, 0.88), 0.3, 0.6), Vector3(sx * 0.82, -0.05, sz * 0.75))
+			part(root, cyl(0.2, 0.2, 0.01, 16), glow(Color(0.5, 0.85, 1.0), 1.5), Vector3(sx * 0.82, -0.1, sz * 0.75))
+		part(root, box(0.2, 0.06, 0.04), glow(Color(1.0, 0.15, 0.1), 2.8), Vector3(sx * 0.3, 0.05, 1.3))
+	part(root, box(0.3, 0.1, 0.12), glow(Color(1.0, 0.9, 0.4), 2.0), Vector3(0, 0.42, 0.2))
+	return root
+
+## a delivery drone: four rotors on arms, a parcel underneath, blinking lights
+static func drone(col: Color) -> Node3D:
+	var root := Node3D.new()
+	var p := paint(col)
+	var dark := mat(Color(0.06, 0.06, 0.07), 0.4, 0.4)
+	part(root, box(0.55, 0.18, 0.55), p, Vector3.ZERO)
+	part(root, box(0.42, 0.34, 0.42), mat(Color(0.62, 0.48, 0.32), 0.8), Vector3(0, -0.3, 0))
+	var rotors := []
+	for sx in [-1.0, 1.0]:
+		for sz in [-1.0, 1.0]:
+			part(root, box(0.5, 0.05, 0.06), dark, Vector3(sx * 0.35, 0.06, sz * 0.35), Vector3.ONE, Vector3(0, sx * sz * PI * 0.25, 0))
+			var r := Node3D.new()
+			r.position = Vector3(sx * 0.55, 0.12, sz * 0.55)
+			root.add_child(r)
+			part(r, box(0.5, 0.01, 0.05), dark, Vector3.ZERO)
+			var dm := StandardMaterial3D.new()
+			dm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			dm.albedo_color = Color(0.8, 0.8, 0.85, 0.15)
+			dm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			part(r, cyl(0.26, 0.26, 0.005, 16), dm, Vector3.ZERO)
+			rotors.append(r)
+	part(root, sphere(0.04), glow(Color(1.0, 0.2, 0.2), 4.0), Vector3(-0.3, 0.12, 0.3))
+	part(root, sphere(0.04), glow(Color(0.2, 1.0, 0.4), 4.0), Vector3(0.3, 0.12, 0.3))
+	root.set_meta("rotors", rotors)
+	root.scale = Vector3.ONE * 1.5
+	return root
+
+## a concrete barrier across the lane with LED chevrons, on posts from the road
+static func barrier_modern(future := false) -> Node3D:
+	var root := Node3D.new()
+	var conc := mat(Color(0.72, 0.7, 0.66), 0.8)
+	var post := -World.ROAD_Y + 0.3
+	for sx in [-0.72, 0.72]:
+		part(root, box(0.14, post, 0.14), mat(Color(0.3, 0.3, 0.32), 0.5, 0.6), Vector3(sx, 0.3 - post * 0.5, 0))
+	part(root, box(1.6, 0.36, 0.18), conc, Vector3(0, 0.1, 0))
+	var c := Color(1.0, 0.3, 0.75) if future else Color(1.0, 0.55, 0.1)
+	for i in 4:
+		part(root, box(0.16, 0.18, 0.02), glow(c, 2.6), Vector3(-0.54 + i * 0.36, 0.1, 0.1), Vector3.ONE, Vector3(0, 0, 0.6))
+	add_glow_sprite(root, Vector3(0, 0.1, 0.15), 1.6, c, 0.6)
+	return root
+
 ## a roadworks barrier across the lane at skyway height: two posts from the road, a striped beam and red lamps
 static func barrier() -> Node3D:
 	var root := Node3D.new()

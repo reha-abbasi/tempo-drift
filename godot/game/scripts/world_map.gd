@@ -6,14 +6,28 @@ extends Control
 
 signal pin_pressed(i: int)
 
-const SEA := Color("e8d9b8")
-const SEA_DEEP := Color("d8c39a")
-const LAND := Color("c6a273")
-const COAST := Color("7a5634")
-const GRID := Color(0.43, 0.27, 0.16, 0.16)
-const ROUTE := Color("8a2a1e")
-const PIN := Color("b8382a")
+# each era's chart: the Past on parchment, the Present at night in blue and gold, the Future in black and neon
+const STYLES := {
+	"old": {"sea": Color("e8d9b8"), "land": Color("c6a273"), "coast": Color("7a5634"), "grid": Color(0.43, 0.27, 0.16, 0.16),
+		"route": Color("8a2a1e"), "pin": Color("b8382a"), "ink": Color(0.2, 0.1, 0.05), "halo": Color(1, 0.96, 0.86, 0.7)},
+	"sunset": {"sea": Color("13243e"), "land": Color("2f4a68"), "coast": Color("9cc2ec"), "grid": Color(0.6, 0.78, 1.0, 0.08),
+		"route": Color("ffd45c"), "pin": Color("ffd45c"), "ink": Color(0.95, 0.95, 1.0), "halo": Color(0, 0, 0, 0.6)},
+	"rain": {"sea": Color("07060e"), "land": Color("1a0f24"), "coast": Color("ff3fb4"), "grid": Color(0.18, 0.95, 1.0, 0.1),
+		"route": Color("2ef2ff"), "pin": Color("2ef2ff"), "ink": Color(0.9, 0.95, 1.0), "halo": Color(0, 0, 0, 0.7)},
+}
+var SEA := Color("e8d9b8")
+var LAND := Color("c6a273")
+var COAST := Color("7a5634")
+var GRID := Color(0.43, 0.27, 0.16, 0.16)
+var ROUTE := Color("8a2a1e")
+var PIN := Color("b8382a")
+var INK := Color(0.2, 0.1, 0.05)
+var HALO := Color(1, 0.96, 0.86, 0.7)
 const GOLD := Color(1.0, 0.83, 0.36)
+
+func set_style(era: String) -> void:
+	var st: Dictionary = STYLES.get(era, STYLES.old)
+	SEA = st.sea; LAND = st.land; COAST = st.coast; GRID = st.grid; ROUTE = st.route; PIN = st.pin; INK = st.ink; HALO = st.halo
 
 var rings: Array = []
 var cities: Array = []      # {name, lat, lon, stars, open}
@@ -145,8 +159,8 @@ func _draw() -> void:
 				lp = p + off
 				break
 		taken.append(Rect2(lp - Vector2(0, fs), Vector2(w, fs + 4 + (14 if c.stars > 0 else 0))))
-		draw_string(font, lp + Vector2(1, 1), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.96, 0.86, 0.7))
-		draw_string(font, lp, label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.2, 0.1, 0.05) if c.open else Color(0.4, 0.36, 0.32))
+		draw_string(font, lp + Vector2(1, 1), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, HALO)
+		draw_string(font, lp, label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, INK if c.open else Color(INK, 0.5))
 		if c.stars > 0:
 			draw_string(font, lp + Vector2(0, 15), "★".repeat(c.stars), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, ROUTE)
 

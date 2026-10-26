@@ -10,6 +10,9 @@ src="$(mktemp -d)"
 rsync -a --exclude .godot "$here/godot/game/" "$src/"
 godot --headless --path "$src" --import > "$out.log" 2>&1 || true
 godot --headless --path "$src" --export-release "Web" "$out/index.html" >> "$out.log" 2>&1 || { tail -20 "$out.log"; exit 1; }
+# the Present and the Future as their own downloads (GitHub Pages takes files up to 100 MB)
+godot --headless --path "$src" --export-pack "Present pack" "$out/sunset.pck" >> "$out.log" 2>&1 || { tail -20 "$out.log"; exit 1; }
+godot --headless --path "$src" --export-pack "Future pack" "$out/rain.pck" >> "$out.log" 2>&1 || { tail -20 "$out.log"; exit 1; }
 ls -la "$out"
 tmp="$(mktemp -d)"
 git clone -q https://github.com/reha-abbasi/tempo-drift.git "$tmp"

@@ -13,6 +13,10 @@ uniform float lit_energy = 3.2;
 uniform float lit_share = 0.34;
 uniform vec3 stone_col : source_color = vec3(0.78, 0.74, 0.66);
 uniform vec3 frame_col : source_color = vec3(0.86, 0.84, 0.78);
+// modern towers: their light (cooler, office white) and the neon of the Future
+uniform vec3 office_col : source_color = vec3(0.92, 0.95, 1.0);
+uniform vec3 neon_a : source_color = vec3(1.0, 0.25, 0.7);
+uniform vec3 neon_b : source_color = vec3(0.2, 0.95, 1.0);
 
 varying vec3 lp;
 varying vec3 ln;
@@ -54,7 +58,61 @@ void fragment() {
 	float bump = mortar;
 	vec3 emit = vec3(0.0);
 	float fy = uv.y;
-	if (face) {
+	if (face && style > 1.5) {
+		// ---- modern towers: glass curtain walls (2), concrete with ribbon windows (2.5), dark Future towers (3)
+		float fh = 3.3;
+		float fl = floor(fy / fh);
+		float fv = fy - fl * fh;
+		float pw = 1.4;
+		float uu = lp.z + sz.z * 0.5;
+		float pi = floor(uu / pw);
+		float pu = fract(uu / pw);
+		float au = max(fwidth(uu / pw), 0.001);
+		float av = max(fwidth(fy), 0.001);
+		float fp = fwidth(uu / pw);
+		float lit = mix(step(1.0 - lit_share, h21(vec2(pi, fl) + seed * 31.0)), lit_share, smoothstep(0.25, 0.6, fp));
+		vec3 inside = mix(lit_col, office_col, step(0.5, h21(vec2(fl, seed * 7.0))));
+		if (style < 2.25) {
+			// glass: floor-to-ceiling panes, thin mullions, a spandrel band at each slab
+			float mull = max(smoothstep(0.04 + au, 0.04 - au, min(pu, 1.0 - pu)), smoothstep(0.32 + av, 0.32 - av, fv));
+			vec3 glass = mix(cd.rgb * 0.22, inside * 0.35, lit);
+			col = mix(glass, cd.rgb * 0.75 + vec3(0.05), mull);
+			rough = mix(0.03, 0.4, mull);
+			METALLIC = (1.0 - mull) * 0.75;
+			emit = inside * lit_energy * 0.4 * lit * (1.0 - mull);
+			bump = 0.0;
+		} else if (style < 2.75) {
+			// concrete: a band of windows along each floor, solid concrete between
+			float win = smoothstep(0.9 - av, 0.9 + av, fv) * smoothstep(2.6 + av, 2.6 - av, fv);
+			float mull = smoothstep(0.03 + au, 0.03 - au, min(pu, 1.0 - pu));
+			float pane = win * (1.0 - mull);
+			col = mix(cd.rgb * (0.9 + 0.1 * h21(vec2(fl, pi * 0.1))), mix(vec3(0.06, 0.07, 0.08), inside * 0.4, lit), pane);
+			rough = mix(0.85, 0.08, pane);
+			emit = inside * lit_energy * 0.8 * lit * pane;
+			bump = 0.0;
+		} else {
+			// the Future: dark panels, dense lit windows in cool and warm, and neon strips on some floors
+			float win = smoothstep(0.7 - av, 0.7 + av, fv) * smoothstep(2.5 + av, 2.5 - av, fv) * smoothstep(0.08 + au, 0.12 + au, min(pu, 1.0 - pu));
+			col = mix(cd.rgb * 0.5, vec3(0.03, 0.035, 0.05), win);
+			rough = mix(0.5, 0.1, win);
+			emit = inside * lit_energy * 0.9 * lit * win;
+			float strip = step(0.82, h21(vec2(fl, seed * 13.0))) * (1.0 - smoothstep(0.06, 0.06 + av, abs(fv - 0.2)));
+			vec3 ncol = mix(neon_a, neon_b, step(0.5, h21(vec2(fl * 1.7, seed))));
+			emit += ncol * 4.0 * strip;
+			bump = 0.0;
+		}
+		// shop fronts along the street: big lit windows under a dark fascia
+		if (fl < 1.0) {
+			float shop = smoothstep(0.25 - av, 0.25 + av, fv) * smoothstep(2.4 + av, 2.4 - av, fv) * smoothstep(0.05 + au, 0.08 + au, min(pu, 1.0 - pu));
+			float fascia = smoothstep(2.45, 2.5, fv) * smoothstep(3.25, 3.2, fv);
+			vec3 shop_l = mix(lit_col, office_col, step(0.5, h21(vec2(pi, 3.0) + seed)));
+			col = mix(col, vec3(0.05), shop);
+			emit = mix(emit, shop_l * lit_energy * 0.9 * step(0.25, h21(vec2(pi, 5.0) + seed)), shop);
+			col = mix(col, cd.rgb * 0.3, fascia);
+			emit += mix(neon_a, neon_b, step(0.5, h21(vec2(pi, 9.0) + seed))) * fascia * 1.5 * step(2.9, style);
+		}
+	}
+	if (face && style <= 1.5) {
 		float fl = floor(fy / floor_h);
 		float fv = fy - fl * floor_h;
 		// smooth lime plaster over the whole front, a little patchy (Istanbul)
