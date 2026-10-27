@@ -177,7 +177,7 @@ static func _roadster(body: Node3D, pods: Array, flames: Array, pk: String) -> v
 		for sz in [-1.0, 1.0]:
 			part(body, sphere(0.26), cream, Vector3(sx * 0.5, -0.1, sz * 0.62), Vector3(0.75, 0.62, 1.55))
 	part(body, sphere(0.36, 24), _glass(), Vector3(0, 0.26, 0.12), Vector3(1.05, 0.72, 1.45))
-	head(body, pk, Vector3(0, 0.3, 0.2), 0.8)
+	body.set_meta("head", head(body, pk, Vector3(0, 0.3, 0.2), 0.8))
 	part(body, box(0.5, 0.16, 0.06), chrome, Vector3(0, -0.04, -1.08))
 	part(body, capsule(0.035, 1.1), chrome, Vector3(0, -0.2, -1.1), Vector3.ONE, Vector3(0, 0, PI * 0.5))
 	part(body, capsule(0.035, 1.1), chrome, Vector3(0, -0.2, 1.1), Vector3.ONE, Vector3(0, 0, PI * 0.5))
@@ -199,7 +199,7 @@ static func _bubble(body: Node3D, pods: Array, flames: Array, pk: String) -> voi
 	var dome := SphereMesh.new()
 	dome.radius = 0.5; dome.height = 1.0; dome.is_hemisphere = true; dome.radial_segments = 28; dome.rings = 12
 	part(body, dome, _glass(), Vector3(0, 0.12, -0.08), Vector3(0.9, 0.8, 1.25))
-	head(body, pk, Vector3(0, 0.24, 0.0), 0.75)
+	body.set_meta("head", head(body, pk, Vector3(0, 0.24, 0.0), 0.75))
 	var ring := TorusMesh.new()
 	ring.inner_radius = 0.47; ring.outer_radius = 0.53; ring.rings = 48; ring.ring_segments = 10
 	part(body, ring, glow(Color(0.45, 0.95, 1.0), 2.4), Vector3(0, -0.04, 0.02), Vector3(1.34, 1.0, 2.36))
@@ -217,7 +217,7 @@ static func _starliner(body: Node3D, pods: Array, flames: Array, pk: String) -> 
 	part(body, box(1.22, 0.06, 2.34), chrome, Vector3(0, 0.1, 0))
 	part(body, box(1.16, 0.18, 2.2), white, Vector3(0, 0.18, 0.02))
 	part(body, sphere(0.36, 24), _glass(), Vector3(0, 0.36, 0.0), Vector3(1.4, 0.6, 1.8))
-	head(body, pk, Vector3(0, 0.38, 0.1), 0.8)
+	body.set_meta("head", head(body, pk, Vector3(0, 0.38, 0.1), 0.8))
 	for sx in [-1.0, 1.0]:
 		# the fins rise toward the back and carry the tail lamps
 		part(body, box(0.05, 0.42, 0.7), teal, Vector3(sx * 0.56, 0.3, 0.86), Vector3.ONE, Vector3(-0.5, 0, sx * 0.12))
@@ -236,7 +236,7 @@ static func _spinner(body: Node3D, pods: Array, flames: Array, pk: String) -> vo
 	part(body, box(0.95, 0.34, 1.9), navy, Vector3(0, -0.02, 0))
 	part(body, box(0.97, 0.12, 1.2), white, Vector3(0, -0.02, 0.1))
 	part(body, box(0.8, 0.28, 0.9), _glass(), Vector3(0, 0.26, -0.05))
-	head(body, pk, Vector3(0, 0.26, 0.05), 0.8)
+	body.set_meta("head", head(body, pk, Vector3(0, 0.26, 0.05), 0.8))
 	part(body, box(0.5, 0.08, 0.14), glow(Color(1.0, 0.15, 0.15), 3.0), Vector3(-0.15, 0.45, 0.2))
 	part(body, box(0.5, 0.08, 0.14), glow(Color(0.2, 0.4, 1.0), 3.0), Vector3(0.15, 0.45, 0.2))
 	var duct := TorusMesh.new()
@@ -272,7 +272,7 @@ static func _manta(body: Node3D, pods: Array, flames: Array, pk: String) -> void
 	body.add_child(wing)
 	part(body, capsule(0.28, 1.9), violet, Vector3(0, 0.0, 0.0), Vector3(1.2, 0.7, 1.0), Vector3(PI * 0.5, 0, 0))
 	part(body, sphere(0.3, 24), _glass(), Vector3(0, 0.18, -0.15), Vector3(1.0, 0.65, 1.5))
-	head(body, pk, Vector3(0, 0.22, -0.08), 0.8)
+	body.set_meta("head", head(body, pk, Vector3(0, 0.22, -0.08), 0.8))
 	for sx in [-1.0, 1.0]:
 		# the glowing leading edges
 		part(body, box(0.03, 0.03, 1.5), glow(Color(1.0, 0.75, 0.35), 2.2), Vector3(sx * 0.53, -0.02, -0.33), Vector3.ONE, Vector3(0, sx * PI * 0.25, 0))
@@ -292,8 +292,14 @@ const PILOTS := {
 	"mech": {"name": "Mech", "price": 2000, "about": "Armoured mech suit with a glowing visor"},
 }
 
-## a pilot's head (in the cockpit, or on the pilot), scaled by s
-static func head(parent: Node3D, kind: String, pos: Vector3, s := 1.0) -> void:
+## a pilot's head (in the cockpit, or on the pilot), scaled by s. It's a node of its own, so it can turn and nod
+static func head(parent: Node3D, kind: String, at: Vector3, s := 1.0) -> Node3D:
+	var hn := Node3D.new()
+	hn.name = "Head"
+	hn.position = at
+	parent.add_child(hn)
+	parent = hn
+	var pos := Vector3.ZERO
 	var brass := mat(Color(0.88, 0.68, 0.32), 0.22, 1.0)
 	var skin := mat(Color(0.86, 0.63, 0.5), 0.6)
 	match kind:
@@ -349,21 +355,25 @@ static func head(parent: Node3D, kind: String, pos: Vector3, s := 1.0) -> void:
 				part(parent, box(0.04 * s, 0.12 * s, 0.09 * s), cap, pos + Vector3(sx * 0.14 * s, -0.05 * s, 0.02 * s))
 				part(parent, cyl(0.05 * s, 0.05 * s, 0.04 * s, 14), brass, pos + Vector3(sx * 0.055 * s, 0.09 * s, -0.1 * s), Vector3.ONE, Vector3(PI * 0.5 - 0.5, 0, 0))
 				part(parent, cyl(0.036 * s, 0.036 * s, 0.045 * s, 14), mat(Color(1.0, 0.65, 0.2), 0.05, 0.3, Color(1.0, 0.55, 0.2), 0.6), pos + Vector3(sx * 0.055 * s, 0.09 * s, -0.105 * s), Vector3.ONE, Vector3(PI * 0.5 - 0.5, 0, 0))
+	return hn
 
-## the pilot on a jetpack: every pilot has the same build and pose (leaning into the flight, hands on the pack's grips,
-## the pack's flames below), in their own outfit and jetpack. The aviator's silk scarf streams in the wind
+## the pilot on a jetpack: every pilot has the same build (leaning into the flight, hands on the pack's control grips,
+## the pack's flames below), in their own outfit and jetpack. The body is jointed (neck, shoulders, elbows, hips and
+## knees, each a node kept in meta "joints") so PilotAnim can move it like a body rather than a statue. The aviator's
+## silk scarf streams in the wind
 static func pilot(kind := "aviator") -> Node3D:
 	var root := Node3D.new()
 	var rig := Node3D.new()
 	rig.name = "Rig"
 	root.add_child(rig)
 	var body := Node3D.new()
+	body.name = "Spine"
 	body.rotation.x = -0.32
 	rig.add_child(body)
 	var brass := mat(Color(0.88, 0.68, 0.32), 0.22, 1.0)
 	var copper := mat(Color(0.78, 0.42, 0.26), 0.28, 1.0)
 	var steel := mat(Color(0.2, 0.2, 0.22), 0.35, 0.8)
-	# the outfit: jacket, sleeves, legs, boots, the pack's plate and tanks
+	# the outfit: jacket, legs, boots and gloves, the pack's plate and tanks
 	var o: Array = {
 		"aviator": [mat(Color(0.34, 0.19, 0.1), 0.48), mat(Color(0.5, 0.45, 0.33), 0.8), mat(Color(0.12, 0.07, 0.05), 0.28), copper, brass],
 		"racer": [paint(Color(0.78, 0.1, 0.08)), paint(Color(0.78, 0.1, 0.08)), mat(Color(0.06, 0.06, 0.06), 0.3), paint(Color(0.95, 0.95, 0.95)), paint(Color(0.78, 0.1, 0.08))],
@@ -373,7 +383,6 @@ static func pilot(kind := "aviator") -> Node3D:
 		"mech": [paint(Color(0.22, 0.24, 0.27)), paint(Color(0.3, 0.32, 0.35)), paint(Color(0.95, 0.55, 0.15)), paint(Color(0.22, 0.24, 0.27)), paint(Color(0.95, 0.55, 0.15))],
 	}.get(kind, [])
 	if o.is_empty():
-		kind = "aviator"
 		return pilot("aviator")
 	var jacket: Material = o[0]
 	var legs: Material = o[1]
@@ -381,20 +390,53 @@ static func pilot(kind := "aviator") -> Node3D:
 	var plate: Material = o[3]
 	var tank: Material = o[4]
 	var bulk := 1.25 if kind == "mech" else 1.0
+	var joints := {}
 	part(body, capsule(0.2 * bulk, 0.6), jacket, Vector3(0, 0.02, 0), Vector3(1.12, 1.0, 0.82))
 	part(body, box(0.44 * bulk, 0.07, 0.34), mat(Color(0.08, 0.05, 0.03), 0.4), Vector3(0, -0.2, 0))
 	if kind == "aviator" or kind == "fox":
 		var collar := TorusMesh.new()
 		collar.inner_radius = 0.09; collar.outer_radius = 0.17; collar.rings = 16; collar.ring_segments = 10
 		part(body, collar, mat(Color(0.9, 0.84, 0.72), 0.95), Vector3(0, 0.29, 0.0))
-	head(body, kind, Vector3(0, 0.47, -0.02), 1.0)
+	# the neck, with the head on it
+	var neck := Node3D.new()
+	neck.position = Vector3(0, 0.3, -0.01)
+	body.add_child(neck)
+	part(neck, cyl(0.06, 0.07, 0.12, 10), legs if kind == "mech" or kind == "automaton" else mat(Color(0.86, 0.63, 0.5), 0.6), Vector3(0, 0.04, 0))
+	head(neck, kind, Vector3(0, 0.17, -0.01), 1.0)
+	joints.neck = neck
 	for sx in [-1.0, 1.0]:
-		part(body, capsule(0.07 * bulk, 0.34), jacket, Vector3(sx * 0.25 * bulk, 0.12, -0.02), Vector3.ONE, Vector3(0.5, 0, sx * 0.35))
-		part(body, capsule(0.06 * bulk, 0.3), jacket, Vector3(sx * 0.3 * bulk, -0.08, -0.12), Vector3.ONE, Vector3(1.1, 0, sx * 0.1))
-		part(body, sphere(0.065 * bulk), boots, Vector3(sx * 0.3 * bulk, -0.18, -0.24))
-		part(body, cyl(0.025, 0.025, 0.16, 8), steel, Vector3(sx * 0.3 * bulk, -0.2, -0.22), Vector3.ONE, Vector3(0, 0, PI * 0.5))
-		part(body, capsule(0.085 * bulk, 0.36), legs, Vector3(sx * 0.1 * bulk, -0.38, 0.06), Vector3.ONE, Vector3(0.55, 0, 0))
-		part(body, capsule(0.075 * bulk, 0.38), boots, Vector3(sx * 0.1 * bulk, -0.62, 0.26), Vector3.ONE, Vector3(0.85, 0, 0))
+		var sd := "l" if sx < 0.0 else "r"
+		# the arm: shoulder, upper arm, elbow, forearm and glove, with the pack's control grip in the hand
+		var sh := Node3D.new()
+		sh.position = Vector3(sx * 0.23 * bulk, 0.19, -0.02)
+		sh.rotation = Vector3(0.45, 0, sx * 0.22)
+		body.add_child(sh)
+		part(sh, sphere(0.08 * bulk, 14), jacket, Vector3.ZERO)
+		part(sh, capsule(0.068 * bulk, 0.32), jacket, Vector3(0, -0.14, 0))
+		var el := Node3D.new()
+		el.position = Vector3(0, -0.28, 0)
+		el.rotation = Vector3(0.6, 0, 0)
+		sh.add_child(el)
+		part(el, capsule(0.06 * bulk, 0.28), jacket, Vector3(0, -0.12, 0))
+		part(el, sphere(0.065 * bulk), boots, Vector3(0, -0.26, 0))
+		part(el, cyl(0.025, 0.025, 0.16, 8), steel, Vector3(0, -0.27, 0), Vector3.ONE, Vector3(0, 0, PI * 0.5))
+		joints["shoulder_" + sd] = sh
+		joints["elbow_" + sd] = el
+		# the leg: hip, thigh, knee, shin and boot, trailing back in the wind
+		var hip := Node3D.new()
+		hip.position = Vector3(sx * 0.1 * bulk, -0.24, 0.03)
+		hip.rotation = Vector3(-0.3, 0, sx * 0.04)
+		body.add_child(hip)
+		part(hip, sphere(0.09 * bulk, 14), legs, Vector3.ZERO)
+		part(hip, capsule(0.085 * bulk, 0.38), legs, Vector3(0, -0.17, 0))
+		var kn := Node3D.new()
+		kn.position = Vector3(0, -0.34, 0)
+		kn.rotation = Vector3(-0.55, 0, 0)
+		hip.add_child(kn)
+		part(kn, capsule(0.075 * bulk, 0.38), boots, Vector3(0, -0.17, 0))
+		part(kn, box(0.12 * bulk, 0.09, 0.22), boots, Vector3(0, -0.35, -0.05))
+		joints["hip_" + sd] = hip
+		joints["knee_" + sd] = kn
 	# the jetpack
 	part(body, box(0.36 * bulk, 0.5, 0.06), plate, Vector3(0, 0.04, 0.18))
 	var flames := []
@@ -437,7 +479,9 @@ static func pilot(kind := "aviator") -> Node3D:
 	under.omni_range = 3.6
 	under.position = Vector3(0, -0.9, 0.2)
 	rig.add_child(under)
+	joints.spine = body
 	root.set_meta("rig", rig)
+	root.set_meta("joints", joints)
 	root.set_meta("flames", flames)
 	root.set_meta("scarf", scarf)
 	return root
@@ -696,12 +740,14 @@ static func finish_arch() -> Node3D:
 	label.font_size = 96
 	label.pixel_size = 0.006
 	label.modulate = Color(0.12, 0.08, 0.04)
+	# a Label3D reads from its +Z side, which is where you come from: the front one faces you unturned, the one on
+	# the far side is turned round (each only drawn from the front, so neither shows through mirrored)
 	label.position = Vector3(0, 4.9, 0.06)
-	label.rotation = Vector3(0, PI, 0)
+	label.double_sided = false
 	label.outline_size = 0
 	root.add_child(label)
 	var label2 := label.duplicate()
 	label2.position = Vector3(0, 4.9, -0.06)
-	label2.rotation = Vector3.ZERO
+	label2.rotation = Vector3(0, PI, 0)
 	root.add_child(label2)
 	return root

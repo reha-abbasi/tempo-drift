@@ -81,6 +81,8 @@ var od_n := 0
 var band := 1
 var melody_on := true
 var ex_streak := 0
+var last_pts := 0       # what the last caught note scored (for the HUD)
+const MILESTONES := [10, 25]   # combo milestones, then every 50
 var duets := 0
 var J := {"c": 0, "m": 0, "ex": 0, "gd": 0, "ok": 0}
 var lost := 0
@@ -256,13 +258,14 @@ func _judge(g: String, n: Dictionary, was_lost: bool, tg: String = "") -> void:
 			duets += 1
 			if tg == "ex":
 				pts = DUET_PTS
-		score += pts * tier()
+		last_pts = pts * tier()
+		score += last_pts
 		_rescue_gain(RESCUE_PER)
 		if od_t <= 0.0:
 			flow = minf(100.0, flow + 3.0)
 			if flow >= 100.0:
 				_start_overdrive()
-		if combo > 0 and combo % 50 == 0:
+		if is_milestone():
 			popped.emit("%d COMBO" % combo, "gold")
 		judged.emit(tg, n)
 	else:
@@ -298,6 +301,9 @@ func _check_hazards() -> void:
 ## where a vehicle is along the road, relative to the car (negative = ahead); traffic drives forward, so it closes slower
 func hazard_z(h: Dictionary) -> float:
 	return -(h.t - t) * SPEED * kinds[h.kind].rel
+
+func is_milestone() -> bool:
+	return combo > 0 and (MILESTONES.has(combo) or combo % 50 == 0)
 
 func note_z(n: Dictionary) -> float:
 	return -(n.t - t) * SPEED

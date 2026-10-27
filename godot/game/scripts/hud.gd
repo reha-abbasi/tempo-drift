@@ -36,6 +36,11 @@ var rescue_bg: ColorRect
 var rescue_fg: ColorRect
 var judge_l: Label
 var judge_age := 9.0
+var shown_score := 0.0
+var score_punch := 0.0
+var combo_punch := 0.0
+var last_combo := 0
+var pips := []
 var pops: VBoxContainer
 var title: Control
 var results: Control
@@ -117,6 +122,14 @@ func _build_play() -> void:
 	combo_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	combo_l.offset_left = -160; combo_l.offset_right = -18; combo_l.offset_top = 26
 	root.add_child(combo_l)
+	# four pips under the combo: one lights per EXCELLENT in a row; all four and the duet joins in
+	for i in Game.DUET_AFTER:
+		var pip := _rect(Color(1, 1, 1, 0.18))
+		pip.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		pip.offset_left = -18 - (Game.DUET_AFTER - i) * 18; pip.offset_right = pip.offset_left + 14
+		pip.offset_top = 52; pip.offset_bottom = 57
+		root.add_child(pip)
+		pips.append(pip)
 	lives_l = _label("CAR · JET", 16, Color(1, 1, 1, 0.85), font_body)
 	lives_l.position = Vector2(18, 28)
 	root.add_child(lives_l)
@@ -710,6 +723,24 @@ func judge(text: String, col: Color) -> void:
 	judge_l.add_theme_color_override("font_color", col)
 	judge_age = 0.0
 
+## the points for a caught note fly up from the car into the score, which swells as they land
+func score_fly(pts: int, from: Vector2, col: Color) -> void:
+	var l := _label("+%d" % pts, 24 if pts >= 300 else 20, col)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.size = Vector2(120, 30)
+	l.pivot_offset = Vector2(60, 15)
+	l.position = from - Vector2(60, 70)
+	play.add_child(l)
+	var to := Vector2(root.size.x * 0.5 - 60, 30)
+	var tw := create_tween()
+	tw.tween_property(l, "scale", Vector2.ONE * 1.25, 0.08).from(Vector2.ONE * 0.6)
+	tw.tween_property(l, "scale", Vector2.ONE, 0.07)
+	tw.parallel().tween_property(l, "position", to, 0.42).set_delay(0.05).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(l, "scale", Vector2.ONE * 0.55, 0.42).set_delay(0.05)
+	tw.tween_callback(func():
+		score_punch = 1.0
+		l.queue_free())
+
 func pop(text: String, kind: String) -> void:
 	var col := GOLD if kind == "gold" else RED if kind == "red" else Color(1.0, 0.6, 0.25) if kind == "od" else Color.WHITE
 	var l := _label(text, 26 if kind == "od" else 22, col)
@@ -721,7 +752,25 @@ func pop(text: String, kind: String) -> void:
 	tw.tween_callback(l.queue_free)
 
 func update_play(g: Game, car_screen: Vector2, dt: float, progress: float) -> void:
-	score_l.text = _thousands(g.score)
+	# the score rolls up to its new value, and swells a moment as points land
+	shown_score = minf(float(g.score), shown_score + maxf(1.0, (g.score - shown_score) * clampf(dt * 10.0, 0.0, 1.0)))
+	if g.score < shown_score:
+		shown_score = g.score
+	score_l.text = _thousands(int(shown_score))
+	score_punch = maxf(0.0, score_punch - dt * 6.0)
+	score_l.pivot_offset = score_l.size * 0.5
+	score_l.scale = Vector2.ONE * (1.0 + 0.14 * score_punch * score_punch)
+	if g.combo > last_combo:
+		combo_punch = 1.0
+	last_combo = g.combo
+	combo_punch = maxf(0.0, combo_punch - dt * 7.0)
+	combo_l.pivot_offset = Vector2(combo_l.size.x, combo_l.size.y * 0.5)
+	combo_l.scale = Vector2.ONE * (1.0 + 0.18 * combo_punch)
+	var lit := g.ex_streak
+	for i in pips.size():
+		var on: bool = i < lit
+		var duet_on := lit >= Game.DUET_AFTER
+		pips[i].color = GOLD * Color(1, 1, 1, 0.6 + 0.4 * sin(Time.get_ticks_msec() / 120.0)) if duet_on else (GOLD if on else Color(1, 1, 1, 0.18))
 	var tier := g.tier()
 	mult_l.text = "OVERDRIVE ×8" if g.od_t > 0.0 else "×%d" % tier
 	mult_l.add_theme_color_override("font_color", Color(1.0, 0.6, 0.25) if g.od_t > 0.0 else GOLD)

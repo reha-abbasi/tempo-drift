@@ -18,7 +18,9 @@ void vertex() { wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
 void fragment() {
 	vec2 p = wp.xz;
 	float ax = abs(wp.x);
-	float far = clamp(length(wp - CAMERA_POSITION_WORLD) / 45.0, 0.0, 1.0);
+	// the grain is 2.5 cm: it fades out before it gets finer than a pixel (where it would twinkle)
+	vec2 fw = fwidth(p);
+	float far = smoothstep(0.006, 0.02, max(fw.x, fw.y));
 	float grain = mix(h21(floor(p * 40.0)), 0.5, far);
 	vec3 col = tar * (0.85 + 0.3 * vn(p * 0.8)) * (0.92 + 0.16 * grain);
 	// the polished tracks where the wheels run, a little darker and smoother
@@ -26,9 +28,11 @@ void fragment() {
 	col *= 1.0 - 0.12 * track;
 	float rough = mix(0.75, 0.55, track);
 	// lane lines: dashed between the lanes, solid near the kerb
-	float aa = max(fwidth(wp.x), 0.002);
-	float lane = (1.0 - smoothstep(0.05, 0.05 + aa, abs(ax - 0.8))) * step(0.45, fract(wp.z / 6.0));
-	float edge = 1.0 - smoothstep(0.06, 0.06 + aa, abs(ax - (half_w - 0.5)));
+	float aa = max(fwidth(ax), 0.002) * 1.5;
+	float dz = fwidth(wp.z / 6.0) * 1.5;
+	float dash = smoothstep(0.45 - dz, 0.45 + dz, fract(wp.z / 6.0)) * (1.0 - smoothstep(1.0 - dz, 1.0, fract(wp.z / 6.0)));
+	float lane = (1.0 - smoothstep(0.05, 0.05 + aa, abs(ax - 0.8))) * dash * clamp(0.1 / (0.1 + aa), 0.0, 1.0);
+	float edge = (1.0 - smoothstep(0.06, 0.06 + aa, abs(ax - (half_w - 0.5)))) * clamp(0.12 / (0.12 + aa), 0.0, 1.0);
 	float line = max(lane, edge);
 	col = mix(col, paint_col, line * 0.9);
 	rough = mix(rough, 0.5, line);

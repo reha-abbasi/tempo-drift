@@ -72,6 +72,10 @@ var beat_pulse := 0.0
 var bank := 0.0
 var pitch := 0.0
 var eject_from := Vector3.ZERO
+var pilot_anim: PilotAnim
+var hit_pop := 0.0       # the car's little jump when it catches a note (1, falling to 0)
+var fov_kick := 0.0
+var trail_col := Color.WHITE
 var title_shot := false
 var crash_at := -1.0
 var results_shot := false
@@ -504,6 +508,7 @@ func _rebuild_vehicles(car_key: String, pilot_key: String) -> void:
 	pilot = Models.pilot(pilot_key)
 	pilot.visible = false
 	add_child(pilot)
+	pilot_anim = PilotAnim.new(pilot)
 	for n in [car, pilot]:
 		_set_layers(n, 1 | 2)
 	if quality and quality.main:
@@ -553,7 +558,8 @@ func _process(dt: float) -> void:
 	_place_camera(dt)
 	world.follow(car_z)
 	world.weather_follow(cam.global_position)
-	rings.update_rings(beat_pulse)
+	rings.update_rings(beat_pulse, Vector3(game.x, game.y, car_z))
+	fx.set_trail(clampf((game.combo - 4) / 36.0, 0.0, 1.0) if state == "play" and game.combo >= 5 else 0.0, trail_col * 1.6)
 	traffic.update_traffic(car_z, dt)
 	fx.update_fx(dt, Vector3(game.x, game.y, car_z))
 	var cs := cam.unproject_position(car.global_position if car.visible else pilot.global_position)
@@ -609,9 +615,17 @@ func _pose_car(car_z: float, dt: float) -> void:
 			fly_in = fly_in * fly_in * 14.0
 		car.visible = true
 		pilot.visible = fa.kind == "deliver" and since < 0.3
-		car.position = p + Vector3(0, bob, fly_in)
-		car.rotation = Vector3(pitch, 0, bank)
+		# a caught note: the car hops a touch and swells, then springs back
+		hit_pop = maxf(0.0, hit_pop - dt * 6.0)
+		var hp := sin(hit_pop * PI) * hit_pop
+		car.position = p + Vector3(0, bob + hp * 0.09, fly_in)
+		car.rotation = Vector3(pitch - hp * 0.06, 0, bank)
+		car.scale = Vector3(1.0 + hp * 0.07, 1.0 + hp * 0.04, 1.0 + hp * 0.07)
 		var body: Node3D = car.get_meta("body")
+		if body.has_meta("head"):
+			# the pilot in the cockpit leans against the bank, looks where the car is going and nods to the beat
+			var hd: Node3D = body.get_meta("head")
+			hd.rotation = hd.rotation.lerp(Vector3(beat_pulse * beat_pulse * 0.12 - game.vy * 0.02, -game.vx * 0.06, -bank * 0.6), clampf(dt * 12.0, 0.0, 1.0))
 		if body.has_meta("fans"):
 			for fan in body.get_meta("fans"):
 				fan.rotation.y += dt * 30.0
@@ -621,6 +635,8 @@ func _pose_car(car_z: float, dt: float) -> void:
 			pilot.visible = true
 			pilot.position = p + Vector3(0, 0.2 + bob, 0)
 			pilot.rotation = Vector3.ZERO
+			pilot_anim.update(Vector2.ZERO, game.t, beat_pulse, 0.0, dt)
+			_scarf()
 		var flames: Array = car.get_meta("flames")
 		var boost := 1.0 + (0.7 if game.row != Game.HOME else 0.0)
 		for f in flames:
@@ -631,26 +647,35 @@ func _pose_car(car_z: float, dt: float) -> void:
 		car.visible = false
 		pilot.visible = true
 		var pp := p + Vector3(0, bob * 1.5, 0)
+		var tumble := 0.0
 		if fa.kind == "eject" and since < 0.7:
 			# thrown up out of the wreck, then the jetpack catches you
 			var k := since / 0.7
 			# (from where the car was across the street, carried along at the car's speed)
 			pp = Vector3(eject_from.x, eject_from.y, p.z).lerp(p, k * k) + Vector3(0, sin(k * PI) * 2.2, 0)
 			pilot.rotation = Vector3(-k * TAU, 0, 0)
+			tumble = 1.0 - k * k
 		else:
 			pilot.rotation = Vector3(pitch * 1.5, 0, bank * 1.3)
+		hit_pop = maxf(0.0, hit_pop - dt * 6.0)
+		# (a caught note gives the pilot a little upward nudge, which the legs and arms answer)
+		pilot_anim.update(Vector2(game.vx, game.vy + sin(hit_pop * PI) * hit_pop * 3.0), game.t, beat_pulse, tumble, dt)
 		pilot.position = pp + Vector3(0, 0.15, 0)
 		var pf: Array = pilot.get_meta("flames")
 		for f in pf:
 			f.scale = Vector3.ONE * (0.85 + 0.3 * sin(game.t * 45.0 + f.get_instance_id()))
-		# the scarf ripples in the wind, more toward its end
-		var sc: Array = pilot.get_meta("scarf")
-		for k in sc.size():
-			sc[k].rotation = Vector3(sin(game.t * 11.0 - k * 0.9) * 0.22 + 0.05, sin(game.t * 7.0 - k * 0.7) * 0.18, sin(game.t * 9.0 - k) * 0.12)
+		_scarf()
 	# a moment of blinking while you can't be hit
 	var blink := game.invuln > 0.0 and game.respawn <= 0.0 and int(game.t * 12.0) % 2 == 0
 	car.visible = car.visible and not blink
 	pilot.visible = pilot.visible and not blink
+
+## the scarf ripples in the wind, more toward its end
+func _scarf() -> void:
+	var sc: Array = pilot.get_meta("scarf")
+	var t := Time.get_ticks_msec() / 1000.0 if state == "garage" else game.t
+	for k in sc.size():
+		sc[k].rotation = Vector3(sin(t * 11.0 - k * 0.9) * 0.22 + 0.05, sin(t * 7.0 - k * 0.7) * 0.18, sin(t * 9.0 - k) * 0.12)
 
 func _place_camera(dt: float) -> void:
 	var car_z := -game.t * game.SPEED
@@ -682,7 +707,9 @@ func _place_camera(dt: float) -> void:
 	cam.look_at(cam_look, Vector3.UP)
 	# Overdrive opens the view out and warms the picture; the light streaks rush past
 	od_k = lerpf(od_k, 1.0 if game.od_t > 0.0 else 0.0, clampf(dt * 3.0, 0.0, 1.0))
-	cam.fov = 62.0 + 9.0 * od_k
+	# (each caught note punches the view in a touch: a quick narrowing that eases back)
+	fov_kick = maxf(0.0, fov_kick - dt * 5.0)
+	cam.fov = 62.0 + 9.0 * od_k - 1.6 * fov_kick * fov_kick
 	if world and world.env:
 		world.env.glow_intensity = 0.55 + 0.35 * od_k
 		world.env.adjustment_saturation = 1.12 + 0.2 * od_k
@@ -693,12 +720,30 @@ func _place_camera(dt: float) -> void:
 
 # ---------------------------------------------------------------- what happens in a run
 
+## a note caught: the ring is swallowed by the car with a flash and sparks, the car jumps and glows, a chime rings
+## the note, and the points fly up into the score. An EXCELLENT does all of it bigger; a combo milestone sends out
+## a shockwave
 func _on_judged(grade: String, n: Dictionary) -> void:
 	var pos := Vector3(game.LX[n.col], game.LY[n.row], -n.t * game.SPEED)
-	fx.note_hit(pos, Game.ROW_COLORS[n.row] * 2.2, grade == "ex")
+	var car_at := Vector3(game.x, game.y, -game.t * game.SPEED)
+	var strong: bool = grade == "ex" or n.get("duet", false)
+	fx.note_hit(pos, Game.ROW_COLORS[n.row] * 2.2, strong)
+	rings.catch(n, car_at)
+	music.chime(int(n.get("note", 72)), strong)
+	hit_pop = 1.0 if strong else 0.6
+	fov_kick = maxf(fov_kick, 1.0 if strong else 0.5)
+	trail_col = Hud.GOLD if n.get("duet", false) else Game.ROW_COLORS[n.row]
+	var col := Hud.GOLD if grade == "ex" else Hud.CYAN if grade == "gd" else Color(0.9, 0.86, 0.95)
 	if grade != "":
-		var col := Hud.GOLD if grade == "ex" else Hud.CYAN if grade == "gd" else Color(0.9, 0.86, 0.95)
 		hud.judge(Game.TIMING[grade].say, col)
+	if game.last_pts > 0 and shot_dir == "":
+		hud.score_fly(game.last_pts, cam.unproject_position(car_at), Hud.GOLD if strong else Color(1, 1, 1, 0.95))
+	if game.is_milestone():
+		fx.milestone(car_at, Hud.GOLD * 2.0)
+		fov_kick = 2.5
+		Input.vibrate_handheld(35)
+	elif strong:
+		Input.vibrate_handheld(15)
 
 func _on_missed(_n: Dictionary) -> void:
 	pass

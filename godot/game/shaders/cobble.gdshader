@@ -14,8 +14,9 @@ float vn(vec2 p) {
 	return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y);
 }
 float fbm(vec2 p) { return vn(p) * 0.55 + vn(p * 2.1 + 3.1) * 0.3 + vn(p * 4.3 + 7.7) * 0.15; }
-// the height of a sett: a soft dome inside each cell; setts vary a little in length, and rows wander
-float sett(vec2 p, out vec2 id) {
+// the height of a sett: a soft dome inside each cell; setts vary a little in length, and rows wander.
+// jw is the joint's softness: never sharper than the width of a pixel, so far-off joints blur instead of sparkling
+float sett(vec2 p, float jw, out vec2 id) {
 	vec2 cs = vec2(0.15, 0.095);
 	float row = floor(p.y / cs.y);
 	vec2 c = vec2(p.x / cs.x + h21(vec2(row, 3.0)) * 7.0, p.y / cs.y);
@@ -24,36 +25,45 @@ float sett(vec2 p, out vec2 id) {
 	vec2 f = abs(fract(c) - 0.5) * cs;
 	vec2 e = cs * 0.5 * vec2(stretch, 1.0) - f;
 	float d = min(e.x, e.y);
-	return smoothstep(0.0, 0.016, d) * (0.8 + 0.2 * h21(id));
+	return smoothstep(0.0, jw, d) * (0.8 + 0.2 * h21(id));
 }
 void vertex() { wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
 void fragment() {
 	vec2 p = wp.xz;
+	// how much street one pixel covers: once the setts get down to a few pixels, their pattern (and the light
+	// glinting off it) fades into an even stone colour, so nothing shimmers as the street rushes by
+	vec2 fw = fwidth(p);
+	float px = max(fw.x / 0.15, fw.y / 0.095);
+	float detail = 1.0 - smoothstep(0.08, 0.5, px);
+	float jw = max(0.016, max(fw.x, fw.y) * 1.5);
 	vec2 id;
-	float h = sett(p, id);
+	float h = sett(p, jw, id);
 	vec2 i2;
-	float hx = sett(p + vec2(0.006, 0.0), i2);
-	float hz = sett(p + vec2(0.0, 0.006), i2);
-	float far = clamp(length(wp - CAMERA_POSITION_WORLD) / 40.0, 0.0, 1.0);
-	float n = h21(id);
-	vec3 col = mix(stone_a, stone_b, n * n) * (0.75 + 0.35 * vn(p * 2.0)) * (0.85 + 0.3 * h21(id * 1.7));
-	col = mix(col * 0.22, col, mix(h, 0.8, far));
+	float hx = sett(p + vec2(0.006, 0.0), jw, i2);
+	float hz = sett(p + vec2(0.0, 0.006), jw, i2);
+	float n = mix(0.45, h21(id), detail);
+	vec3 col = mix(stone_a, stone_b, n * n) * (0.75 + 0.35 * vn(p * 2.0)) * mix(1.0, 0.85 + 0.3 * h21(id * 1.7), detail);
+	col = mix(col * 0.22, col, mix(0.66, h, detail));
+	h = mix(0.66, h, detail);
 	float rough = mix(0.55, 0.3, h);
 	// puddles: dark and mirror-smooth
 	float pd = smoothstep(0.62 - puddles * 0.25, 0.7 - puddles * 0.25, fbm(p * vec2(0.22, 0.12) + 4.0));
 	col = mix(col, col * 0.35, pd);
 	rough = mix(rough, 0.03, pd);
-	vec2 slope = vec2(h - hx, h - hz) * (1.0 - pd) * (1.0 - far) * 4.0;
-	// polished tram rails between the lanes, and the gutters by the kerb
+	vec2 slope = vec2(h - hx, h - hz) * (1.0 - pd) * detail * 4.0;
+	// polished tram rails between the lanes, and the gutters by the kerb. A rail far off is thinner than a pixel:
+	// it's drawn a pixel wide but fainter (as much as it covers), and duller, so it stays a steady line
 	float ax = abs(wp.x);
-	float rail = (1.0 - smoothstep(0.03, 0.05, abs(ax - 0.8))) + (1.0 - smoothstep(0.03, 0.05, abs(ax - 0.95)));
+	float aa = max(fwidth(ax), 0.001);
+	float cover = clamp(0.04 / (0.04 + aa * 1.5), 0.0, 1.0);
+	float rail = (1.0 - smoothstep(0.02, 0.02 + aa * 1.5, abs(ax - 0.8))) + (1.0 - smoothstep(0.02, 0.02 + aa * 1.5, abs(ax - 0.95)));
+	rail *= cover;
 	col = mix(col, vec3(0.62, 0.56, 0.48), rail * 0.85);
-	rough = mix(rough, 0.12, rail);
+	rough = mix(rough, mix(0.4, 0.14, cover), rail);
 	float met = rail * 0.9;
 	float gut = smoothstep(half_w - 0.5, half_w - 0.1, ax);
 	col *= 1.0 - gut * 0.45;
 	rough = mix(rough, 0.06, gut);
-	col = mix(col, mix(stone_a, stone_b, 0.4) * 0.6, far * 0.5);
 	ALBEDO = col;
 	ROUGHNESS = rough;
 	METALLIC = met;

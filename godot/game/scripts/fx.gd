@@ -1,7 +1,8 @@
 class_name Fx
 extends Node3D
-## Effects: a burst of sparks and a flash ring when a note is played, and the fireball, smoke and flying pieces
-## when the car is wrecked.
+## Effects: a burst of sparks, a flash ring and a glow on the car when a note is played, a light trail behind the car
+## that grows with the combo, a shockwave on combo milestones, and the fireball, smoke and flying pieces when the car
+## is wrecked.
 
 var bursts := []
 var flashes := []
@@ -11,6 +12,11 @@ var boom: GPUParticles3D
 var smoke: GPUParticles3D
 var sparks: GPUParticles3D
 var debris := []
+var glow: MeshInstance3D
+var glow_k := 0.0
+var glow_col := Color.WHITE
+var trail: GPUParticles3D
+var trail_col := Color.WHITE
 
 func setup() -> void:
 	for i in 8:
@@ -30,7 +36,20 @@ func setup() -> void:
 		mi.visible = false
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(mi)
-		flashes.append({"m": mi, "age": 9.0, "col": Color.WHITE, "rel": Vector3.ZERO})
+		flashes.append({"m": mi, "age": 9.0, "col": Color.WHITE, "rel": Vector3.ZERO, "big": 1.0})
+	# the glow that lights up the car for a moment on each note
+	var q := QuadMesh.new()
+	q.size = Vector2(3.2, 3.2)
+	glow = MeshInstance3D.new()
+	glow.mesh = q
+	var gm := ShaderMaterial.new()
+	gm.shader = load("res://shaders/halo.gdshader")
+	gm.set_shader_parameter("fade", 0.0)
+	glow.material_override = gm
+	glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	glow.visible = false
+	add_child(glow)
+	trail = _trail()
 	boom = _particles(46, 0.9, 1.0, Vector2(2.0, 7.5), Vector2(0.35, 0.9), "res://shaders/halo.gdshader", 1.5)
 	sparks = _particles(60, 1.1, 1.0, Vector2(5.0, 13.0), Vector2(0.04, 0.08), "res://shaders/halo.gdshader", -9.0)
 	smoke = _particles(26, 2.4, 0.9, Vector2(0.6, 2.5), Vector2(1.0, 2.6), "res://shaders/smoke.gdshader", 0.8)
@@ -73,6 +92,62 @@ func _particles(amount: int, life: float, explode: float, speed: Vector2, size: 
 	add_child(p)
 	return p
 
+## the combo trail: sparks of light the car leaves hanging in the air behind it (they stay where they're dropped, so
+## they stream away behind you); more of them, and longer lived, the longer the combo
+func _trail() -> GPUParticles3D:
+	var p := GPUParticles3D.new()
+	p.amount = 90
+	p.lifetime = 0.55
+	p.emitting = false
+	p.local_coords = false
+	p.visibility_aabb = AABB(Vector3(-10, -10, -40), Vector3(20, 20, 60))
+	var pm := ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	pm.emission_sphere_radius = 0.25
+	pm.direction = Vector3(0, 0.2, 1)
+	pm.spread = 40.0
+	pm.initial_velocity_min = 0.3
+	pm.initial_velocity_max = 1.2
+	pm.gravity = Vector3(0, -0.6, 0)
+	pm.scale_min = 0.08
+	pm.scale_max = 0.2
+	var curve := Curve.new()
+	curve.add_point(Vector2(0, 1))
+	curve.add_point(Vector2(1, 0))
+	var ct := CurveTexture.new()
+	ct.curve = curve
+	pm.scale_curve = ct
+	p.process_material = pm
+	var q := QuadMesh.new()
+	var m := ShaderMaterial.new()
+	m.shader = load("res://shaders/halo.gdshader")
+	m.set_shader_parameter("fade", 0.01)
+	m.set_shader_parameter("energy", 2.0)
+	q.material = m
+	p.draw_pass_1 = q
+	add_child(p)
+	return p
+
+## the trail's strength (0 = none, 1 = full) and colour: the colour of the last note caught
+func set_trail(k: float, col: Color) -> void:
+	trail.emitting = k > 0.0
+	trail.amount_ratio = clampf(k, 0.15, 1.0)
+	trail_col = trail_col.lerp(col, 0.35)
+	var m: ShaderMaterial = (trail.draw_pass_1 as QuadMesh).material
+	m.set_shader_parameter("tint", trail_col)
+	m.set_shader_parameter("energy", 1.2 + 1.4 * k)
+
+## a combo milestone: a wide shockwave and a big burst of sparks
+func milestone(pos: Vector3, col: Color) -> void:
+	note_hit(pos, col, true)
+	var f: Dictionary = flashes[flash_i % flashes.size()]
+	flash_i += 1
+	f.age = 0.0
+	f.col = col * 1.4
+	f.rel = pos - car_pos
+	f.big = 3.2
+	f.m.global_position = pos
+
 var car_pos := Vector3.ZERO
 var rel := {}
 
@@ -91,7 +166,11 @@ func note_hit(pos: Vector3, col: Color, strong: bool) -> void:
 	f.age = 0.0
 	f.col = col
 	f.rel = pos - car_pos
+	f.big = 1.0
 	f.m.global_position = pos
+	# and the car lights up in the note's colour
+	glow_k = 1.0 if strong else 0.7
+	glow_col = col
 
 func crash(pos: Vector3, car: Node3D, speed: float) -> void:
 	var bm: ShaderMaterial = (boom.draw_pass_1 as QuadMesh).material
@@ -144,9 +223,17 @@ func update_fx(dt: float, at_car: Vector3) -> void:
 		var k: float = f.age / 0.28
 		f.m.visible = true
 		f.m.global_position = car_pos + f.rel
-		f.m.scale = Vector3.ONE * (0.75 + k * 0.55)
+		f.m.scale = Vector3.ONE * (0.75 + k * 0.55 * f.big) * (1.0 + (f.big - 1.0) * 0.3)
 		f.m.set_instance_shader_parameter("tint", f.col)
 		f.m.set_instance_shader_parameter("glow", (1.0 - k) * (1.0 - k) * 1.1)
+	glow_k = maxf(0.0, glow_k - dt * 5.0)
+	glow.visible = glow_k > 0.0
+	if glow.visible:
+		glow.global_position = car_pos + Vector3(0, -0.1, 0.3)
+		var gm: ShaderMaterial = glow.material_override
+		gm.set_shader_parameter("tint", glow_col)
+		gm.set_shader_parameter("energy", glow_k * glow_k * 0.55)
+	trail.global_position = car_pos + Vector3(0, -0.15, 0.9)
 	for d in debris:
 		d.age += dt
 		d.v.y -= 14.0 * dt

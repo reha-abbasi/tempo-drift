@@ -24,6 +24,11 @@ var _lp: AudioEffectLowPassFilter
 var _hp: AudioEffectHighPassFilter
 var _lp_target := 20000.0
 var _hp_target := 20.0
+# the chime when you catch a note: one glassy bell, tuned to C6 and pitched to each note
+const CHIME_ROOT := 84
+var _chime: AudioStreamWAV
+var _chimes := []
+var _chime_i := 0
 
 func _ready() -> void:
 	_setup_buses()
@@ -47,6 +52,45 @@ func _setup_buses() -> void:
 	var lim := AudioEffectHardLimiter.new()
 	lim.ceiling_db = -0.5
 	AudioServer.add_bus_effect(0, lim)
+	_chime = _bell()
+	for i in 6:
+		var pl := AudioStreamPlayer.new()
+		pl.stream = _chime
+		pl.bus = "Lead"
+		add_child(pl)
+		_chimes.append(pl)
+
+## a small glass bell: a few partials (one a little off, for the shimmer), struck softly and dying away
+func _bell() -> AudioStreamWAV:
+	var rate := 44100
+	var n := int(rate * 0.8)
+	var f0 := 440.0 * pow(2.0, (CHIME_ROOT - 69) / 12.0)
+	var partials := [[1.0, 1.0, 5.5], [2.0, 0.32, 9.0], [3.0, 0.1, 14.0], [4.17, 0.13, 20.0], [5.43, 0.05, 28.0]]
+	var data := PackedByteArray()
+	data.resize(n * 2)
+	for i in n:
+		var t := float(i) / rate
+		var v := 0.0
+		for pt in partials:
+			v += sin(TAU * f0 * pt[0] * t) * pt[1] * exp(-t * pt[2])
+		v *= minf(1.0, t / 0.002) * 0.5
+		data.encode_s16(i * 2, int(clampf(v, -1.0, 1.0) * 32000.0))
+	var w := AudioStreamWAV.new()
+	w.format = AudioStreamWAV.FORMAT_16_BITS
+	w.mix_rate = rate
+	w.stereo = false
+	w.data = data
+	return w
+
+## the chime for a caught note, an octave over the melody so it rings with it; louder for an EXCELLENT
+func chime(note: int, strong: bool) -> void:
+	if _chimes.is_empty():
+		return
+	var pl: AudioStreamPlayer = _chimes[_chime_i % _chimes.size()]
+	_chime_i += 1
+	pl.pitch_scale = pow(2.0, (note + 12 - CHIME_ROOT) / 12.0)
+	pl.volume_db = -15.0 if strong else -20.0
+	pl.play()
 
 func load_song(folder: String) -> void:
 	band_stream = AudioStreamSynchronized.new()
