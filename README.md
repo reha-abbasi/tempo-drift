@@ -1,4 +1,23 @@
-# Lane Runner (working title)
+# Tempo Drift (and the original Lane Runner)
+
+## Where everything is
+
+All the source code lives here, on the `main` branch of this repo. The repo
+[reha-abbasi/tempo-drift](https://github.com/reha-abbasi/tempo-drift) only holds the **built** game that GitHub Pages
+serves. Don't edit it by hand; the publish scripts in `tools/` overwrite it.
+
+| What | Source (edit this) | Play it |
+|---|---|---|
+| **Tempo Drift, Godot version** (the main project now) | [`godot/game/`](godot/game) (scripts, shaders, course data, music). Tools that make the courses and music: [`godot/tools/`](godot/tools). Guide: [`godot/README.md`](godot/README.md) | https://reha-abbasi.github.io/tempo-drift/godot/ |
+| **Tempo Drift, web version** (the original, one HTML file) | [`web/game.html`](web/game.html), iPhone app shell in [`web/app/`](web/app) | https://reha-abbasi.github.io/tempo-drift/ |
+| **Lane Runner** (the first draft, described below) | the root folder: `project.godot`, `scenes/`, `scripts/`, `shaders/` | — |
+
+Not in git: Godot's `.godot/` cache (rebuilt when you open the project) and `godot/previews/` (music preview mp3s).
+
+To work on the Godot version, open `godot/game/project.godot` in Godot 4.7.2, not the `project.godot` in the root
+folder (that one is Lane Runner).
+
+---
 
 A 3-lane endless runner for iPhone in the style of Subway Surfers / Temple Run, built by
 [@reha-abbasi](https://github.com/reha-abbasi) and [@muratbyk](https://github.com/muratbyk).
