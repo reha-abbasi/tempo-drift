@@ -14,8 +14,8 @@ https://reha-abbasi.github.io/tempo-drift/godot/ (the web build, runs in Safari;
 
 ## Open it
 
-1. Start Godot 4.7 (`D:\Claude-sandbox\Software`).
-2. **Import** → pick `D:\Claude-sandbox\2026-10-20_AI-Claude_Runner-Game\godot\game\project.godot` → **Import & Edit**.
+1. Start Godot 4.7.2 (Reha's is in `D:\Claude-sandbox\Software`).
+2. **Import** → pick `godot/game/project.godot` inside your copy of this repo → **Import & Edit**.
 3. Press **F5** (or the ▶ button) to play.
 
 The first open takes a minute while Godot imports the music.
