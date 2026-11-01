@@ -1,7 +1,7 @@
 # Music tools
 
 Make an episode's soundtrack from its course: the melody and chords in `data/<map>_<i>.json`, so the rings still land on
-the notes. All the sounds are synthesized here (no samples): kick, claps and hats, basses, pads, plucks and leads,
+the notes. All the sounds are synthesized here (no samples): kick, claps and hats, basses, pads, plucks and the melody's flute,
 then sidechain pumping, echo, reverb and mastering.
 
 | File | What it does |
@@ -9,6 +9,7 @@ then sidechain pumping, echo, reverb and mastering.
 | `engine.py` | The sound engine: oscillators, filters, envelopes, drums, effects, sidechain, mastering, file export |
 | `arr.py` | What every style shares: the course, chords, placing the melody, and how much the melody stands out |
 | `techno.py` | The Future's techno, flavours `melodic` (in the game) and `warehouse` |
+| `leads.py` | Melody instruments modelled on real ones: breathy flute (in the game), marimba, glass keys, plucked string, analog pluck |
 | `render.py` | Renders the layers the game plays, and a preview mp3 of a good run |
 
 The melody stands out most in the first city (London 1890) and blends further into the band in each city after that,

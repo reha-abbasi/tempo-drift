@@ -3,11 +3,12 @@
 warehouse: dark Berlin techno. A punchy 909 kick with a reverb rumble under it, offbeat bass, dub chord stabs echoing
            into the distance, and the melody on a squelchy acid line.
 melodic:   big-room melodic techno. A deep kick, a rolling sixteenth bass that pumps around it, wide supersaw pads,
-           a plucked arpeggio and the melody on a bright pluck lead.
+           a plucked arpeggio and the melody on a breathy flute.
 """
 import numpy as np
 from engine import *
 from arr import ease_for, place_lead, finish_lead
+import leads
 
 LAYERS = ['core', 'full', 'arp', 'perc', 'od', 'jet', 'ghost', 'melA', 'melB']
 
@@ -296,7 +297,9 @@ def build(c, flavour='melodic', ease=None):
     L['jet'].x = jet.x + wind(n) * 0.5
 
     # the melody: every ring note on melA / melB, the in-between notes on ghost; clearer in the early cities
-    lead = acid if warehouse else (lambda p, d, accent=True: pluck_lead(p, d))
+    # (melodic: the breathy flute the user picked, at its own level, 3 dB above the options page where it was matched
+    # to the old lead, as asked)
+    lead = acid if warehouse else leads.breath_flute
     place_lead(L, c, lead, ease)
     finish_lead(L, S, ease, kicks, room_size=0.5 if warehouse else 0.85, bright_db=3.0)
     return L, S
