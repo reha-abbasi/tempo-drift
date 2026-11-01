@@ -4,6 +4,8 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
+**Current version: v28 New Music** (1 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
+
 ![Tempo Drift: the era map, London 1890 and Rio de Janeiro](.github/screenshots.png)
 
 > **New music, one city at a time.** The music is being remade city by city. For now only **Berlin 2075** is open, with
@@ -20,9 +22,9 @@ This repo holds two versions of the same game:
 | **Godot** (the one to build on) | [`godot/`](godot) | Open `godot/project.godot` in [Godot 4.7.2](https://godotengine.org/download/archive/4.7.2-stable/). Guide: [`godot/README.md`](godot/README.md) |
 | **Web** (the original, one HTML file) | [`web/`](web) | https://reha-abbasi.github.io/tempo-drift/ · edit `web/game.html` |
 
-The Godot version follows the web version **v26 "Note Mode"**: the same rules, menus, garage, map, missions and
-music. Its courses and the music that is not a recording were made by running the web game's own code
-(`godot/tools/bake/`).
+The Godot version (now v28) started from the web version's rules, the web game's last version, v26 "Note Mode":
+the same rules, menus, garage, map and missions. Its courses were made by running the web game's own code
+(`godot/tools/bake/`); its music is now being remade city by city with `godot/tools/music/`.
 
 ## Open the Godot version
 
