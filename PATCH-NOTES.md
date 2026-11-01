@@ -17,8 +17,8 @@ Murat's Godot version becomes `main`, with the first city of the new music.
 - **The music tools are in `godot/tools/music/`.** Every sound is synthesized, the layers are mastered together, and
   the melody stands out most in the first city and blends in a little more in each city after it.
 - **No Next button after Berlin**, since nothing else is open yet.
-- **The front page and the Godot guide say v28.** They had mentioned only v26, the web game's version the Godot
-  game started from, which looked like the wrong version number.
+- **Only the current version is named.** The front page shows v28 at the top; the old mentions of the web game's
+  version number are gone from the front page, the Godot guide and the code.
 - **`main` is now Murat's Godot version** (branch `murat-godot-remake`). Reha's earlier Godot version (`godot/game/`)
   and the Lane Runner draft leave `main`; both are still in the history.
 

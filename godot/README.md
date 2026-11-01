@@ -1,7 +1,7 @@
 # Tempo Drift (Godot)
 
 The game in Godot 4.7.2, now at **v28 New Music** (see [`../PATCH-NOTES.md`](../PATCH-NOTES.md)). It started from
-the web game's last version, v26 "Note Mode" (`../web/game.html`): the same rules, menus, garage, map and missions. Open this folder's `project.godot` in Godot 4.7.2. Play (F5) starts at the studio intro,
+the web game's rules (`../web/game.html`): the same rules, menus, garage, map and missions. Open this folder's `project.godot` in Godot 4.7.2. Play (F5) starts at the studio intro,
 then the menus.
 
 ## Where things are

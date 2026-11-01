@@ -1,6 +1,6 @@
 class_name Rules
 extends RefCounted
-## The rules of a run, as in the web game (web/game.html, v26 "Note Mode"). No drawing here: the run scene reads this
+## The rules of a run, as in the web game (web/game.html). No drawing here: the run scene reads this
 ## state and listens to its signals. Numbers and names follow the web game so the two can be compared line by line.
 ##
 ## Three lanes and three heights; the car cruises on the skyway (the middle height) and hops up or dives down for

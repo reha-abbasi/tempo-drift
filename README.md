@@ -22,8 +22,7 @@ This repo holds two versions of the same game:
 | **Godot** (the one to build on) | [`godot/`](godot) | Open `godot/project.godot` in [Godot 4.7.2](https://godotengine.org/download/archive/4.7.2-stable/). Guide: [`godot/README.md`](godot/README.md) |
 | **Web** (the original, one HTML file) | [`web/`](web) | https://reha-abbasi.github.io/tempo-drift/ · edit `web/game.html` |
 
-The Godot version (now v28) started from the web version's rules, the web game's last version, v26 "Note Mode":
-the same rules, menus, garage, map and missions. Its courses were made by running the web game's own code
+The Godot version started from the web version's rules: the same rules, menus, garage, map and missions. Its courses were made by running the web game's own code
 (`godot/tools/bake/`); its music is now being remade city by city with `godot/tools/music/`.
 
 ## Open the Godot version

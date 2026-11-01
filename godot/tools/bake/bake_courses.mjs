@@ -1,4 +1,4 @@
-// Bakes the Flight School and Endless courses with the web game's own generator (v26 game.html), so they follow
+// Bakes the Flight School and Endless courses with the web game's own generator (web/game.html), so they follow
 // exactly the same rules as the episodes (whose courses were baked the same way):
 //   data/school_<map>.json            the guided lesson song for each era
 //   data/endless_<map>_<level>_<k>.json   Endless runs: the era's loop with the course and traffic drawn from a seed
