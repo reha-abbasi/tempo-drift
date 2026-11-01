@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Bring changes made to the published iPhone version back into the game page.
 
-    python3 tools/import_phone.py path/to/tempo-drift/index.html web/game.html
+    python3 tools/import_phone.py path/to/gh-pages-copy/index.html web/game.html
 
-If someone edits index.html in the public tempo-drift project directly, this turns that file back into
+If someone edits index.html on the gh-pages branch directly, this turns that file back into
 web/game.html (the inverse of make_phone.py), takes over any change to the phone-only styles, and checks
 that rebuilding gives exactly the same file.
 """

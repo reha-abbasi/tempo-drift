@@ -23,15 +23,15 @@ python3 tools/make_phone.py web/game.html web/app
 tools/publish_phone.sh
 ```
 
-The first line rebuilds `app/`. The second copies it to the public project
-https://github.com/reha-abbasi/tempo-drift, which GitHub serves at the link above (about a minute later).
+The first line rebuilds `app/`. The second copies it to the `gh-pages` branch of this repo, which GitHub serves at
+the link above (about a minute later).
 Or ask Claude: *"Update the iPhone version."*
 
 ## If someone edits the iPhone page directly
 
-If a change is made straight in the public `tempo-drift` project's `index.html`, bring it back here first,
+If a change is made straight in `index.html` on the `gh-pages` branch, bring it back here first,
 so the next update doesn't overwrite it:
 
 ```
-python3 tools/import_phone.py path/to/tempo-drift/index.html web/game.html
+python3 tools/import_phone.py path/to/gh-pages-copy/index.html web/game.html
 ```

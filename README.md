@@ -2,9 +2,13 @@
 
 ## Where everything is
 
-All the source code lives here, on the `main` branch of this repo. The repo
-[reha-abbasi/tempo-drift](https://github.com/reha-abbasi/tempo-drift) only holds the **built** game that GitHub Pages
-serves. Don't edit it by hand; the publish scripts in `tools/` overwrite it.
+Everything is in this one repo, [reha-abbasi/tempo-drift](https://github.com/reha-abbasi/tempo-drift):
+
+- **`main` branch: all the source code.** Edit this.
+- **`gh-pages` branch: the built game** that GitHub Pages serves at the play links below. Don't edit it by hand: the
+  publish scripts in `tools/` overwrite it.
+
+(The code used to live in a separate private repo, `runner-game`. It moved here with its whole history.)
 
 | What | Source (edit this) | Play it |
 |---|---|---|
@@ -64,7 +68,7 @@ Ask Claude to set up B, C or D when you want one.
 
 1. Download **Godot 4.7.2 (standard, not .NET)** from https://godotengine.org/download/archive/4.7.2-stable/
    (Windows: unzip and run the `.exe`. Mac: drag to Applications).
-2. Clone this repo: `git clone https://github.com/reha-abbasi/runner-game.git`
+2. Clone this repo: `git clone https://github.com/reha-abbasi/tempo-drift.git`
 3. Open Godot, click **Import**, pick the `project.godot` file in the cloned folder.
 4. Press **F5** (or the ▶ button at the top right).
 

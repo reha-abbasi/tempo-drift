@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Export the Godot version for the web and publish it to the public project reha-abbasi/tempo-drift, in godot/,
+# Export the Godot version for the web and publish it to the gh-pages branch of this repo, in godot/,
 # which GitHub Pages serves at https://reha-abbasi.github.io/tempo-drift/godot/ (it runs in Safari on iPhone).
 # Needs Godot 4.7.2 (~/.local/bin/godot) and its web export templates.
 set -euo pipefail
@@ -15,7 +15,7 @@ godot --headless --path "$src" --export-pack "Present pack" "$out/sunset.pck" >>
 godot --headless --path "$src" --export-pack "Future pack" "$out/rain.pck" >> "$out.log" 2>&1 || { tail -20 "$out.log"; exit 1; }
 ls -la "$out"
 tmp="$(mktemp -d)"
-git clone -q https://github.com/reha-abbasi/tempo-drift.git "$tmp"
+git clone -q --depth 1 -b gh-pages https://github.com/reha-abbasi/tempo-drift.git "$tmp"
 rm -rf "$tmp/godot"
 mkdir -p "$tmp/godot"
 cp -r "$out"/* "$tmp/godot/"

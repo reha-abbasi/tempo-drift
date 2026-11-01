@@ -26,7 +26,7 @@ Some options don't need any download.
 |---|---|
 | **Godot** | The free program we build the game in (version **4.7.2**). Like Photoshop, but for games. |
 | **Repo / repository** | The project folder, stored on GitHub so both of us have the same copy. |
-| **GitHub** | The website that keeps the repo and its history: https://github.com/reha-abbasi/runner-game |
+| **GitHub** | The website that keeps the repo and its history: https://github.com/reha-abbasi/tempo-drift (code on `main`, the built game on `gh-pages`) |
 | **Commit** | A saved checkpoint of your changes, with a short note about what you changed. |
 | **Push** | Upload your commits from your computer to GitHub. |
 | **Pull** | Download the other person's commits from GitHub to your computer. Do this before you start working. |

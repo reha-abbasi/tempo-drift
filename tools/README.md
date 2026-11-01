@@ -53,7 +53,7 @@ None of this changes the game itself.
 ## The iPhone version of Tempo Drift
 
 - `make_phone.py` turns `web/game.html` into the full-screen iPhone version in `web/app/` (icon, offline support).
-- `publish_phone.sh` copies `web/app/` to the public project that serves https://reha-abbasi.github.io/tempo-drift/.
+- `publish_phone.sh` copies `web/app/` to the `gh-pages` branch, which serves https://reha-abbasi.github.io/tempo-drift/.
 
 ```
 python3 tools/make_phone.py web/game.html web/app
