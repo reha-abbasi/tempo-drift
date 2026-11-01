@@ -10,6 +10,8 @@ of the song.
 > its new melodic-techno soundtrack and a breathy-flute melody; the menus play it too. The other 23 cities are still on
 > the map, locked, and open one by one as their new music is made. The old music is taken out. The tools that make the
 > music are in [`godot/tools/music/`](godot/tools/music).
+>
+> What changed in each update: [`PATCH-NOTES.md`](PATCH-NOTES.md).
 
 This repo holds two versions of the same game:
 
