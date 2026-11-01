@@ -180,7 +180,7 @@ func _render_home() -> void:
 	%InfSub.text = "best %s" % _commas(int(best[0].s)) if best.size() > 0 else "no best yet"
 	%StarTotText.text = "★ %d/72" % Save.total_stars()
 	%WalletText.text = _commas(Save.wallet())
-	%LogBtn.text = "✦ v27"
+	%LogBtn.text = "✦ v28"
 	for m in [["EraOld", "old"], ["EraSunset", "sunset"], ["EraRain", "rain"]]:
 		var b: Button = get_node("%" + m[0])
 		var on: bool = m[1] == key

@@ -12,14 +12,13 @@ var menu_music: AudioStreamPlayer
 
 func _ready() -> void:
 	AudioServer.set_bus_mute(0, not bool(Save.setting("sound")))
-	# the main-menu theme: two bars of pads, then sixteen that loop (100 BPM: a bar is 2.4 s)
-	var s: AudioStreamWAV = (load("res://audio/menu/menu.res") as AudioStreamWAV).duplicate()
-	s.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	s.loop_begin = int(4.8 * s.mix_rate)
-	s.loop_end = int(s.get_length() * s.mix_rate)
+	# music-test-berlin: the menus play the new Berlin soundtrack (its whole band), looping after the first bar
+	var s := (load("res://audio/rain_5/full.ogg") as AudioStreamOggVorbis).duplicate() as AudioStreamOggVorbis
+	s.loop = true
+	s.loop_offset = 2.2222
 	menu_music = AudioStreamPlayer.new()
 	menu_music.stream = s
-	menu_music.volume_db = 6.0
+	menu_music.volume_db = -6.0
 	menu_music.bus = "Menu" if AudioServer.get_bus_index("Menu") >= 0 else "Master"
 	add_child(menu_music)
 	# the city backdrop waits for the intro: they share one 3D world, and the backdrop's camera would take over

@@ -78,6 +78,8 @@ func _layer(folder: String, name: String) -> AudioStream:
 	var path := "%s/%s.ogg" % [folder, name]
 	if not ResourceLoader.exists(path):
 		path = "%s/%s.res" % [folder, name]
+	if not ResourceLoader.exists(path):
+		return null   # (music-test-berlin holds only Berlin's songs: the menu backdrop flies the others silent)
 	var s: AudioStream = load(path)
 	if _loop_from >= 0.0:
 		if s is AudioStreamWAV:

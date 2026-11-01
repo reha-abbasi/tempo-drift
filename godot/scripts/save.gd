@@ -3,6 +3,9 @@ extends Node
 ## the cars and pilots you own, missions, the daily gift, Endless high scores and settings.
 
 const PATH := "user://tempo_drift.json"
+## music-test-berlin: only Berlin 2075 (the Future's sixth city) can be played in this build
+const TEST_MAP := "rain"
+const TEST_EP := 5
 
 var data := {
 	"episodes": {},      # "old-0" -> {stars, score, acc, grade}
@@ -12,7 +15,7 @@ var data := {
 	"missions": {},
 	"daily": {"day": "", "streak": 0},
 	"endless": {},       # map -> [{s, d}] top five
-	"map": "old",
+	"map": "rain",
 	"tut": false,        # Flight School done
 	"settings": {"sound": true, "haptics": true, "fx_low": false, "level": "normal", "dev": true, "cal": null},
 }
@@ -27,6 +30,7 @@ func _ready() -> void:
 					data[k].merge(d[k], true)
 				else:
 					data[k] = d[k]
+	data.map = TEST_MAP
 
 
 func write() -> void:
@@ -69,16 +73,19 @@ func dev() -> bool:
 
 
 func era_open(map: String) -> bool:
-	var k := Catalog.MAPS.find(map)
-	return k <= 0 or dev() or map_stars(Catalog.MAPS[k - 1]) >= Catalog.ERA_NEED
+	return map == TEST_MAP
 
 
 func unlocked(map: String, i: int) -> bool:
-	return dev() or (era_open(map) and (i == 0 or int(ep(map, i - 1).stars) > 0))
+	return map == TEST_MAP and i == TEST_EP
 
 
 func next_episode(map: String) -> int:
-	## the first episode not yet cleared (or the weakest, when all are)
+	## the first episode not yet cleared (or the weakest, when all are); in this build, Berlin
+	if map == TEST_MAP:
+		return TEST_EP
+	if not era_open(map):
+		return -1
 	for i in 8:
 		if int(ep(map, i).stars) == 0:
 			return i if unlocked(map, i) else -1

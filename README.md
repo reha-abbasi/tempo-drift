@@ -4,7 +4,12 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
-This branch (`murat-godot-remake`) holds two versions of the same game:
+> **This is the `music-test-berlin` branch**, a test of the new music. Only Berlin 2075 can be played; every other city
+> is locked and its old music is taken out. Berlin plays the new melodic-techno soundtrack, and so do the menus. The
+> tools that make the music are in [`godot/tools/music/`](godot/tools/music). Everything else is as on
+> `murat-godot-remake`.
+
+The branch it's built on (`murat-godot-remake`) holds two versions of the same game:
 
 | Version | Folder | Open or play it |
 |---|---|---|

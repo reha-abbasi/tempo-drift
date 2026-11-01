@@ -6,7 +6,6 @@
 [ext_resource type="FontVariation" path="res://ui/font_display.tres" id="4_y6uum"]
 [ext_resource type="FontVariation" path="res://ui/font_mono.tres" id="5_0mgqj"]
 [ext_resource type="Theme" path="res://ui/theme.tres" id="6_ueo4n"]
-[ext_resource type="AudioStream" path="res://audio/intro/intro.res" id="7_kfk32"]
 
 [sub_resource type="Environment" id="Environment_2ypwg"]
 background_mode = 1
@@ -309,6 +308,5 @@ theme_type_variation = &"GhostButton"
 text = "SKIP ›"
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=1040488028]
-stream = ExtResource("7_kfk32")
 volume_db = 6.0
 bus = &"Menu"

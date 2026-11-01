@@ -1,5 +1,15 @@
 [
  {
+  "v": "28",
+  "name": "Music Test",
+  "date": "1 Nov 2026",
+  "items": [
+   "Only Berlin 2075 to play",
+   "New techno soundtrack, deep bass",
+   "Old music taken out"
+  ]
+ },
+ {
   "v": "27",
   "name": "Godot",
   "date": "1 Nov 2026",
