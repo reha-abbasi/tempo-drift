@@ -16,10 +16,41 @@ Everything is in this one repo, [reha-abbasi/tempo-drift](https://github.com/reh
 | **Tempo Drift, web version** (the original, one HTML file) | [`web/game.html`](web/game.html), iPhone app shell in [`web/app/`](web/app) | https://reha-abbasi.github.io/tempo-drift/ |
 | **Lane Runner** (the first draft, described below) | the root folder: `project.godot`, `scenes/`, `scripts/`, `shaders/` | — |
 
+| **Tempo Drift, Murat's Godot version** (on its own branch, see below) | branch [`murat-godot-remake`](https://github.com/reha-abbasi/tempo-drift/tree/murat-godot-remake), project in `godot/` | https://reha-abbasi.github.io/tempo-drift/godot/murat/ |
+
 Not in git: Godot's `.godot/` cache (rebuilt when you open the project) and `godot/previews/` (music preview mp3s).
 
 To work on the Godot version, open `godot/game/project.godot` in Godot 4.7.2, not the `project.godot` in the root
 folder (that one is Lane Runner).
+
+## Branches
+
+| Branch | What it is | Status (1 Nov 2026) |
+|---|---|---|
+| [`main`](https://github.com/reha-abbasi/tempo-drift/tree/main) | All the source code (this page) | The main version |
+| [`murat-godot-remake`](https://github.com/reha-abbasi/tempo-drift/tree/murat-godot-remake) | Murat's rebuild of the Godot game from web game v26: every level is a scene you can edit in Godot | 1 commit ahead of `main`, 0 behind. **Planned to become `main`** after a music upgrade |
+| [`gh-pages`](https://github.com/reha-abbasi/tempo-drift/tree/gh-pages) | The website: the built games at the play links above | Updated by the publish scripts. Never merged into `main` |
+| `murat-welcome-text` | Murat's welcome line on the menu (pull request #1) | Merged 24 Oct, can be deleted |
+| `murat-v20-the-band` | Murat's v20 The Band (pull request #2) | Merged 24 Oct, can be deleted |
+
+```mermaid
+gitGraph
+  commit id: "Lane Runner draft (20 Oct)"
+  commit id: "PRs #1-#8: web game, Note Mode"
+  commit id: "PR #9: Godot version"
+  commit id: "PR #10: repo guide"
+  commit id: "moved to tempo-drift (1 Nov)"
+  branch gh-pages
+  commit id: "built website"
+  checkout main
+  commit id: "website history joined in"
+  branch murat-godot-remake
+  commit id: "Murat's Godot rebuild" type: HIGHLIGHT
+```
+
+**What the planned merge changes in `main`:** the web game (`web/`) stays. Murat's project replaces `godot/game/` and
+`godot/tools/`; the Lane Runner files, `docs/` and the Godot web publishing tools come off `main`. Nothing is lost: all
+of it stays in the history.
 
 ---
 
