@@ -3,7 +3,8 @@ extends Node
 ## the cars and pilots you own, missions, the daily gift, Endless high scores and settings.
 
 const PATH := "user://tempo_drift.json"
-## music-test-berlin: only Berlin 2075 (the Future's sixth city) can be played in this build
+## For now only Berlin 2075 (the Future's sixth city) is open: it has the new music. The other cities stay on the map,
+## locked, and open one by one as their new music is made (add them here).
 const TEST_MAP := "rain"
 const TEST_EP := 5
 

@@ -183,7 +183,7 @@ func show_results(res: Dictionary) -> void:
 	# after the last episode of an era, on to the next era if it's open
 	var to_era := next_era if last and next_era != "" and Save.era_open(next_era) else ""
 	%NextEp.visible = not (last and to_era == "")
-	# (music-test-berlin: only Berlin can be played, so there is no next episode to go on to)
+	# (while only Berlin is open there is no next episode to go on to)
 	if not last and not Save.unlocked(map, int(ep.i) + 1):
 		%NextEp.visible = false
 	%NextEp.set_meta("era", to_era)

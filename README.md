@@ -4,12 +4,12 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
-> **This is the `music-test-berlin` branch**, a test of the new music. Only Berlin 2075 can be played; every other city
-> is locked and its old music is taken out. Berlin plays the new melodic-techno soundtrack, and so do the menus. The
-> tools that make the music are in [`godot/tools/music/`](godot/tools/music). Everything else is as on
-> `murat-godot-remake`.
+> **New music, one city at a time.** The music is being remade city by city. For now only **Berlin 2075** is open, with
+> its new melodic-techno soundtrack and a breathy-flute melody; the menus play it too. The other 23 cities are still on
+> the map, locked, and open one by one as their new music is made. The old music is taken out. The tools that make the
+> music are in [`godot/tools/music/`](godot/tools/music).
 
-The branch it's built on (`murat-godot-remake`) holds two versions of the same game:
+This repo holds two versions of the same game:
 
 | Version | Folder | Open or play it |
 |---|---|---|
@@ -34,3 +34,15 @@ music. Its courses and the music that is not a recording were made by running th
 - `tools/`: the scripts that make and publish that iPhone version, see [`tools/README.md`](tools/README.md).
 
 The `gh-pages` branch is the published web game; the publish script updates it.
+
+## Branches
+
+| Branch | What it is |
+|---|---|
+| `main` | The game (this page): Murat's Godot version with the new music |
+| `gh-pages` | The website: the built games at https://reha-abbasi.github.io/tempo-drift/ (updated by the publish scripts, never merged into `main`) |
+| `murat-godot-remake`, `music-test-berlin` | Merged into `main` on 1 Nov 2026 |
+| `murat-welcome-text`, `murat-v20-the-band` | Merged on 24 Oct 2026 |
+
+Before 1 Nov 2026 `main` held Reha's own Godot version (`godot/game/`) and the first Lane Runner draft; they are still in
+the history.

@@ -12,7 +12,7 @@ var menu_music: AudioStreamPlayer
 
 func _ready() -> void:
 	AudioServer.set_bus_mute(0, not bool(Save.setting("sound")))
-	# music-test-berlin: the menus play the new Berlin soundtrack (its whole band), looping after the first bar
+	# the menus play the new Berlin soundtrack (its whole band), looping after the first bar
 	var s := (load("res://audio/rain_5/full.ogg") as AudioStreamOggVorbis).duplicate() as AudioStreamOggVorbis
 	s.loop = true
 	s.loop_offset = 2.2222
