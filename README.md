@@ -4,6 +4,8 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
+![Tempo Drift: the era map, London 1890 and Rio de Janeiro](.github/screenshots.png)
+
 > **New music, one city at a time.** The music is being remade city by city. For now only **Berlin 2075** is open, with
 > its new melodic-techno soundtrack and a breathy-flute melody; the menus play it too. The other 23 cities are still on
 > the map, locked, and open one by one as their new music is made. The old music is taken out. The tools that make the
