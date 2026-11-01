@@ -1,57 +1,64 @@
-# Tempo Drift — Godot version
+# Tempo Drift (Godot)
 
-The game remade in Godot 4.7: three eras of eight cities, each with its own street, light, landmark and band, picked on the world map.
+The game in Godot 4.7.2, built on the web game's v26 "Note Mode" (`../web/game.html`): the same rules, menus, garage,
+map, missions and music. Open this folder's `project.godot` in Godot 4.7.2. Play (F5) starts at the studio intro,
+then the menus.
 
-- **The Past:** London, Istanbul, Paris, New York, Havana, Vienna, Cairo, Rome (1890–1955)
-- **The Present:** Dubai, Rio, Singapore, San Francisco, Sydney, Cape Town, Barcelona, Reykjavik
-- **The Future:** Hong Kong, Tokyo, Los Angeles, Shanghai, Seoul, Berlin, Miami, Las Vegas (2049–2099)
+## Where things are
 
-An era opens with 10 stars in the one before (or all at once with the testing switch in Settings). The **garage** has five cars with perks and six pilots, bought with the coins you earn: one per note played, 100 per new star.
-
-## Play it on a phone
-
-https://reha-abbasi.github.io/tempo-drift/godot/ (the web build, runs in Safari; about 120 MB to load, and the Present and the Future download about 75 MB each the first time you fly there). Publish a new one with `tools/publish_godot_web.sh`.
-
-## Open it
-
-1. Start Godot 4.7.2 (Reha's is in `D:\Claude-sandbox\Software`).
-2. **Import** → pick `godot/game/project.godot` inside your copy of this repo → **Import & Edit**.
-3. Press **F5** (or the ▶ button) to play.
-
-The first open takes a minute while Godot imports the music.
-
-## Controls
-
-| | Phone | PC |
-|---|---|---|
-| Change lane | swipe left / right | ← → or A D |
-| Hop up / dive down | swipe up / down | ↑ ↓ or W S |
-
-Every note is a ring: swipe into it just before its note for **EXCELLENT** (300), a little earlier for **GOOD** (200), long before for **OK** (100). The closing cue ring shows the best moment.
-
-**Duet:** four EXCELLENTs in a row and a second instrument harmonises your melody (400 a note) until a GOOD, OK or miss.
-
-**Settings** (title card): picture quality (Auto, Low, Medium, High; phones start on Medium and the game steps down if it runs slow) and the audio offset for wireless headphones, with a tap-along test that measures it.
-
-## What's where
-
-| Folder | What |
+| Folder | What is in it |
 |---|---|
-| `game/scripts/game.gd` | the rules (lanes, grades, Flow, Overdrive, car → jetpack, rescue), carried over from the web game |
-| `game/scripts/music.gd` | the soundtrack: 9 layers played in sync; the band follows your Flow, each note plays only when you're in its ring |
-| `game/scripts/world.gd` | the streets, one "look" per city: houses, roofs, lamps, trees, landmarks, light and weather (batched, so it's fast) |
-| `game/scripts/quality.gd` | the quality levels |
-| `game/scripts/models.gd` | the car, the pilot, motor cars, the bus, airships, barriers, the finish arch |
-| `game/scripts/rings.gd`, `traffic.gd`, `fx.gd`, `hud.gd` | rings, vehicles, effects, HUD and cards |
-| `game/shaders/` | bricks and windows, wet cobbles, slate, sky, glows, rain, smoke |
-| `game/data/old_N.json` | each course: every ring and vehicle, baked from the web game |
-| `game/audio/old_N/` | each soundtrack, 11 layers played in sync |
-| `tools/bake.mjs` | bakes a course from `web/game.html`: `node godot/tools/bake.mjs old 0` |
-| `tools/arrange.py` | arranges a song for its city's band and renders it with real instruments: `python3 godot/tools/arrange.py old 0` (needs `fluidsynth` and the MuseScore General soundfont) |
+| `scenes/levels/` | **The levels.** `old_0` … `old_7` (Past), `sunset_0` … `sunset_7` (Present), `rain_0` … `rain_7` (Future), and `school_old`, `school_sunset`, `school_rain` (Flight School) |
+| `scenes/cities/` | The 24 cities: sky, light, fog, landmark, traffic colours. `<city>/section_0..3` are its street pieces |
+| `scenes/landmarks/`, `scenes/buildings/`, `scenes/props/` | Landmarks, buildings, lamps, trees, signs |
+| `scenes/cars/`, `scenes/pilots/`, `scenes/traffic/` | The garage's cars and pilots, and the traffic |
+| `scenes/ui/` | `menus.tscn` (every menu screen, under Root), `hud.tscn`, `panels.tscn` (pause, results) |
+| `scenes/run/run.tscn` | The run: camera, effects, HUD |
+| `scenes/intro/intro.tscn` | The studio intro |
+| `scenes/main.tscn` | What Play starts: the intro, then the menus over the live city |
 
-## Tests (command line)
+## Editing a level
 
-```
-godot --headless --path godot/game -- --sim --ep=0               # plays an episode with a perfect pilot, prints the result
-godot --path godot/game -- --shots=DIR --at=9,14,30 [--title] [--crash=12] [--results]   # screenshots
-```
+Open a level from `scenes/levels/`. It holds:
+
+- **City**: the city scene (open it to change the sky, the light or the landmark for this city).
+- **Street**: the whole street, piece by piece. Move, delete or duplicate pieces. To move a single building inside
+  a piece, right-click the piece → *Editable Children*.
+- **Notes**: one ring per note, where the car meets it. Drag a ring sideways or up and down to change its lane or
+  height (it snaps to the three lanes and three heights); drag it along the street to change when it comes. The
+  swipe arrow updates by itself. In the Inspector: power-up, Flight School's wait, and the note it plays.
+- **Traffic**: every vehicle and roadblock where it meets the car, with its kind and whether it is hopped over
+  or flown under.
+
+Yellow lines across the road mark each bar of the song, with its number and time (editor only).
+Play the open level with **F6**.
+
+The melody is a recording, so a ring moved in time no longer lands on its note; lane and height changes are free.
+The song's tempo, speed and difficulty are in the level's `course_file` (in `data/`). Endless is a generated loop
+and stays in `data/endless_*.json`.
+
+## How it fits together
+
+- `scripts/rules.gd`: the game rules, a line-by-line port of the web game's (flying, rings, timing grades, Flow,
+  Overdrive, lives and rescue, power-ups, scoring, stars). `scripts/run.gd` plays a level with them.
+- `scripts/catalog.gd`: the eras, cities, cars, pilots, prices and missions, with the web game's names and words.
+- `data/`: each song's timing (`<map>_<i>.json`, `school_<map>.json`), the Endless loops, the city looks.
+- `audio/`: Reha's recordings for the 24 episodes (`.ogg`, one file per layer of the band), and the rendered
+  loop songs, menu theme, intro music and sound effects (`.res`).
+
+## Tools
+
+| Tool | What it does |
+|---|---|
+| `tools/bake/bake_courses.mjs` | Makes the Flight School and Endless courses by running the web game's own generator: `node tools/bake/bake_courses.mjs ../web/game.html data` |
+| `tools/bake/render_audio.mjs` | Renders the music the web game plays live (loop songs, menu, intro, effects) with its own code: `node tools/bake/render_audio.mjs ../web/game.html <wav dir>`, then `tools/editor/pack_baked.gd` packs the WAVs |
+| `tools/fetch_polyhaven.py` | Downloads the CC0 textures (Poly Haven) the streets and buildings use |
+| `tests/` | Checks: `rules_sim` (every course flown perfectly), `level_check` (levels match their courses), `load_all` (every scene opens), and picture tests (`run_shot`, `city_shot`, `menu_shot`, …) |
+
+Run a check with `godot --headless --path godot res://tests/<name>.tscn` from the repo folder.
+
+## Rebuilding from the tools
+
+The scenes were first laid out by the builders in `tools/editor/` (run through `tools/editor/runner.tscn`).
+**Running a builder again overwrites the scenes it makes**, including edits made in the editor; after the first
+build the scenes are the source.

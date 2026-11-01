@@ -1,0 +1,649 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://ui/theme.tres" id="1_oj5la"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_gss2c"]
+[ext_resource type="Texture2D" path="res://ui/icons/car.svg" id="3_h022r"]
+[ext_resource type="Texture2D" path="res://ui/icons/jetpack.svg" id="4_4jqwt"]
+[ext_resource type="Texture2D" path="res://ui/icons/coin.svg" id="5_kicr4"]
+[ext_resource type="Texture2D" path="res://ui/icons/pause.svg" id="6_mj13f"]
+
+[sub_resource type="Shader" id="Shader_0h1do"]
+code = "shader_type canvas_item;
+uniform vec4 tint : source_color;
+uniform float inner = 0.55;
+uniform float wash = 0.0;
+void fragment() {
+	vec2 d = abs(UV - 0.5) * 2.0;
+	float e = smoothstep(inner, 1.0, max(d.x * 0.9, d.y * 0.97));
+	COLOR = vec4(tint.rgb, clamp(tint.a * e + wash, 0.0, 1.0));
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4d46k"]
+shader = SubResource("Shader_0h1do")
+shader_parameter/tint = Color(1, 0.16, 0.24, 0.9)
+shader_parameter/inner = 0.35
+shader_parameter/wash = null
+
+[sub_resource type="Shader" id="Shader_erw67"]
+code = "shader_type canvas_item;
+uniform vec4 tint : source_color;
+uniform float inner = 0.55;
+uniform float wash = 0.0;
+void fragment() {
+	vec2 d = abs(UV - 0.5) * 2.0;
+	float e = smoothstep(inner, 1.0, max(d.x * 0.9, d.y * 0.97));
+	COLOR = vec4(tint.rgb, clamp(tint.a * e + wash, 0.0, 1.0));
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gonto"]
+shader = SubResource("Shader_erw67")
+shader_parameter/tint = Color(1, 0.16, 0.24, 0.55)
+shader_parameter/inner = 0.5
+shader_parameter/wash = null
+
+[sub_resource type="Shader" id="Shader_cwdlq"]
+code = "shader_type canvas_item;
+uniform vec4 tint : source_color;
+uniform float inner = 0.55;
+uniform float wash = 0.0;
+void fragment() {
+	vec2 d = abs(UV - 0.5) * 2.0;
+	float e = smoothstep(inner, 1.0, max(d.x * 0.9, d.y * 0.97));
+	COLOR = vec4(tint.rgb, clamp(tint.a * e + wash, 0.0, 1.0));
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o6xly"]
+shader = SubResource("Shader_cwdlq")
+shader_parameter/tint = Color(1, 0.24705882, 0.7058824, 1)
+shader_parameter/inner = 0.45
+shader_parameter/wash = null
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_we3sy"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 0.14)
+border_color = Color(0, 0, 0, 0)
+
+[sub_resource type="Gradient" id="Gradient_65nxt"]
+colors = PackedColorArray(1, 0.83137256, 0.36078432, 1, 1, 0.24705882, 0.7058824, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_el1dq"]
+gradient = SubResource("Gradient_65nxt")
+height = 4
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gmc6u"]
+texture = SubResource("GradientTexture2D_el1dq")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e6lo"]
+content_margin_left = 4.0
+content_margin_top = 3.0
+content_margin_right = 4.0
+content_margin_bottom = 3.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mi7y"]
+content_margin_left = 4.0
+content_margin_top = 3.0
+content_margin_right = 4.0
+content_margin_bottom = 3.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pkwgd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Gradient" id="Gradient_d5po8"]
+colors = PackedColorArray(1, 0.76862746, 0.2901961, 1, 1, 0.9411765, 0.6901961, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7yoph"]
+gradient = SubResource("Gradient_d5po8")
+height = 4
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qmm8d"]
+texture = SubResource("GradientTexture2D_7yoph")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0png"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Gradient" id="Gradient_b6swc"]
+colors = PackedColorArray(1, 0.83137256, 0.36078432, 1, 1, 0.6039216, 0.41960785, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_27rlx"]
+gradient = SubResource("Gradient_b6swc")
+height = 4
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vuvg6"]
+texture = SubResource("GradientTexture2D_27rlx")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emer0"]
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.36, 0.36, 0.75)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfdjh"]
+content_margin_left = 9.0
+content_margin_top = 5.0
+content_margin_right = 9.0
+content_margin_bottom = 5.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.83, 0.36, 0.35)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xdlig"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.45)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lptj4"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_74gae"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_33vp1"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.6)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpd3y"]
+content_margin_left = 22.0
+content_margin_top = 14.0
+content_margin_right = 22.0
+content_margin_bottom = 14.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.62)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.83, 0.36, 0.5)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[node name="HUDLayer" type="CanvasLayer" unique_id=1978211613]
+
+[node name="HUD" type="Control" parent="." unique_id=1481235181]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("1_oj5la")
+script = ExtResource("2_gss2c")
+
+[node name="Flash" type="ColorRect" parent="HUD" unique_id=886372594]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_4d46k")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Danger" type="ColorRect" parent="HUD" unique_id=128321467]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_gonto")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="OdGlow" type="ColorRect" parent="HUD" unique_id=1128302021]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_o6xly")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Progress" type="ProgressBar" parent="HUD" unique_id=1025832381]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 0
+anchor_right = 1.0
+offset_bottom = 3.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_we3sy")
+theme_override_styles/fill = SubResource("StyleBoxTexture_gmc6u")
+show_percentage = false
+
+[node name="Score" type="Label" parent="HUD" unique_id=1753352482]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -110.0
+offset_top = 8.0
+offset_right = 110.0
+offset_bottom = 44.0
+theme_type_variation = &"HudScore"
+text = "0"
+horizontal_alignment = 1
+
+[node name="Forms" type="VBoxContainer" parent="HUD" unique_id=195015727]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 16.0
+offset_right = 14.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="FormLabel" type="Label" parent="HUD/Forms" unique_id=1819132955]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudSmall"
+text = "CAR"
+
+[node name="Icons" type="HBoxContainer" parent="HUD/Forms" unique_id=717282963]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="CarIcon" type="PanelContainer" parent="HUD/Forms/Icons" unique_id=1289315565]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e6lo")
+
+[node name="Icon" type="TextureRect" parent="HUD/Forms/Icons/CarIcon" unique_id=98465512]
+custom_minimum_size = Vector2(34, 15)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_h022r")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="JetIcon" type="PanelContainer" parent="HUD/Forms/Icons" unique_id=1043078978]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4mi7y")
+
+[node name="Icon" type="TextureRect" parent="HUD/Forms/Icons/JetIcon" unique_id=492676190]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_4jqwt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Rescue" type="ProgressBar" parent="HUD/Forms" unique_id=886937451]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(96, 6)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_pkwgd")
+theme_override_styles/fill = SubResource("StyleBoxTexture_qmm8d")
+show_percentage = false
+
+[node name="RescueLabel" type="Label" parent="HUD/Forms" unique_id=2010527434]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"HudTiny"
+text = "RESCUE"
+
+[node name="Flow" type="HBoxContainer" parent="HUD" unique_id=1675419895]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -110.0
+offset_top = 44.0
+offset_right = 110.0
+offset_bottom = 62.0
+mouse_filter = 2
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="FlowLabel" type="Label" parent="HUD/Flow" unique_id=1287578764]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudSmall"
+text = "FLOW"
+
+[node name="FlowBar" type="ProgressBar" parent="HUD/Flow" unique_id=890816787]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(104, 6)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_t0png")
+theme_override_styles/fill = SubResource("StyleBoxTexture_vuvg6")
+show_percentage = false
+
+[node name="Mark30" type="ColorRect" parent="HUD/Flow/FlowBar" unique_id=584332858]
+layout_mode = 0
+offset_left = 31.2
+offset_top = -2.0
+offset_right = 32.2
+offset_bottom = 8.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.45)
+
+[node name="Mark60" type="ColorRect" parent="HUD/Flow/FlowBar" unique_id=1965419555]
+layout_mode = 0
+offset_left = 62.4
+offset_top = -2.0
+offset_right = 63.4
+offset_bottom = 8.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.45)
+
+[node name="Mark90" type="ColorRect" parent="HUD/Flow/FlowBar" unique_id=63278760]
+layout_mode = 0
+offset_left = 93.6
+offset_top = -2.0
+offset_right = 94.6
+offset_bottom = 8.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.45)
+
+[node name="Mult" type="Label" parent="HUD/Flow" unique_id=20045332]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_type_variation = &"HudMult"
+text = "×1"
+
+[node name="Combo" type="Label" parent="HUD" unique_id=1575061218]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -110.0
+offset_top = 66.0
+offset_right = 110.0
+offset_bottom = 84.0
+theme_type_variation = &"HudCombo"
+horizontal_alignment = 1
+
+[node name="Mel" type="PanelContainer" parent="HUD" unique_id=1539660775]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -125.0
+offset_top = 86.0
+offset_right = 125.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_emer0")
+
+[node name="MelText" type="Label" parent="HUD/Mel" unique_id=251411883]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudMel"
+text = "MELODY LOST · PLAY A NOTE TO BRING IT BACK"
+horizontal_alignment = 1
+
+[node name="EpLabel" type="Label" parent="HUD" unique_id=1116807097]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 90.0
+offset_right = 150.0
+offset_bottom = 104.0
+theme_type_variation = &"HudTiny"
+text = "EPISODE 1 · LONDON 1890"
+horizontal_alignment = 1
+
+[node name="PowerUps" type="VBoxContainer" parent="HUD" unique_id=2137518333]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 60.0
+offset_right = -10.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Coins" type="PanelContainer" parent="HUD" unique_id=1144483117]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 12.0
+offset_right = -60.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kfdjh")
+
+[node name="Row" type="HBoxContainer" parent="HUD/Coins" unique_id=1399453987]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+alignment = 2
+
+[node name="Coin" type="TextureRect" parent="HUD/Coins/Row" unique_id=1665391992]
+custom_minimum_size = Vector2(17, 17)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5_kicr4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CoinN" type="Label" parent="HUD/Coins/Row" unique_id=1995645307]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudCoins"
+text = "0"
+
+[node name="Pause" type="Button" parent="HUD" unique_id=1633936975]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -52.0
+offset_top = 6.0
+offset_right = -8.0
+offset_bottom = 50.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_xdlig")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_lptj4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_74gae")
+icon = ExtResource("6_mj13f")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Pop" type="Label" parent="HUD" unique_id=808415573]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -190.0
+offset_top = 118.0
+offset_right = 190.0
+offset_bottom = 178.0
+pivot_offset = Vector2(190, 26)
+theme_type_variation = &"Pop"
+horizontal_alignment = 1
+
+[node name="Judge" type="Label" parent="HUD" unique_id=103693763]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 240.0
+offset_bottom = 30.0
+pivot_offset = Vector2(120, 15)
+theme_type_variation = &"Judge"
+horizontal_alignment = 1
+
+[node name="Hint" type="PanelContainer" parent="HUD" unique_id=844182411]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -170.0
+offset_top = -86.0
+offset_right = 170.0
+offset_bottom = -50.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_33vp1")
+
+[node name="HintText" type="Label" parent="HUD/Hint" unique_id=1285866270]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudMode"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Tut" type="PanelContainer" parent="HUD" unique_id=267391366]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.26
+anchor_right = 0.5
+anchor_bottom = 0.26
+offset_left = -90.0
+offset_top = -62.0
+offset_right = 90.0
+offset_bottom = 62.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jpd3y")
+
+[node name="V" type="VBoxContainer" parent="HUD/Tut" unique_id=1398417242]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="TutArrow" type="Label" parent="HUD/Tut/V" unique_id=344095374]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Pop"
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "↑"
+horizontal_alignment = 1
+
+[node name="TutText" type="Label" parent="HUD/Tut/V" unique_id=1243854510]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudMode"
+text = "SWIPE UP"
+horizontal_alignment = 1

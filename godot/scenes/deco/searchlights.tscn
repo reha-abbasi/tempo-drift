@@ -1,0 +1,70 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/deco.gd" id="1_y70yb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2k4x4"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+disable_fog = true
+albedo_color = Color(0.9, 0.92, 1, 0.06)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vuy3t"]
+material = SubResource("StandardMaterial3D_2k4x4")
+top_radius = 0.6
+bottom_radius = 14.0
+height = 300.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w3s2f"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+disable_fog = true
+albedo_color = Color(0.9, 0.92, 1, 0.06)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jvvef"]
+material = SubResource("StandardMaterial3D_w3s2f")
+top_radius = 0.6
+bottom_radius = 14.0
+height = 300.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lp5ry"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+disable_fog = true
+albedo_color = Color(0.9, 0.92, 1, 0.06)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_feoic"]
+material = SubResource("StandardMaterial3D_lp5ry")
+top_radius = 0.6
+bottom_radius = 14.0
+height = 300.0
+cap_top = false
+cap_bottom = false
+
+[node name="Searchlights" type="Node3D" unique_id=1880297974]
+script = ExtResource("1_y70yb")
+kind = "searchlights"
+
+[node name="Beam0" type="MeshInstance3D" parent="." unique_id=1543100100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, -8, -260)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_vuy3t")
+
+[node name="Beam1" type="MeshInstance3D" parent="." unique_id=184607253]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, -260)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_jvvef")
+
+[node name="Beam2" type="MeshInstance3D" parent="." unique_id=1794761081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, -8, -260)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_feoic")

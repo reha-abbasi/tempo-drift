@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/berlin.res" id="1_yiyv8"]
+
+[node name="Berlin" type="Node3D" unique_id=1220532621]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1996679381]
+cast_shadow = 0
+mesh = ExtResource("1_yiyv8")

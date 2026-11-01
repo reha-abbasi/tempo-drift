@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/city.gd" id="1_vxeuj"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_7/section_0.tscn" id="2_bls40"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_7/section_1.tscn" id="3_eab2a"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_7/section_2.tscn" id="4_uj1lv"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_7/section_3.tscn" id="5_o6r77"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/oldcar.tscn" id="6_vippe"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/dbus.tscn" id="7_4hh8a"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/biplane.tscn" id="8_trb0r"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="9_4ayel"]
+[ext_resource type="Shader" path="res://materials/shaders/sky.gdshader" id="10_j11pd"]
+[ext_resource type="PackedScene" path="res://scenes/landmarks/rome.tscn" id="11_y4saj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_npimu"]
+shader = ExtResource("10_j11pd")
+shader_parameter/top = Color(0.24313726, 0.3529412, 0.627451, 1)
+shader_parameter/mid = Color(0.78431374, 0.59607846, 0.6901961, 1)
+shader_parameter/hor = Color(1, 0.627451, 0.47058824, 1)
+shader_parameter/sun_color = Color(1, 0.78431374, 0.5647059, 1)
+shader_parameter/sun_dir = Vector3(0.119092405, 0.029773101, -0.9924367)
+shader_parameter/low = null
+shader_parameter/sea = null
+shader_parameter/stars = 0.0
+shader_parameter/moon_dir = null
+shader_parameter/moon_cut = null
+shader_parameter/moon_r = null
+
+[sub_resource type="Sky" id="Sky_rdb3s"]
+sky_material = SubResource("ShaderMaterial_npimu")
+
+[sub_resource type="Environment" id="Environment_l5u15"]
+background_mode = 2
+sky = SubResource("Sky_rdb3s")
+ambient_light_source = 2
+ambient_light_color = Color(0.6682353, 0.6101961, 0.5364706, 1)
+ambient_light_energy = 0.43290144
+tonemap_mode = 3
+tonemap_exposure = 0.85037035
+tonemap_white = 16.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.96
+fog_enabled = true
+fog_light_color = Color(0.84705883, 0.65882355, 0.59607846, 1)
+fog_density = 0.00415
+fog_sky_affect = 0.0
+
+[node name="Rome1948" type="Node3D" unique_id=711424269]
+script = ExtResource("1_vxeuj")
+display_name = "Rome 1948"
+sections = Array[PackedScene]([ExtResource("2_bls40"), ExtResource("3_eab2a"), ExtResource("4_uj1lv"), ExtResource("5_o6r77")])
+traffic = {
+"barrier": ExtResource("9_4ayel"),
+"biplane": ExtResource("8_trb0r"),
+"dbus": ExtResource("7_4hh8a"),
+"oldcar": ExtResource("6_vippe")
+}
+car_colors = Array[Color]([Color(0.5411765, 0.101960786, 0.101960786, 1), Color(0.9098039, 0.8784314, 0.8156863, 1), Color(0.101960786, 0.22745098, 0.3529412, 1), Color(0.22745098, 0.3529412, 0.16470589, 1)])
+bus_color = Color(0.16470589, 0.41568628, 0.2901961, 1)
+night = 0.260204081632653
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1676772933]
+environment = SubResource("Environment_l5u15")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1636827906]
+transform = Transform3D(-0.9928768, -0.0035473227, 0.119092405, 0, 0.9995567, 0.029773101, -0.11914522, 0.029561022, -0.9924367, 0, 30, 0)
+light_color = Color(1, 0.6901961, 0.5019608, 1)
+light_energy = 0.70346487
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0
+
+[node name="Street" type="Node3D" parent="." unique_id=519301259]
+
+[node name="Horizon" type="Node3D" parent="." unique_id=1226625974]
+
+[node name="Landmark" type="Node3D" parent="Horizon" unique_id=971697241 instance=ExtResource("11_y4saj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -340)

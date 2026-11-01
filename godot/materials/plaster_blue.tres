@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/painted_plaster_wall/painted_plaster_wall_albedo.jpg" id="1_2vyyo"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/painted_plaster_wall/painted_plaster_wall_normal.jpg" id="2_kskat"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/painted_plaster_wall/painted_plaster_wall_arm.jpg" id="3_j8r45"]
+
+[resource]
+albedo_color = Color(0.62, 0.74, 0.92, 1)
+albedo_texture = ExtResource("1_2vyyo")
+orm_texture = ExtResource("3_j8r45")
+normal_enabled = true
+normal_texture = ExtResource("2_kskat")

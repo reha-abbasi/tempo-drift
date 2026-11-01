@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/lanterns.res" id="1_oyyya"]
+
+[node name="Lanterns" type="Node3D" unique_id=1196097345]
+
+[node name="Lanterns" type="MeshInstance3D" parent="." unique_id=937887090]
+mesh = ExtResource("1_oyyya")

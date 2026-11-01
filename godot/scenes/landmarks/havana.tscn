@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/havana.res" id="1_6or48"]
+
+[node name="Havana" type="Node3D" unique_id=172380199]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1328536461]
+cast_shadow = 0
+mesh = ExtResource("1_6or48")

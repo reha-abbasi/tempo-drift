@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/gas_lamp.res" id="1_lrbbf"]
+[ext_resource type="Shader" path="res://materials/shaders/glow.gdshader" id="2_pmtpu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ht3sk"]
+render_priority = 0
+shader = ExtResource("2_pmtpu")
+shader_parameter/color = Color(1, 0.72, 0.38, 1)
+shader_parameter/intensity = 1.4
+shader_parameter/softness = 2.6
+
+[sub_resource type="QuadMesh" id="QuadMesh_w2hi5"]
+material = SubResource("ShaderMaterial_ht3sk")
+size = Vector2(1.5, 1.5)
+
+[node name="GasLamp" type="Node3D" unique_id=76370858]
+
+[node name="Post" type="MeshInstance3D" parent="." unique_id=34430827]
+visibility_range_end = 220.0
+mesh = ExtResource("1_lrbbf")
+
+[node name="Glow" type="MeshInstance3D" parent="." unique_id=691662339]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+cast_shadow = 0
+visibility_range_end = 160.0
+mesh = SubResource("QuadMesh_w2hi5")
+
+[node name="Light" type="OmniLight3D" parent="." unique_id=2009220840]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+light_color = Color(1, 0.7, 0.4, 1)
+light_energy = 1.6
+distance_fade_enabled = true
+distance_fade_begin = 70.0
+distance_fade_length = 20.0
+omni_range = 7.0

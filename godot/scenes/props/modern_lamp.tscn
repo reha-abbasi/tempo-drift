@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/modern_lamp.res" id="1_6cd22"]
+
+[node name="Streetlight" type="Node3D" unique_id=606674497]
+
+[node name="Pole" type="MeshInstance3D" parent="." unique_id=1161925124]
+visibility_range_end = 260.0
+mesh = ExtResource("1_6cd22")
+
+[node name="Light" type="SpotLight3D" parent="." unique_id=1929777280]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 6.8, 1.7)
+light_color = Color(0.98, 0.92, 0.82, 1)
+light_energy = 2.0
+distance_fade_enabled = true
+distance_fade_begin = 70.0
+distance_fade_length = 20.0
+spot_range = 11.0
+spot_angle = 50.0

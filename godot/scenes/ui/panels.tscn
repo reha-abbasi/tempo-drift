@@ -1,0 +1,918 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/panels.gd" id="1_nmldb"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_iqabp"]
+
+[sub_resource type="Gradient" id="Gradient_xl2oj"]
+offsets = PackedFloat32Array(0, 0.36, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.15, 0.03137255, 0.023529412, 0.0627451, 0.8, 0.03137255, 0.023529412, 0.0627451, 0.92)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sq51b"]
+gradient = SubResource("Gradient_xl2oj")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_l13yv"]
+offsets = PackedFloat32Array(0, 0.36, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.15, 0.03137255, 0.023529412, 0.0627451, 0.8, 0.03137255, 0.023529412, 0.0627451, 0.92)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7uieo"]
+gradient = SubResource("Gradient_l13yv")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_81m5c"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jm2w0"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sq01u"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c0h44"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v7hyu"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e7s6"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="Gradient" id="Gradient_bq8e8"]
+offsets = PackedFloat32Array(0, 0.36, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.15, 0.03137255, 0.023529412, 0.0627451, 0.8, 0.03137255, 0.023529412, 0.0627451, 0.92)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s5icb"]
+gradient = SubResource("Gradient_bq8e8")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uag3e"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.3)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ow2d"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brvtm"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxo8d"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4m5o"]
+content_margin_left = 2.0
+content_margin_top = 6.0
+content_margin_right = 2.0
+content_margin_bottom = 6.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7dlr4"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wddwm"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.05490196, 0.13333334, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Panels" type="CanvasLayer" unique_id=1686096564]
+layer = 2
+script = ExtResource("1_nmldb")
+
+[node name="Root" type="Control" parent="." unique_id=1988976456]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("2_iqabp")
+
+[node name="Pause" type="Control" parent="Root" unique_id=913323274]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Wash" type="TextureRect" parent="Root/Pause" unique_id=1246327246]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource("GradientTexture2D_sq51b")
+expand_mode = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Pause" unique_id=1477298625]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="Center" type="CenterContainer" parent="Root/Pause/Scroll" unique_id=1194174428]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Root/Pause/Scroll/Center" unique_id=1513532010]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 22
+
+[node name="Column" type="VBoxContainer" parent="Root/Pause/Scroll/Center/Margin" unique_id=1031127786]
+custom_minimum_size = Vector2(354, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PauseTitle" type="Label" parent="Root/Pause/Scroll/Center/Margin/Column" unique_id=2045604335]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.5)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/shadow_outline_size = 14
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="PauseInfo" type="Label" parent="Root/Pause/Scroll/Center/Margin/Column" unique_id=1453863207]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.9019608, 0.8745098, 0.9490196, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Resume" type="Button" parent="Root/Pause/Scroll/Center/Margin/Column" unique_id=740308014]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "RESUME"
+
+[node name="Row" type="HBoxContainer" parent="Root/Pause/Scroll/Center/Margin/Column" unique_id=1841816055]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Restart" type="Button" parent="Root/Pause/Scroll/Center/Margin/Column/Row" unique_id=1334054963]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "RESTART"
+
+[node name="PauseMenu" type="Button" parent="Root/Pause/Scroll/Center/Margin/Column/Row" unique_id=440935211]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "MAIN MENU"
+
+[node name="Sound" type="Button" parent="Root/Pause/Scroll/Center/Margin/Column" unique_id=192284208]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "SOUND ON"
+
+[node name="Over" type="Control" parent="Root" unique_id=408955310]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Wash" type="TextureRect" parent="Root/Over" unique_id=1042145402]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource("GradientTexture2D_7uieo")
+expand_mode = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Over" unique_id=1947102091]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="Center" type="CenterContainer" parent="Root/Over/Scroll" unique_id=1651606375]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Root/Over/Scroll/Center" unique_id=1697371809]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 22
+
+[node name="Column" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin" unique_id=386920254]
+custom_minimum_size = Vector2(354, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="OverCity" type="Label" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=539135155]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+
+[node name="OverTitle" type="Label" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=1907182289]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.23921569, 0.30980393, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/shadow_outline_size = 14
+text = "OUT OF LIVES"
+horizontal_alignment = 1
+
+[node name="Res" type="GridContainer" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=190627250]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+columns = 2
+
+[node name="OverABox" type="PanelContainer" parent="Root/Over/Scroll/Center/Margin/Column/Res" unique_id=677792108]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_81m5c")
+
+[node name="V" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column/Res/OverABox" unique_id=1091777222]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="OverALabel" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/Res/OverABox/V" unique_id=394058648]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+text = "SONG"
+horizontal_alignment = 1
+
+[node name="OverA" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/Res/OverABox/V" unique_id=2097009174]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="OverBBox" type="PanelContainer" parent="Root/Over/Scroll/Center/Margin/Column/Res" unique_id=748716353]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_jm2w0")
+
+[node name="V" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column/Res/OverBBox" unique_id=17748397]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="OverBLabel" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/Res/OverBBox/V" unique_id=1155589924]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+text = "COINS CAUGHT"
+horizontal_alignment = 1
+
+[node name="OverB" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/Res/OverBBox/V" unique_id=2143623738]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="OverJud" type="GridContainer" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=1458215973]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+columns = 4
+
+[node name="OverJudExBox" type="PanelContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud" unique_id=1818586853]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_sq01u")
+
+[node name="V" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudExBox" unique_id=966384858]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="OverJudEx" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudExBox/V" unique_id=1998122679]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="OverJudExLabel" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudExBox/V" unique_id=2052857410]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "EXCELLENT"
+horizontal_alignment = 1
+
+[node name="OverJudGdBox" type="PanelContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud" unique_id=1785073741]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_c0h44")
+
+[node name="V" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudGdBox" unique_id=1242644576]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="OverJudGd" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudGdBox/V" unique_id=810173517]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.56078434, 0.9647059, 1, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="OverJudGdLabel" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudGdBox/V" unique_id=498266841]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "GOOD"
+horizontal_alignment = 1
+
+[node name="OverJudOkBox" type="PanelContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud" unique_id=649248826]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_v7hyu")
+
+[node name="V" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudOkBox" unique_id=1833787842]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="OverJudOk" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudOkBox/V" unique_id=660366635]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.9254902, 0.93333334, 0.9490196, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="OverJudOkLabel" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudOkBox/V" unique_id=469676879]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "OK"
+horizontal_alignment = 1
+
+[node name="OverJudMissBox" type="PanelContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud" unique_id=761102200]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5e7s6")
+
+[node name="V" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudMissBox" unique_id=566738945]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="OverJudMiss" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudMissBox/V" unique_id=177058826]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(1, 0.54509807, 0.58431375, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="OverJudMissLabel" type="Label" parent="Root/Over/Scroll/Center/Margin/Column/OverJud/OverJudMissBox/V" unique_id=1967929315]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "MISSED"
+horizontal_alignment = 1
+
+[node name="OverNote" type="Label" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=741874062]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.9019608, 0.8745098, 0.9490196, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="OverEarn" type="Label" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=340675483]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="OverMis" type="VBoxContainer" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=770318353]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Revive" type="Button" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=1560381012]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "REVIVE · 200"
+
+[node name="Again" type="Button" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=2139906519]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "TRY AGAIN"
+
+[node name="ToMenu" type="Button" parent="Root/Over/Scroll/Center/Margin/Column" unique_id=1898251790]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "EPISODES"
+
+[node name="Clear" type="Control" parent="Root" unique_id=860588445]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Wash" type="TextureRect" parent="Root/Clear" unique_id=478269450]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource("GradientTexture2D_s5icb")
+expand_mode = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Clear" unique_id=202214587]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="Center" type="CenterContainer" parent="Root/Clear/Scroll" unique_id=1519361915]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Root/Clear/Scroll/Center" unique_id=274838947]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 22
+
+[node name="Column" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin" unique_id=388630017]
+custom_minimum_size = Vector2(354, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ClearCity" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=540707894]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+
+[node name="ClearTitle" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1799977204]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.5)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/shadow_outline_size = 14
+text = "EPISODE CLEAR"
+horizontal_alignment = 1
+
+[node name="Rank" type="HBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1120851690]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Grade" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Rank" unique_id=1513573033]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uag3e")
+
+[node name="GradeLetter" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Grade" unique_id=1904223260]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 76
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "S"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Side" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Rank" unique_id=1497980387]
+layout_mode = 2
+alignment = 1
+
+[node name="Stars" type="HBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Side" unique_id=1742625507]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Star0" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Side/Stars" unique_id=830992858]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 0.16)
+text = "★"
+horizontal_alignment = 1
+
+[node name="Star1" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Side/Stars" unique_id=406968559]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 0.16)
+text = "★"
+horizontal_alignment = 1
+
+[node name="Star2" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Side/Stars" unique_id=727782415]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 0.16)
+text = "★"
+horizontal_alignment = 1
+
+[node name="ClearAcc" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Side" unique_id=1921344620]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 22
+text = "0%"
+
+[node name="ClearAccLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Rank/Side" unique_id=1077603776]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+text = "NOTES PLAYED"
+
+[node name="ClearJud" type="GridContainer" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1040818026]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+columns = 4
+
+[node name="ClearJudExBox" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud" unique_id=647729129]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_4ow2d")
+
+[node name="V" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudExBox" unique_id=306901886]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ClearJudEx" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudExBox/V" unique_id=2044030254]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="ClearJudExLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudExBox/V" unique_id=861071109]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "EXCELLENT"
+horizontal_alignment = 1
+
+[node name="ClearJudGdBox" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud" unique_id=1961764211]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_brvtm")
+
+[node name="V" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudGdBox" unique_id=951535907]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ClearJudGd" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudGdBox/V" unique_id=1336623470]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.56078434, 0.9647059, 1, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="ClearJudGdLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudGdBox/V" unique_id=790441497]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "GOOD"
+horizontal_alignment = 1
+
+[node name="ClearJudOkBox" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud" unique_id=661156235]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_hxo8d")
+
+[node name="V" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudOkBox" unique_id=1127488724]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ClearJudOk" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudOkBox/V" unique_id=1546602348]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.9254902, 0.93333334, 0.9490196, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="ClearJudOkLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudOkBox/V" unique_id=1204864333]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "OK"
+horizontal_alignment = 1
+
+[node name="ClearJudMissBox" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud" unique_id=557793290]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_g4m5o")
+
+[node name="V" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudMissBox" unique_id=1427096648]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ClearJudMiss" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudMissBox/V" unique_id=1893818015]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(1, 0.54509807, 0.58431375, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="ClearJudMissLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/ClearJud/ClearJudMissBox/V" unique_id=1474196512]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 9
+text = "MISSED"
+horizontal_alignment = 1
+
+[node name="Res" type="GridContainer" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1911548343]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+columns = 2
+
+[node name="ClearScoreBox" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Res" unique_id=1480299253]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_7dlr4")
+
+[node name="V" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Res/ClearScoreBox" unique_id=936064298]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ClearScoreLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Res/ClearScoreBox/V" unique_id=1958524755]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+text = "SCORE"
+horizontal_alignment = 1
+
+[node name="ClearScore" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Res/ClearScoreBox/V" unique_id=1485806573]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="ClearComboBox" type="PanelContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Res" unique_id=571143633]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wddwm")
+
+[node name="V" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column/Res/ClearComboBox" unique_id=232168867]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ClearComboLabel" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Res/ClearComboBox/V" unique_id=1072212216]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+text = "MAX COMBO"
+horizontal_alignment = 1
+
+[node name="ClearCombo" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column/Res/ClearComboBox/V" unique_id=617913087]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="ClearChips" type="HFlowContainer" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1372373187]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 5
+alignment = 1
+
+[node name="ClearNote" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=265793617]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.9019608, 0.8745098, 0.9490196, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ClearEarn" type="Label" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1829910178]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ClearMis" type="VBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=293233869]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="NextEp" type="Button" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1749030714]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "NEXT EPISODE"
+
+[node name="Row" type="HBoxContainer" parent="Root/Clear/Scroll/Center/Margin/Column" unique_id=1141699907]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RetryEp" type="Button" parent="Root/Clear/Scroll/Center/Margin/Column/Row" unique_id=192865893]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "RETRY"
+
+[node name="ClearMenu" type="Button" parent="Root/Clear/Scroll/Center/Margin/Column/Row" unique_id=1359515044]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "EPISODES"

@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/grey_roof_tiles/grey_roof_tiles_albedo.jpg" id="1_364cl"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/grey_roof_tiles/grey_roof_tiles_normal.jpg" id="2_d3qmd"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/grey_roof_tiles/grey_roof_tiles_arm.jpg" id="3_du11c"]
+
+[resource]
+albedo_texture = ExtResource("1_364cl")
+orm_texture = ExtResource("3_du11c")
+normal_enabled = true
+normal_texture = ExtResource("2_d3qmd")
+texture_filter = 5

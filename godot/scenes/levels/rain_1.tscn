@@ -1,0 +1,648 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level.gd" id="1_6ilkw"]
+[ext_resource type="PackedScene" path="res://scenes/cities/rain_1.tscn" id="2_wlpuq"]
+[ext_resource type="Script" path="res://scripts/city.gd" id="3_06gso"]
+[ext_resource type="PackedScene" path="res://scenes/cities/rain_1/section_0.tscn" id="4_ocw6s"]
+[ext_resource type="PackedScene" path="res://scenes/cities/rain_1/section_1.tscn" id="5_ovs0a"]
+[ext_resource type="PackedScene" path="res://scenes/cities/rain_1/section_2.tscn" id="6_0h48f"]
+[ext_resource type="PackedScene" path="res://scenes/cities/rain_1/section_3.tscn" id="7_gfnqy"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="8_gjtdg"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/bus.tscn" id="9_b3yeu"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/drone.tscn" id="10_fui4o"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/taxi.tscn" id="11_j80r5"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/truck.tscn" id="12_cc3pe"]
+[ext_resource type="PackedScene" path="res://scenes/track/note_ring.tscn" id="13_am7kf"]
+[ext_resource type="Script" path="res://scripts/note_ring.gd" id="14_ujl47"]
+[ext_resource type="Script" path="res://scripts/level_hazard.gd" id="15_pye34"]
+[ext_resource type="Script" path="res://scripts/traffic.gd" id="16_l280h"]
+
+[node name="Tokyo2060" type="Node3D" unique_id=1485444267]
+script = ExtResource("1_6ilkw")
+display_name = "Tokyo 2060"
+course_file = "res://data/rain_1.json"
+song = "res://audio/rain_1"
+map = "rain"
+index = 1
+
+[node name="City" type="Node3D" parent="." unique_id=889114017 instance=ExtResource("2_wlpuq")]
+script = ExtResource("3_06gso")
+display_name = "Tokyo 2060"
+sections = Array[PackedScene]([ExtResource("4_ocw6s"), ExtResource("5_ovs0a"), ExtResource("6_0h48f"), ExtResource("7_gfnqy")])
+traffic = {
+"barrier": ExtResource("8_gjtdg"),
+"bus": ExtResource("9_b3yeu"),
+"drone": ExtResource("10_fui4o"),
+"taxi": ExtResource("11_j80r5"),
+"truck": ExtResource("12_cc3pe")
+}
+car_colors = Array[Color]([Color(0.101960786, 0.10980392, 0.13333334, 1), Color(0.16470589, 0.16470589, 0.1882353, 1), Color(0.22745098, 0.101960786, 0.101960786, 1)])
+night = 1.0
+accent_a = Color(0.18039216, 0.9490196, 1, 1)
+accent_b = Color(1, 0.7019608, 0.2784314, 1)
+preview_street = false
+
+[node name="Street" type="Node3D" parent="." unique_id=2052396463]
+
+[node name="S00_section_3" type="Node3D" parent="Street" unique_id=1575464145 instance=ExtResource("7_gfnqy")]
+
+[node name="S01_section_0" type="Node3D" parent="Street" unique_id=1255433800 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -48)
+
+[node name="S02_section_2" type="Node3D" parent="Street" unique_id=416424068 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -96)
+
+[node name="S03_section_3" type="Node3D" parent="Street" unique_id=1022039311 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -144)
+
+[node name="S04_section_1" type="Node3D" parent="Street" unique_id=1938363914 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -192)
+
+[node name="S05_section_3" type="Node3D" parent="Street" unique_id=1627103633 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -240)
+
+[node name="S06_section_2" type="Node3D" parent="Street" unique_id=144486401 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -288)
+
+[node name="S07_section_0" type="Node3D" parent="Street" unique_id=1557535304 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -336)
+
+[node name="S08_section_1" type="Node3D" parent="Street" unique_id=761209043 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -384)
+
+[node name="S09_section_2" type="Node3D" parent="Street" unique_id=327062108 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -432)
+
+[node name="S10_section_3" type="Node3D" parent="Street" unique_id=738552953 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -480)
+
+[node name="S11_section_0" type="Node3D" parent="Street" unique_id=1790178530 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -528)
+
+[node name="S12_section_2" type="Node3D" parent="Street" unique_id=21955846 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -576)
+
+[node name="S13_section_0" type="Node3D" parent="Street" unique_id=960412593 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -624)
+
+[node name="S14_section_2" type="Node3D" parent="Street" unique_id=1580637722 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -672)
+
+[node name="S15_section_3" type="Node3D" parent="Street" unique_id=757646348 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -720)
+
+[node name="S16_section_0" type="Node3D" parent="Street" unique_id=565838934 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -768)
+
+[node name="S17_section_3" type="Node3D" parent="Street" unique_id=2130145660 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -816)
+
+[node name="S18_section_0" type="Node3D" parent="Street" unique_id=291216463 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -864)
+
+[node name="S19_section_3" type="Node3D" parent="Street" unique_id=708125416 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -912)
+
+[node name="S20_section_1" type="Node3D" parent="Street" unique_id=751852352 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -960)
+
+[node name="S21_section_0" type="Node3D" parent="Street" unique_id=1238022395 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1008)
+
+[node name="S22_section_2" type="Node3D" parent="Street" unique_id=1084710861 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1056)
+
+[node name="S23_section_0" type="Node3D" parent="Street" unique_id=1920687399 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1104)
+
+[node name="S24_section_1" type="Node3D" parent="Street" unique_id=1383836388 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1152)
+
+[node name="S25_section_3" type="Node3D" parent="Street" unique_id=1733336008 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1200)
+
+[node name="S26_section_0" type="Node3D" parent="Street" unique_id=274968802 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1248)
+
+[node name="S27_section_1" type="Node3D" parent="Street" unique_id=1717291143 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1296)
+
+[node name="S28_section_3" type="Node3D" parent="Street" unique_id=1760803942 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1344)
+
+[node name="S29_section_2" type="Node3D" parent="Street" unique_id=1287066067 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1392)
+
+[node name="S30_section_1" type="Node3D" parent="Street" unique_id=1469338311 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1440)
+
+[node name="S31_section_2" type="Node3D" parent="Street" unique_id=1543168813 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1488)
+
+[node name="S32_section_3" type="Node3D" parent="Street" unique_id=53966786 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1536)
+
+[node name="S33_section_2" type="Node3D" parent="Street" unique_id=434412119 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1584)
+
+[node name="S34_section_3" type="Node3D" parent="Street" unique_id=587373770 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1632)
+
+[node name="S35_section_2" type="Node3D" parent="Street" unique_id=556408731 instance=ExtResource("6_0h48f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1680)
+
+[node name="S36_section_3" type="Node3D" parent="Street" unique_id=1294326697 instance=ExtResource("7_gfnqy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1728)
+
+[node name="S37_section_0" type="Node3D" parent="Street" unique_id=752517487 instance=ExtResource("4_ocw6s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1776)
+
+[node name="S38_section_1" type="Node3D" parent="Street" unique_id=180554665 instance=ExtResource("5_ovs0a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1824)
+
+[node name="Notes" type="Node3D" parent="." unique_id=528855287]
+
+[node name="N000_bar01" type="Node3D" parent="Notes" unique_id=158267443 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -65.29342)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N001_bar01" type="Node3D" parent="Notes" unique_id=1386380125 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -89.77717)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N002_bar01" type="Node3D" parent="Notes" unique_id=761958635 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -106.100525)
+script = ExtResource("14_ujl47")
+pitch = 69
+length = 3
+
+[node name="N003_bar02" type="Node3D" parent="Notes" unique_id=1487474699 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -130.58684)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N004_bar02" type="Node3D" parent="Notes" unique_id=1044420138 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -155.07059)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N005_bar02" type="Node3D" parent="Notes" unique_id=1354658995 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -171.39394)
+script = ExtResource("14_ujl47")
+pitch = 71
+length = 3
+power_up = "shield"
+
+[node name="N006_bar03" type="Node3D" parent="Notes" unique_id=1970968001 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 5.6, -195.88025)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N007_bar03" type="Node3D" parent="Notes" unique_id=2016166454 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -220.364)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N008_bar04" type="Node3D" parent="Notes" unique_id=1337355599 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 0.84, -261.17368)
+script = ExtResource("14_ujl47")
+pitch = 62
+length = 3
+
+[node name="N009_bar04" type="Node3D" parent="Notes" unique_id=476955274 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -285.6574)
+script = ExtResource("14_ujl47")
+
+[node name="N010_bar04" type="Node3D" parent="Notes" unique_id=1476538206 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -301.98077)
+script = ExtResource("14_ujl47")
+pitch = 64
+
+[node name="N011_bar05" type="Node3D" parent="Notes" unique_id=1499895223 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -326.4671)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N012_bar05" type="Node3D" parent="Notes" unique_id=1303441707 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -350.95084)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N013_bar05" type="Node3D" parent="Notes" unique_id=2129535278 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -367.2742)
+script = ExtResource("14_ujl47")
+pitch = 69
+length = 3
+
+[node name="N014_bar05" type="Node3D" parent="Notes" unique_id=674469967 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -391.75793)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N015_bar06" type="Node3D" parent="Notes" unique_id=1057865878 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -416.24426)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N016_bar06" type="Node3D" parent="Notes" unique_id=534031512 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -457.05136)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N017_bar07" type="Node3D" parent="Notes" unique_id=225256495 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -481.5377)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N018_bar07" type="Node3D" parent="Notes" unique_id=1950333325 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84, -522.3448)
+script = ExtResource("14_ujl47")
+pitch = 62
+length = 3
+
+[node name="N019_bar08" type="Node3D" parent="Notes" unique_id=375638149 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -546.8311)
+script = ExtResource("14_ujl47")
+
+[node name="N020_bar08" type="Node3D" parent="Notes" unique_id=704573729 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -563.1544)
+script = ExtResource("14_ujl47")
+pitch = 64
+
+[node name="N021_bar08" type="Node3D" parent="Notes" unique_id=89827552 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -587.6382)
+script = ExtResource("14_ujl47")
+pitch = 72
+
+[node name="N022_bar09" type="Node3D" parent="Notes" unique_id=1588533363 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -612.1245)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N023_bar09" type="Node3D" parent="Notes" unique_id=1242271241 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 5.6, -636.6083)
+script = ExtResource("14_ujl47")
+pitch = 79
+
+[node name="N024_bar09" type="Node3D" parent="Notes" unique_id=1950424631 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -652.93164)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N025_bar10" type="Node3D" parent="Notes" unique_id=2084558559 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -677.4179)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N026_bar10" type="Node3D" parent="Notes" unique_id=1059820861 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -701.9017)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N027_bar10" type="Node3D" parent="Notes" unique_id=1703359406 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -718.22504)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N028_bar11" type="Node3D" parent="Notes" unique_id=1524790421 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -742.71136)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N029_bar11" type="Node3D" parent="Notes" unique_id=282898642 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 5.6, -767.1951)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N030_bar12" type="Node3D" parent="Notes" unique_id=864959262 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -783.51843)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N031_bar12" type="Node3D" parent="Notes" unique_id=1032352691 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -808.0022)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N032_bar13" type="Node3D" parent="Notes" unique_id=503826694 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -848.8119)
+script = ExtResource("14_ujl47")
+pitch = 72
+
+[node name="N033_bar13" type="Node3D" parent="Notes" unique_id=818949252 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -873.29565)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N034_bar13" type="Node3D" parent="Notes" unique_id=76245105 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -897.7819)
+script = ExtResource("14_ujl47")
+pitch = 79
+
+[node name="N035_bar14" type="Node3D" parent="Notes" unique_id=1695319005 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -914.1053)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N036_bar14" type="Node3D" parent="Notes" unique_id=2035478096 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -938.58905)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N037_bar14" type="Node3D" parent="Notes" unique_id=483321853 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -963.0754)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N038_bar15" type="Node3D" parent="Notes" unique_id=296828854 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -979.3987)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N039_bar15" type="Node3D" parent="Notes" unique_id=2022768869 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1003.88245)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N040_bar15" type="Node3D" parent="Notes" unique_id=146185240 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -1028.3688)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N041_bar16" type="Node3D" parent="Notes" unique_id=1555025974 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1044.6921)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N042_bar16" type="Node3D" parent="Notes" unique_id=755343723 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -1069.1759)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N043_bar17" type="Node3D" parent="Notes" unique_id=1017487103 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1109.9856)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N044_bar17" type="Node3D" parent="Notes" unique_id=779464896 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -1134.4692)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N045_bar17" type="Node3D" parent="Notes" unique_id=1547475694 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1150.7926)
+script = ExtResource("14_ujl47")
+pitch = 69
+length = 3
+
+[node name="N046_bar17" type="Node3D" parent="Notes" unique_id=1835566717 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -1175.2764)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N047_bar18" type="Node3D" parent="Notes" unique_id=810126499 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1199.7627)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N048_bar18" type="Node3D" parent="Notes" unique_id=1698626179 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -1216.086)
+script = ExtResource("14_ujl47")
+pitch = 71
+length = 3
+
+[node name="N049_bar18" type="Node3D" parent="Notes" unique_id=848389921 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1240.5698)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N050_bar19" type="Node3D" parent="Notes" unique_id=1954243823 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -1265.0562)
+script = ExtResource("14_ujl47")
+pitch = 67
+
+[node name="N051_bar19" type="Node3D" parent="Notes" unique_id=8327554 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1281.3795)
+script = ExtResource("14_ujl47")
+pitch = 66
+length = 3
+
+[node name="N052_bar19" type="Node3D" parent="Notes" unique_id=604173732 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84, -1305.8633)
+script = ExtResource("14_ujl47")
+pitch = 62
+length = 3
+
+[node name="N053_bar20" type="Node3D" parent="Notes" unique_id=111004475 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1330.3496)
+script = ExtResource("14_ujl47")
+
+[node name="N054_bar20" type="Node3D" parent="Notes" unique_id=980074900 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -1346.6729)
+script = ExtResource("14_ujl47")
+pitch = 64
+
+[node name="N055_bar20" type="Node3D" parent="Notes" unique_id=139150674 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1371.1566)
+script = ExtResource("14_ujl47")
+pitch = 72
+
+[node name="N056_bar21" type="Node3D" parent="Notes" unique_id=2032425102 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -1395.643)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N057_bar21" type="Node3D" parent="Notes" unique_id=56153727 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 5.6, -1420.1267)
+script = ExtResource("14_ujl47")
+pitch = 79
+
+[node name="N058_bar21" type="Node3D" parent="Notes" unique_id=997570828 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -1436.4501)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="N059_bar22" type="Node3D" parent="Notes" unique_id=1866858297 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -1460.9364)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N060_bar22" type="Node3D" parent="Notes" unique_id=1759057201 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1485.4202)
+script = ExtResource("14_ujl47")
+pitch = 69
+
+[node name="N061_bar22" type="Node3D" parent="Notes" unique_id=293853653 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -1501.7435)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N062_bar23" type="Node3D" parent="Notes" unique_id=322530516 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1526.2299)
+script = ExtResource("14_ujl47")
+pitch = 71
+
+[node name="N063_bar23" type="Node3D" parent="Notes" unique_id=1639202089 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -1550.7135)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N064_bar24" type="Node3D" parent="Notes" unique_id=1761115819 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1567.0369)
+script = ExtResource("14_ujl47")
+pitch = 76
+
+[node name="N065_bar24" type="Node3D" parent="Notes" unique_id=1641080750 instance=ExtResource("13_am7kf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 3.22, -1591.5206)
+script = ExtResource("14_ujl47")
+pitch = 74
+
+[node name="Traffic" type="Node3D" parent="." unique_id=387702712]
+
+[node name="H000_barrier" type="Node3D" parent="Traffic" unique_id=493347200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -197.2612)
+script = ExtResource("15_pye34")
+kind = "barrier"
+over = true
+
+[node name="Barrier" type="Node3D" parent="Traffic/H000_barrier" unique_id=1619314174 instance=ExtResource("8_gjtdg")]
+script = ExtResource("16_l280h")
+
+[node name="H001_drone" type="Node3D" parent="Traffic" unique_id=759490436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -212.20361)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H001_drone" unique_id=2061763656 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H002_taxi" type="Node3D" parent="Traffic" unique_id=1191612225]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 0.84, -375.43716)
+script = ExtResource("15_pye34")
+kind = "taxi"
+
+[node name="Taxi" type="Node3D" parent="Traffic/H002_taxi" unique_id=1767239796 instance=ExtResource("11_j80r5")]
+script = ExtResource("16_l280h")
+
+[node name="H003_truck" type="Node3D" parent="Traffic" unique_id=1225444428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 0.84, -489.6981)
+script = ExtResource("15_pye34")
+kind = "truck"
+
+[node name="Truck" type="Node3D" parent="Traffic/H003_truck" unique_id=672821017 instance=ExtResource("12_cc3pe")]
+script = ExtResource("16_l280h")
+
+[node name="H004_drone" type="Node3D" parent="Traffic" unique_id=1485536175]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 3.22, -489.6981)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H004_drone" unique_id=107689081 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H005_taxi" type="Node3D" parent="Traffic" unique_id=1196984571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84, -579.4778)
+script = ExtResource("15_pye34")
+kind = "taxi"
+
+[node name="Taxi" type="Node3D" parent="Traffic/H005_taxi" unique_id=544061330 instance=ExtResource("11_j80r5")]
+script = ExtResource("16_l280h")
+
+[node name="H006_drone" type="Node3D" parent="Traffic" unique_id=147649054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 5.6, -701.9017)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H006_drone" unique_id=1928930360 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H007_taxi" type="Node3D" parent="Traffic" unique_id=2021338211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 0.84, -701.9017)
+script = ExtResource("15_pye34")
+kind = "taxi"
+
+[node name="Taxi" type="Node3D" parent="Traffic/H007_taxi" unique_id=793887398 instance=ExtResource("11_j80r5")]
+script = ExtResource("16_l280h")
+
+[node name="H008_drone" type="Node3D" parent="Traffic" unique_id=1591227162]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 5.6, -799.8418)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H008_drone" unique_id=2127861541 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H009_drone" type="Node3D" parent="Traffic" unique_id=569254400]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -816.16516)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H009_drone" unique_id=1755954437 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H010_truck" type="Node3D" parent="Traffic" unique_id=780724583]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 0.84, -946.752)
+script = ExtResource("15_pye34")
+kind = "truck"
+
+[node name="Truck" type="Node3D" parent="Traffic/H010_truck" unique_id=1299885684 instance=ExtResource("12_cc3pe")]
+script = ExtResource("16_l280h")
+
+[node name="H011_taxi" type="Node3D" parent="Traffic" unique_id=769974543]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 0.84, -1158.953)
+script = ExtResource("15_pye34")
+kind = "taxi"
+
+[node name="Taxi" type="Node3D" parent="Traffic/H011_taxi" unique_id=1481097514 instance=ExtResource("11_j80r5")]
+script = ExtResource("16_l280h")
+
+[node name="H012_drone" type="Node3D" parent="Traffic" unique_id=1098560009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 5.6, -1158.953)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H012_drone" unique_id=1696387090 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H013_barrier" type="Node3D" parent="Traffic" unique_id=1900290171]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.22, -1266.4371)
+script = ExtResource("15_pye34")
+kind = "barrier"
+over = true
+
+[node name="Barrier" type="Node3D" parent="Traffic/H013_barrier" unique_id=643771983 instance=ExtResource("8_gjtdg")]
+script = ExtResource("16_l280h")
+
+[node name="H014_truck" type="Node3D" parent="Traffic" unique_id=1878445414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24, 0.84, -1403.8033)
+script = ExtResource("15_pye34")
+kind = "truck"
+
+[node name="Truck" type="Node3D" parent="Traffic/H014_truck" unique_id=1080735893 instance=ExtResource("12_cc3pe")]
+script = ExtResource("16_l280h")
+
+[node name="H015_drone" type="Node3D" parent="Traffic" unique_id=1307184885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 5.6, -1452.7734)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H015_drone" unique_id=228514312 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H016_drone" type="Node3D" parent="Traffic" unique_id=1071939177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -1485.4202)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H016_drone" unique_id=1512506673 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")
+
+[node name="H017_drone" type="Node3D" parent="Traffic" unique_id=981381969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24, 5.6, -1534.3903)
+script = ExtResource("15_pye34")
+kind = "drone"
+
+[node name="Drone" type="Node3D" parent="Traffic/H017_drone" unique_id=1312252396 instance=ExtResource("10_fui4o")]
+script = ExtResource("16_l280h")

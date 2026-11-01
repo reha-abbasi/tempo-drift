@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dtf1c1jwnlq2f"]
+
+[ext_resource type="Script" uid="uid://damxmcp2bcljt" path="res://scripts/main.gd" id="1_tbgi4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menus.tscn" id="2_tefeu"]
+[ext_resource type="PackedScene" path="res://scenes/intro/intro.tscn" id="4_tipki"]
+
+[node name="Main" type="Node" unique_id=817468527]
+script = ExtResource("1_tbgi4")
+
+[node name="Menus" parent="." unique_id=2139067616 instance=ExtResource("2_tefeu")]
+
+[node name="Intro" parent="." unique_id=88500855 instance=ExtResource("4_tipki")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012570381, -4.7683716e-07, 0.003282547)

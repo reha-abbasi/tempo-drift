@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/palm.res" id="1_ujasl"]
+
+[node name="Palm" type="Node3D" unique_id=1749121984]
+
+[node name="Palm" type="MeshInstance3D" parent="." unique_id=1014401735]
+visibility_range_end = 260.0
+mesh = ExtResource("1_ujasl")

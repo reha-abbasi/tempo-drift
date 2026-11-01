@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/city.gd" id="1_g7mpm"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_1/section_0.tscn" id="2_ccqt5"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_1/section_1.tscn" id="3_d1rf3"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_1/section_2.tscn" id="4_vmeum"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_1/section_3.tscn" id="5_7y8ye"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/oldcar.tscn" id="6_4fvab"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/dbus.tscn" id="7_nbwyd"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/biplane.tscn" id="8_pu56u"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="9_erdsp"]
+[ext_resource type="Shader" path="res://materials/shaders/sky.gdshader" id="10_idv8h"]
+[ext_resource type="PackedScene" path="res://scenes/landmarks/istanbul.tscn" id="11_lotvd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gtve8"]
+shader = ExtResource("10_idv8h")
+shader_parameter/top = Color(0.3372549, 0.34509805, 0.6039216, 1)
+shader_parameter/mid = Color(0.7764706, 0.5647059, 0.65882355, 1)
+shader_parameter/hor = Color(1, 0.68235296, 0.5019608, 1)
+shader_parameter/sun_color = Color(1, 0.8, 0.5647059, 1)
+shader_parameter/sun_dir = Vector3(0.11907334, 0.034729727, -0.99227786)
+shader_parameter/low = null
+shader_parameter/sea = null
+shader_parameter/stars = 0.0
+shader_parameter/moon_dir = null
+shader_parameter/moon_cut = null
+shader_parameter/moon_r = null
+
+[sub_resource type="Sky" id="Sky_cdryr"]
+sky_material = SubResource("ShaderMaterial_gtve8")
+
+[sub_resource type="Environment" id="Environment_w1qgy"]
+background_mode = 2
+sky = SubResource("Sky_cdryr")
+ambient_light_source = 2
+ambient_light_color = Color(0.6682353, 0.6101961, 0.5364706, 1)
+ambient_light_energy = 0.43290144
+tonemap_mode = 3
+tonemap_exposure = 0.85037035
+tonemap_white = 16.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.96
+fog_enabled = true
+fog_light_color = Color(0.8235294, 0.627451, 0.54901963, 1)
+fog_density = 0.0044464287
+fog_sky_affect = 0.0
+
+[node name="Istanbul1910" type="Node3D" unique_id=663677872]
+script = ExtResource("1_g7mpm")
+display_name = "Istanbul 1910"
+sections = Array[PackedScene]([ExtResource("2_ccqt5"), ExtResource("3_d1rf3"), ExtResource("4_vmeum"), ExtResource("5_7y8ye")])
+traffic = {
+"barrier": ExtResource("9_erdsp"),
+"biplane": ExtResource("8_pu56u"),
+"dbus": ExtResource("7_nbwyd"),
+"oldcar": ExtResource("6_4fvab")
+}
+car_colors = Array[Color]([Color(0.3529412, 0.101960786, 0.101960786, 1), Color(0.101960786, 0.22745098, 0.16470589, 1), Color(0.16470589, 0.16470589, 0.16470589, 1)])
+bus_color = Color(0.6039216, 0.16470589, 0.13333334, 1)
+night = 0.19132653061224483
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=619772482]
+environment = SubResource("Environment_w1qgy")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1052489814]
+transform = Transform3D(-0.9928769, -0.0041378816, 0.119073346, 0, 0.99939686, 0.03472973, -0.11914522, 0.034482345, -0.9922779, 0, 30, 0)
+light_color = Color(1, 0.72156864, 0.5411765, 1)
+light_energy = 0.70346487
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0
+
+[node name="Street" type="Node3D" parent="." unique_id=231132012]
+
+[node name="Horizon" type="Node3D" parent="." unique_id=849209204]
+
+[node name="Landmark" type="Node3D" parent="Horizon" unique_id=1988330248 instance=ExtResource("11_lotvd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -340)

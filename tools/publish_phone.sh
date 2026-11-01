@@ -5,7 +5,7 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")/.." && pwd)"
 tmp="$(mktemp -d)"
 git clone -q --depth 1 -b gh-pages https://github.com/reha-abbasi/tempo-drift.git "$tmp"
-# (the Godot version lives in godot/, published by tools/publish_godot_web.sh: leave it alone)
+# (gh-pages also holds an earlier Godot build in godot/: leave it alone)
 find "$tmp" -mindepth 1 -maxdepth 1 ! -name .git ! -name README.md ! -name .nojekyll ! -name godot -exec rm -rf {} +
 cp "$here"/web/app/index.html "$here"/web/app/manifest.webmanifest "$here"/web/app/sw.js "$here"/web/app/icon-{180,192,512}.png "$tmp"/
 # a new service-worker version so phones fetch the update

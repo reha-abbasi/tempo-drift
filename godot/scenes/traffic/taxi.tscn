@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/traffic.gd" id="1_ihmkm"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/traffic/taxi.res" id="2_y5b2s"]
+
+[node name="Taxi" type="Node3D" unique_id=1767239796]
+script = ExtResource("1_ihmkm")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1179142637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.84, 0)
+mesh = ExtResource("2_y5b2s")

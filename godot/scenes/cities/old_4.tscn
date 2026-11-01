@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/city.gd" id="1_lbiiw"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_4/section_0.tscn" id="2_26qgk"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_4/section_1.tscn" id="3_a3bhc"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_4/section_2.tscn" id="4_pbrdk"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_4/section_3.tscn" id="5_drewx"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/oldcar.tscn" id="6_kymt1"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/dbus.tscn" id="7_bx4qu"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/biplane.tscn" id="8_8hfme"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="9_8fmqd"]
+[ext_resource type="Shader" path="res://materials/shaders/sky.gdshader" id="10_pddws"]
+[ext_resource type="PackedScene" path="res://scenes/landmarks/havana.tscn" id="11_2yvgh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s15wy"]
+shader = ExtResource("10_pddws")
+shader_parameter/top = Color(0.22745098, 0.40784314, 0.6901961, 1)
+shader_parameter/mid = Color(0.78431374, 0.627451, 0.7529412, 1)
+shader_parameter/hor = Color(1, 0.627451, 0.5019608, 1)
+shader_parameter/sun_color = Color(1, 0.78431374, 0.53333336, 1)
+shader_parameter/sun_dir = Vector3(0.11905136, 0.039683785, -0.9920947)
+shader_parameter/low = Color(0.16470589, 0.3529412, 0.5411765, 1)
+shader_parameter/sea = 1.0
+shader_parameter/stars = 0.0
+shader_parameter/moon_dir = null
+shader_parameter/moon_cut = null
+shader_parameter/moon_r = null
+
+[sub_resource type="Sky" id="Sky_rndc5"]
+sky_material = SubResource("ShaderMaterial_s15wy")
+
+[sub_resource type="Environment" id="Environment_uikrx"]
+background_mode = 2
+sky = SubResource("Sky_rndc5")
+ambient_light_source = 2
+ambient_light_color = Color(0.6682353, 0.6101961, 0.5364706, 1)
+ambient_light_energy = 0.43290144
+tonemap_mode = 3
+tonemap_exposure = 0.85037035
+tonemap_white = 16.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.96
+fog_enabled = true
+fog_light_color = Color(0.8627451, 0.6431373, 0.627451, 1)
+fog_density = 0.0040314286
+fog_sky_affect = 0.0
+
+[node name="Havana1955" type="Node3D" unique_id=1347521454]
+script = ExtResource("1_lbiiw")
+display_name = "Havana 1955"
+sections = Array[PackedScene]([ExtResource("2_26qgk"), ExtResource("3_a3bhc"), ExtResource("4_pbrdk"), ExtResource("5_drewx")])
+traffic = {
+"barrier": ExtResource("9_8fmqd"),
+"biplane": ExtResource("8_8hfme"),
+"dbus": ExtResource("7_bx4qu"),
+"oldcar": ExtResource("6_kymt1")
+}
+car_colors = Array[Color]([Color(0.22745098, 0.7529412, 0.78431374, 1), Color(0.9098039, 0.2901961, 0.41568628, 1), Color(0.9411765, 0.8156863, 0.3764706, 1), Color(0.47843137, 0.2901961, 0.78431374, 1), Color(0.95686275, 0.9411765, 0.9098039, 1)])
+bus_color = Color(0.22745098, 0.6039216, 0.627451, 1)
+night = 0.17142857142857146
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=256501897]
+environment = SubResource("Environment_uikrx")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1490758893]
+transform = Transform3D(-0.9928769, -0.004728134, 0.11905137, 0, 0.9992124, 0.03968379, -0.11914522, 0.039401118, -0.99209476, 0, 30, 0)
+light_color = Color(1, 0.72156864, 0.5647059, 1)
+light_energy = 0.70346487
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0
+
+[node name="Street" type="Node3D" parent="." unique_id=972715954]
+
+[node name="Horizon" type="Node3D" parent="." unique_id=448429600]
+
+[node name="Landmark" type="Node3D" parent="Horizon" unique_id=172380199 instance=ExtResource("11_2yvgh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -340)

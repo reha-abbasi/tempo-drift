@@ -1,0 +1,335 @@
+[
+ {
+  "v": "27",
+  "name": "Godot",
+  "date": "1 Nov 2026",
+  "items": [
+   "Rebuilt in Godot with real 3D scenes",
+   "Cities, landmarks and cars you can open in the editor",
+   "Same rules, music and menus as v26"
+  ]
+ },
+ {
+  "v": "26",
+  "name": "Note Mode",
+  "date": "26 Oct 2026",
+  "items": [
+   "No coins: every note is a ring",
+   "Swipe into each ring",
+   "EXCELLENT, GOOD, OK timing",
+   "Closing cue ring",
+   "No tapping or glass",
+   "New Flight School"
+  ]
+ },
+ {
+  "v": "25.1",
+  "name": "Map Fix",
+  "date": "26 Oct 2026",
+  "items": [
+   "Cities sit on their real spots",
+   "Smaller map markers",
+   "Same world map for every era"
+  ]
+ },
+ {
+  "v": "25",
+  "name": "Pilot Shop",
+  "date": "26 Oct 2026",
+  "items": [
+   "Astronaut pilot by default",
+   "5 pilots to buy",
+   "Each pilot has its own music",
+   "Rescue 25% easier, arrives on the beat",
+   "Music stays on the beat",
+   "Pulse and glass play in key"
+  ]
+ },
+ {
+  "v": "24",
+  "name": "Eight Cities",
+  "date": "25 Oct 2026",
+  "items": [
+   "Two lives: car, then jetpack",
+   "3 new, harder cities per era",
+   "More swipes every episode",
+   "PLAY opens the map",
+   "Intro music",
+   "Dev mode on at start"
+  ]
+ },
+ {
+  "v": "23",
+  "name": "Bail Out",
+  "date": "25 Oct 2026",
+  "items": [
+   "Crash: car explodes, pilot ejects",
+   "Jetpack as a second life",
+   "Rescue meter wins the car back",
+   "Lives replace Sync"
+  ]
+ },
+ {
+  "v": "22",
+  "name": "More Notes",
+  "date": "25 Oct 2026",
+  "items": [
+   "Busier melodies",
+   "More coins and lane changes",
+   "No guide line"
+  ]
+ },
+ {
+  "v": "21.2",
+  "name": "Lane Ladder",
+  "date": "25 Oct 2026",
+  "items": [
+   "Lane changes rise each episode"
+  ]
+ },
+ {
+  "v": "21.1",
+  "name": "Gold Rush",
+  "date": "25 Oct 2026",
+  "items": [
+   "Coins collapse into the counter",
+   "Sparkle trail and burst"
+  ]
+ },
+ {
+  "v": "21",
+  "name": "Magnet Catch",
+  "date": "25 Oct 2026",
+  "items": [
+   "Coins pulled to the car",
+   "Coin counter",
+   "Sparkles on catch"
+  ]
+ },
+ {
+  "v": "20",
+  "name": "The Band",
+  "date": "24 Oct 2026",
+  "items": [
+   "Band builds with your Flow",
+   "Overdrive ×8",
+   "Grades D to S",
+   "3 stars per episode"
+  ]
+ },
+ {
+  "v": "18",
+  "name": "Play Test",
+  "date": "24 Oct 2026",
+  "items": [
+   "Audio sync setting",
+   "Revive for coins",
+   "Car perks",
+   "Daily gift card",
+   "Bigger buttons"
+  ]
+ },
+ {
+  "v": "17.2",
+  "name": "Change Log",
+  "date": "23 Oct 2026",
+  "items": [
+   "This change log"
+  ]
+ },
+ {
+  "v": "17.1",
+  "name": "One Lane at a Time",
+  "date": "23 Oct 2026",
+  "items": [
+   "One swipe, one lane"
+  ]
+ },
+ {
+  "v": "17",
+  "name": "World Map",
+  "date": "23 Oct 2026",
+  "items": [
+   "World map of cities",
+   "Glass shatters",
+   "Glass crash costs a life",
+   "Upright up/down signs",
+   "Coins colored by height"
+  ]
+ },
+ {
+  "v": "16",
+  "name": "Tempo Drift",
+  "date": "23 Oct 2026",
+  "items": [
+   "New name",
+   "Coins in glass",
+   "Calmer coins",
+   "iPhone version"
+  ]
+ },
+ {
+  "v": "15",
+  "name": "Title Screen",
+  "date": "23 Oct 2026",
+  "items": [
+   "New main menu",
+   "Settings panel",
+   "Taps never change lane",
+   "Auto quality on slow phones"
+  ]
+ },
+ {
+  "v": "14.1",
+  "name": "One-Note Hops",
+  "date": "22 Oct 2026",
+  "items": [
+   "Hops last one note"
+  ]
+ },
+ {
+  "v": "14",
+  "name": "Golden Hour",
+  "date": "22 Oct 2026",
+  "items": [
+   "Realistic look",
+   "Past, Present, Future",
+   "Three lanes",
+   "Tap to break glass",
+   "Power-ups, missions, daily gift"
+  ]
+ },
+ {
+  "v": "13",
+  "name": "Slow-Motion School",
+  "date": "22 Oct 2026",
+  "items": [
+   "Flight School slows down",
+   "Art-style demos"
+  ]
+ },
+ {
+  "v": "12",
+  "name": "Five Lanes",
+  "date": "22 Oct 2026",
+  "items": [
+   "Five lanes",
+   "Haptics",
+   "Studio intro"
+  ]
+ },
+ {
+  "v": "11",
+  "name": "Dev Mode",
+  "date": "22 Oct 2026",
+  "items": [
+   "Dev mode switch"
+  ]
+ },
+ {
+  "v": "10",
+  "name": "Around the World",
+  "date": "22 Oct 2026",
+  "items": [
+   "Four eras",
+   "Real cities",
+   "Swing band"
+  ]
+ },
+ {
+  "v": "9",
+  "name": "Garage",
+  "date": "21 Oct 2026",
+  "items": [
+   "Smaller car",
+   "Five cars to buy",
+   "Flight School"
+  ]
+ },
+ {
+  "v": "8",
+  "name": "Five Stars",
+  "date": "21 Oct 2026",
+  "items": [
+   "A backdrop per episode",
+   "5-star system",
+   "Menu music"
+  ]
+ },
+ {
+  "v": "7",
+  "name": "Episodes",
+  "date": "21 Oct 2026",
+  "items": [
+   "Three heights",
+   "Roadblocks",
+   "20 songs, Infinite mode",
+   "High scores"
+  ]
+ },
+ {
+  "v": "6.1",
+  "name": "In Sync",
+  "date": "21 Oct 2026",
+  "items": [
+   "Game follows the music clock"
+  ]
+ },
+ {
+  "v": "6",
+  "name": "Feedback Round",
+  "date": "21 Oct 2026",
+  "items": [
+   "Pause and resume",
+   "Crash tumble",
+   "Techno style"
+  ]
+ },
+ {
+  "v": "5",
+  "name": "Sunset City",
+  "date": "21 Oct 2026",
+  "items": [
+   "Sunset City",
+   "Moving traffic",
+   "Call-outs"
+  ]
+ },
+ {
+  "v": "4",
+  "name": "Clear Path",
+  "date": "21 Oct 2026",
+  "items": [
+   "Path line",
+   "Sound toggle",
+   "iPhone silent-switch fix"
+  ]
+ },
+ {
+  "v": "3",
+  "name": "Two Styles",
+  "date": "21 Oct 2026",
+  "items": [
+   "Cyberpunk and Arcade",
+   "No camera shake",
+   "Shields"
+  ]
+ },
+ {
+  "v": "2",
+  "name": "Rain Canyon",
+  "date": "21 Oct 2026",
+  "items": [
+   "Flying-car rhythm game",
+   "Coins play notes"
+  ]
+ },
+ {
+  "v": "1",
+  "name": "First Draft",
+  "date": "20 Oct 2026",
+  "items": [
+   "Godot runner draft"
+  ]
+ }
+]

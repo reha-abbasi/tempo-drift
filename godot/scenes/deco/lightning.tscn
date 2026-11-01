@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/deco.gd" id="1_q7wsd"]
+
+[node name="Lightning" type="Node3D" unique_id=1108584077]
+script = ExtResource("1_q7wsd")
+kind = "lightning"
+
+[node name="Bolt" type="MeshInstance3D" parent="." unique_id=1507897355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -240)
+visible = false
+
+[node name="Flash" type="OmniLight3D" parent="." unique_id=1446178633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 80, -120)
+light_color = Color(0.85, 1, 0.95, 1)
+light_energy = 0.0
+omni_range = 400.0

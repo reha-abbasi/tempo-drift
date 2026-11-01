@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/shaders/window.gdshader" id="1_ajm2g"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ajm2g")
+shader_parameter/glass_color = Color(0.03, 0.04, 0.06, 1)
+shader_parameter/room_color = Color(0.75, 0.9, 1, 1)
+shader_parameter/frame_color = null
+shader_parameter/spandrel_color = Color(0.08, 0.09, 0.11, 1)
+shader_parameter/room_energy = null
+shader_parameter/night = 1.0
+shader_parameter/spandrel = 0.22
+shader_parameter/mullion = null

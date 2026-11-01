@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/city.gd" id="1_26bee"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_5/section_0.tscn" id="2_m643l"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_5/section_1.tscn" id="3_nqqpa"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_5/section_2.tscn" id="4_d6n33"]
+[ext_resource type="PackedScene" path="res://scenes/cities/old_5/section_3.tscn" id="5_urveq"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/oldcar.tscn" id="6_rhumb"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/dbus.tscn" id="7_sfmdw"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/biplane.tscn" id="8_fbjdt"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="9_q3705"]
+[ext_resource type="Shader" path="res://materials/shaders/sky.gdshader" id="10_q85c5"]
+[ext_resource type="PackedScene" path="res://scenes/landmarks/vienna.tscn" id="11_kegk5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qd1ya"]
+shader = ExtResource("10_q85c5")
+shader_parameter/top = Color(0.2901961, 0.3137255, 0.5647059, 1)
+shader_parameter/mid = Color(0.72156864, 0.59607846, 0.72156864, 1)
+shader_parameter/hor = Color(1, 0.6901961, 0.627451, 1)
+shader_parameter/sun_color = Color(1, 0.8156863, 0.65882355, 1)
+shader_parameter/sun_dir = Vector3(0.119092405, 0.029773101, -0.9924367)
+shader_parameter/low = null
+shader_parameter/sea = null
+shader_parameter/stars = 0.15
+shader_parameter/moon_dir = null
+shader_parameter/moon_cut = null
+shader_parameter/moon_r = null
+
+[sub_resource type="Sky" id="Sky_qp1tn"]
+sky_material = SubResource("ShaderMaterial_qd1ya")
+
+[sub_resource type="Environment" id="Environment_8xmpp"]
+background_mode = 2
+sky = SubResource("Sky_qp1tn")
+ambient_light_source = 2
+ambient_light_color = Color(0.6682353, 0.6101961, 0.5364706, 1)
+ambient_light_energy = 0.43290144
+tonemap_mode = 3
+tonemap_exposure = 0.85037035
+tonemap_white = 16.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.96
+fog_enabled = true
+fog_light_color = Color(0.76862746, 0.65882355, 0.6901961, 1)
+fog_density = 0.0042685713
+fog_sky_affect = 0.0
+
+[node name="Vienna1905" type="Node3D" unique_id=1980802177]
+script = ExtResource("1_26bee")
+display_name = "Vienna 1905"
+sections = Array[PackedScene]([ExtResource("2_m643l"), ExtResource("3_nqqpa"), ExtResource("4_d6n33"), ExtResource("5_urveq")])
+traffic = {
+"barrier": ExtResource("9_q3705"),
+"biplane": ExtResource("8_fbjdt"),
+"dbus": ExtResource("7_sfmdw"),
+"oldcar": ExtResource("6_rhumb")
+}
+car_colors = Array[Color]([Color(0.101960786, 0.101960786, 0.101960786, 1), Color(0.22745098, 0.16470589, 0.101960786, 1), Color(0.16470589, 0.101960786, 0.16470589, 1)])
+bus_color = Color(0.5411765, 0.16470589, 0.16470589, 1)
+night = 0.24489795918367346
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1054606578]
+environment = SubResource("Environment_8xmpp")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=199489491]
+transform = Transform3D(-0.9928768, -0.0035473227, 0.119092405, 0, 0.9995567, 0.029773101, -0.11914522, 0.029561022, -0.9924367, 0, 30, 0)
+light_color = Color(1, 0.7529412, 0.65882355, 1)
+light_energy = 0.6493522
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0
+
+[node name="Street" type="Node3D" parent="." unique_id=1404950619]
+
+[node name="Horizon" type="Node3D" parent="." unique_id=561079381]
+
+[node name="Landmark" type="Node3D" parent="Horizon" unique_id=902595109 instance=ExtResource("11_kegk5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -340)

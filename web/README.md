@@ -1,7 +1,7 @@
 # web/ — Tempo Drift, the browser version
 
 This is the game as it is now: a flying-car rhythm runner made with Three.js (a 3D library for web pages).
-It replaced the first Godot draft, which stays in the rest of the project for a later native app.
+The Godot version of the same game, built on this one, is in [`godot/`](../godot).
 
 | File | What it is |
 |---|---|

@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/car_look.gd" id="1_x3ruj"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/cars/car_retro.res" id="2_gde55"]
+[ext_resource type="Shader" path="res://materials/shaders/flame.gdshader" id="3_5ymxs"]
+[ext_resource type="Shader" path="res://materials/shaders/glow.gdshader" id="4_2ncsf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t4j0j"]
+render_priority = 0
+shader = ExtResource("3_5ymxs")
+shader_parameter/core = null
+shader_parameter/outer = null
+shader_parameter/intensity = null
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3dmed"]
+material = SubResource("ShaderMaterial_t4j0j")
+top_radius = 0.07
+bottom_radius = 0.0
+height = 0.42
+radial_segments = 16
+rings = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0hsjm"]
+render_priority = 0
+shader = ExtResource("4_2ncsf")
+shader_parameter/color = null
+shader_parameter/intensity = 1.6
+shader_parameter/softness = null
+
+[sub_resource type="QuadMesh" id="QuadMesh_eakj0"]
+material = SubResource("ShaderMaterial_0hsjm")
+size = Vector2(0.28, 0.28)
+
+[node name="Retro" type="Node3D" unique_id=767240727]
+script = ExtResource("1_x3ruj")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1951814096]
+mesh = ExtResource("2_gde55")
+
+[node name="Flame0" type="Node3D" parent="." unique_id=955460494 groups=["flame"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 1.08)
+
+[node name="Cone" type="MeshInstance3D" parent="Flame0" unique_id=568359958]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0.21)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_3dmed")
+
+[node name="Glow" type="MeshInstance3D" parent="Flame0" unique_id=90011067]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_eakj0")
+
+[node name="Headlamps" type="SpotLight3D" parent="." unique_id=728835529]
+transform = Transform3D(1, 0, 0, 0, 0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0, 0.1, -1)
+light_color = Color(1, 0.9, 0.75, 1)
+light_energy = 2.5
+spot_range = 18.0
+spot_angle = 26.0
+
+[node name="Underglow" type="OmniLight3D" parent="." unique_id=807294991]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7, 0.3)
+light_energy = 1.4
+omni_range = 4.0
+
+[node name="KeyLight" type="OmniLight3D" parent="." unique_id=1315921926]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 2.2)
+omni_range = 4.5

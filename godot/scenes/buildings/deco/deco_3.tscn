@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/deco_3.res" id="1_mwt3d"]
+
+[node name="Deco3" type="Node3D" unique_id=718120539]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=2028406320]
+cast_shadow = 0
+visibility_range_end = 250.0
+visibility_range_end_margin = 30.0
+visibility_range_fade_mode = 1
+mesh = ExtResource("1_mwt3d")

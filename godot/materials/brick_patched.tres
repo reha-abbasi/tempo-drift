@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/red_brick_plaster_patch_02/red_brick_plaster_patch_02_albedo.jpg" id="1_jem04"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/red_brick_plaster_patch_02/red_brick_plaster_patch_02_normal.jpg" id="2_upfih"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/red_brick_plaster_patch_02/red_brick_plaster_patch_02_arm.jpg" id="3_p7d0w"]
+
+[resource]
+albedo_texture = ExtResource("1_jem04")
+orm_texture = ExtResource("3_p7d0w")
+normal_enabled = true
+normal_texture = ExtResource("2_upfih")
+texture_filter = 5

@@ -1,0 +1,75 @@
+{
+	"cyber": {
+		"cyber_a": 14.0,
+		"cyber_b": 12.0,
+		"cyber_mid": 10.0,
+		"cyber_mid_b": 13.0,
+		"cyber_slim": 11.0,
+		"cyber_wide": 20.0
+	},
+	"deco": {
+		"deco_0": 12.0,
+		"deco_1": 14.0,
+		"deco_2": 10.0,
+		"deco_3": 11.0
+	},
+	"glass": {
+		"glass_fins": 16.0,
+		"glass_gold": 20.0,
+		"glass_silver": 15.0,
+		"glass_slim": 12.0,
+		"glass_stone": 18.0
+	},
+	"havana": {
+		"havana_0": 9.0,
+		"havana_1": 11.0,
+		"havana_2": 8.0,
+		"havana_3": 10.0,
+		"havana_4": 12.0
+	},
+	"london": {
+		"london_brick_shops": 9.0,
+		"london_brick_tall": 11.0,
+		"london_brick_terrace": 7.5,
+		"london_stone_narrow": 6.5,
+		"london_stone_wide": 14.0,
+		"london_stucco": 8.0
+	},
+	"ottoman": {
+		"ottoman_0": 8.0,
+		"ottoman_1": 10.0,
+		"ottoman_2": 7.0,
+		"ottoman_3": 9.0
+	},
+	"paris": {
+		"paris_0": 12.0,
+		"paris_1": 9.0,
+		"paris_2": 14.0,
+		"paris_3": 10.0
+	},
+	"rio": {
+		"rio_0": 10.0,
+		"rio_1": 12.0,
+		"rio_2": 9.0,
+		"rio_3": 11.0
+	},
+	"sf": {
+		"sf_0": 7.0,
+		"sf_1": 8.0,
+		"sf_2": 7.0,
+		"sf_3": 8.0,
+		"sf_tower": 16.0
+	},
+	"sg": {
+		"sg_crown": 18.0,
+		"sg_fins": 14.0,
+		"sg_low": 20.0,
+		"sg_tall": 13.0
+	},
+	"sydney": {
+		"syd_0": 16.0,
+		"syd_1": 14.0,
+		"syd_2": 18.0,
+		"syd_3": 12.0
+	}
+}

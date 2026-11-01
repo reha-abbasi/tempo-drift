@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/shaders/road_wet.gdshader" id="1_f7idg"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/asphalt_02/asphalt_02_albedo.jpg" id="2_uwjt2"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/asphalt_02/asphalt_02_normal.jpg" id="3_ros2i"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_f7idg")
+shader_parameter/albedo_tex = ExtResource("2_uwjt2")
+shader_parameter/normal_tex = ExtResource("3_ros2i")
+shader_parameter/tile = null
+shader_parameter/darkness = null
+shader_parameter/shine = null

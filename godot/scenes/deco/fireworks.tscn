@@ -1,0 +1,200 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/deco.gd" id="1_w0j2x"]
+
+[sub_resource type="Gradient" id="Gradient_mpmmm"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mokq5"]
+gradient = SubResource("Gradient_mpmmm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qv4m0"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 12.0
+initial_velocity_max = 16.0
+gravity = Vector3(0, -4, 0)
+damping_min = 4.0
+damping_max = 6.0
+color_ramp = SubResource("GradientTexture1D_mokq5")
+
+[sub_resource type="Gradient" id="Gradient_20c6r"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jes8r"]
+gradient = SubResource("Gradient_20c6r")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5w8l4"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_jes8r")
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_jhqgb"]
+material = SubResource("StandardMaterial3D_5w8l4")
+size = Vector2(1.2, 1.2)
+
+[sub_resource type="Gradient" id="Gradient_u1l4f"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_e152m"]
+gradient = SubResource("Gradient_u1l4f")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bi12a"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 12.0
+initial_velocity_max = 16.0
+gravity = Vector3(0, -4, 0)
+damping_min = 4.0
+damping_max = 6.0
+color_ramp = SubResource("GradientTexture1D_e152m")
+
+[sub_resource type="Gradient" id="Gradient_oadjx"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_u8qhu"]
+gradient = SubResource("Gradient_oadjx")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fchgv"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_u8qhu")
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_sho24"]
+material = SubResource("StandardMaterial3D_fchgv")
+size = Vector2(1.2, 1.2)
+
+[sub_resource type="Gradient" id="Gradient_6e347"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_27jrg"]
+gradient = SubResource("Gradient_6e347")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dk8h3"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 12.0
+initial_velocity_max = 16.0
+gravity = Vector3(0, -4, 0)
+damping_min = 4.0
+damping_max = 6.0
+color_ramp = SubResource("GradientTexture1D_27jrg")
+
+[sub_resource type="Gradient" id="Gradient_h06c5"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_230sr"]
+gradient = SubResource("Gradient_h06c5")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g2gky"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_230sr")
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_lk6d2"]
+material = SubResource("StandardMaterial3D_g2gky")
+size = Vector2(1.2, 1.2)
+
+[sub_resource type="Gradient" id="Gradient_uv2x5"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2qrv4"]
+gradient = SubResource("Gradient_uv2x5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8y5wm"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 12.0
+initial_velocity_max = 16.0
+gravity = Vector3(0, -4, 0)
+damping_min = 4.0
+damping_max = 6.0
+color_ramp = SubResource("GradientTexture1D_2qrv4")
+
+[sub_resource type="Gradient" id="Gradient_xw2d3"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_37qbf"]
+gradient = SubResource("Gradient_xw2d3")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7653f"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_37qbf")
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_md4hf"]
+material = SubResource("StandardMaterial3D_7653f")
+size = Vector2(1.2, 1.2)
+
+[node name="Fireworks" type="Node3D" unique_id=1731252794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -150)
+script = ExtResource("1_w0j2x")
+kind = "fireworks"
+
+[node name="Burst0" type="GPUParticles3D" parent="." unique_id=589473371]
+emitting = false
+amount = 90
+lifetime = 2.2
+one_shot = true
+explosiveness = 1.0
+visibility_aabb = AABB(-40, -40, -40, 80, 80, 80)
+process_material = SubResource("ParticleProcessMaterial_qv4m0")
+draw_pass_1 = SubResource("QuadMesh_jhqgb")
+
+[node name="Burst1" type="GPUParticles3D" parent="." unique_id=1566931603]
+emitting = false
+amount = 90
+lifetime = 2.2
+one_shot = true
+explosiveness = 1.0
+visibility_aabb = AABB(-40, -40, -40, 80, 80, 80)
+process_material = SubResource("ParticleProcessMaterial_bi12a")
+draw_pass_1 = SubResource("QuadMesh_sho24")
+
+[node name="Burst2" type="GPUParticles3D" parent="." unique_id=7425391]
+emitting = false
+amount = 90
+lifetime = 2.2
+one_shot = true
+explosiveness = 1.0
+visibility_aabb = AABB(-40, -40, -40, 80, 80, 80)
+process_material = SubResource("ParticleProcessMaterial_dk8h3")
+draw_pass_1 = SubResource("QuadMesh_lk6d2")
+
+[node name="Burst3" type="GPUParticles3D" parent="." unique_id=376718091]
+emitting = false
+amount = 90
+lifetime = 2.2
+one_shot = true
+explosiveness = 1.0
+visibility_aabb = AABB(-40, -40, -40, 80, 80, 80)
+process_material = SubResource("ParticleProcessMaterial_8y5wm")
+draw_pass_1 = SubResource("QuadMesh_md4hf")

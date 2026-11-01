@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/granite_tile/granite_tile_albedo.jpg" id="1_0yvif"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/granite_tile/granite_tile_normal.jpg" id="2_2jant"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/granite_tile/granite_tile_arm.jpg" id="3_kullq"]
+
+[resource]
+albedo_texture = ExtResource("1_0yvif")
+orm_texture = ExtResource("3_kullq")
+normal_enabled = true
+normal_texture = ExtResource("2_2jant")
+texture_filter = 5

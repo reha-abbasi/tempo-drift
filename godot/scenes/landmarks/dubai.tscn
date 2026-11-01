@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/dubai.res" id="1_p23he"]
+
+[node name="Dubai" type="Node3D" unique_id=272274847]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1247418788]
+cast_shadow = 0
+mesh = ExtResource("1_p23he")
+
+[node name="Beacon" type="OmniLight3D" parent="." unique_id=1673361988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 128, -40)
+light_color = Color(1, 0.3, 0.25, 1)

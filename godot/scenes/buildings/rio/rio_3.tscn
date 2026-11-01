@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/rio_3.res" id="1_r80do"]
+
+[node name="Rio3" type="Node3D" unique_id=1514228504]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=1059275636]
+cast_shadow = 0
+visibility_range_end = 250.0
+visibility_range_end_margin = 30.0
+visibility_range_fade_mode = 1
+mesh = ExtResource("1_r80do")

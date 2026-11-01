@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/concrete_pavement/concrete_pavement_albedo.jpg" id="1_e46ui"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/concrete_pavement/concrete_pavement_normal.jpg" id="2_enarq"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/concrete_pavement/concrete_pavement_arm.jpg" id="3_57jll"]
+
+[resource]
+albedo_texture = ExtResource("1_e46ui")
+orm_texture = ExtResource("3_57jll")
+normal_enabled = true
+normal_texture = ExtResource("2_enarq")
+texture_filter = 5

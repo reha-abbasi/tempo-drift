@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/seoul.res" id="1_yusb8"]
+
+[node name="Seoul" type="Node3D" unique_id=1145570572]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1763198037]
+cast_shadow = 0
+mesh = ExtResource("1_yusb8")

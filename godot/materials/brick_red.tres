@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/brick_wall_07/brick_wall_07_albedo.jpg" id="1_v2t5b"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/brick_wall_07/brick_wall_07_normal.jpg" id="2_dvho8"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/brick_wall_07/brick_wall_07_arm.jpg" id="3_ysuha"]
+
+[resource]
+albedo_texture = ExtResource("1_v2t5b")
+orm_texture = ExtResource("3_ysuha")
+normal_enabled = true
+normal_texture = ExtResource("2_dvho8")
+texture_filter = 5

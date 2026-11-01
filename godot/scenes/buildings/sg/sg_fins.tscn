@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/sg_fins.res" id="1_nubwf"]
+
+[node name="SgFins" type="Node3D" unique_id=1527265380]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=819617041]
+cast_shadow = 0
+visibility_range_end = 520.0
+mesh = ExtResource("1_nubwf")

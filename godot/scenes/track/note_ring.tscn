@@ -1,0 +1,129 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/note_ring.gd" id="1_vpysa"]
+[ext_resource type="Shader" path="res://materials/shaders/ring.gdshader" id="2_rf12o"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/track/chevron.res" id="3_t4okp"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/track/badge_magnet.res" id="4_wy6n2"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/track/badge_shield.res" id="5_ldad7"]
+[ext_resource type="FontFile" path="res://fonts/Syncopate-Bold.ttf" id="6_8gc7t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3q3kw"]
+render_priority = 0
+shader = ExtResource("2_rf12o")
+shader_parameter/color = Color(1, 0.89, 0.72, 1)
+shader_parameter/energy = 2.6
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[sub_resource type="TorusMesh" id="TorusMesh_psjbf"]
+material = SubResource("ShaderMaterial_3q3kw")
+inner_radius = 0.784
+outer_radius = 0.924
+rings = 48
+ring_segments = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6u06c"]
+render_priority = 0
+shader = ExtResource("2_rf12o")
+shader_parameter/color = Color(1, 0.89, 0.72, 1)
+shader_parameter/energy = 0.35
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_yvj01"]
+material = SubResource("ShaderMaterial_6u06c")
+top_radius = 0.784
+bottom_radius = 0.784
+height = 0.002
+radial_segments = 40
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p0cf7"]
+render_priority = 0
+shader = ExtResource("2_rf12o")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/energy = 1.8
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[sub_resource type="TorusMesh" id="TorusMesh_dr08u"]
+material = SubResource("ShaderMaterial_p0cf7")
+inner_radius = 0.84
+outer_radius = 0.889
+rings = 48
+ring_segments = 6
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fu2g8"]
+render_priority = 0
+shader = ExtResource("2_rf12o")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/energy = 2.0
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5xw3v"]
+render_priority = 0
+shader = ExtResource("2_rf12o")
+shader_parameter/color = Color(1, 0.35, 0.3, 1)
+shader_parameter/energy = 2.4
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8u1tc"]
+render_priority = 0
+shader = ExtResource("2_rf12o")
+shader_parameter/color = Color(0.45, 0.95, 1, 1)
+shader_parameter/energy = 2.4
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[node name="NoteRing" type="Node3D" unique_id=158267443]
+script = ExtResource("1_vpysa")
+
+[node name="Band" type="MeshInstance3D" parent="." unique_id=1229713974]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_psjbf")
+
+[node name="Fill" type="MeshInstance3D" parent="." unique_id=370304947]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_yvj01")
+
+[node name="Cue" type="MeshInstance3D" parent="." unique_id=664875946]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_dr08u")
+
+[node name="Chevron" type="MeshInstance3D" parent="." unique_id=455609509]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_fu2g8")
+cast_shadow = 0
+mesh = ExtResource("3_t4okp")
+
+[node name="Magnet" type="MeshInstance3D" parent="." unique_id=75694923]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_5xw3v")
+cast_shadow = 0
+mesh = ExtResource("4_wy6n2")
+
+[node name="Shield" type="MeshInstance3D" parent="." unique_id=1956498213]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_8u1tc")
+cast_shadow = 0
+mesh = ExtResource("5_ldad7")
+
+[node name="Double" type="Label3D" parent="." unique_id=1283351215]
+visible = false
+pixel_size = 0.004
+modulate = Color(1, 0.82, 0.3, 1)
+text = "2×"
+font = ExtResource("6_8gc7t")
+font_size = 96
+outline_size = 0
+
+[node name="Glow" type="OmniLight3D" parent="." unique_id=381572525]
+light_color = Color(1, 0.89, 0.72, 1)
+light_energy = 0.8
+omni_range = 3.0

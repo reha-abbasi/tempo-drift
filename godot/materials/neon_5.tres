@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/shaders/neon_sign.gdshader" id="1_lgwj1"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_lgwj1")
+shader_parameter/color = Color(1, 0.35, 0.2, 1)
+shader_parameter/energy = null
+shader_parameter/seed = 8.8
+shader_parameter/grid = null
+shader_parameter/vertex_tint = null

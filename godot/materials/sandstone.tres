@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/large_sandstone_blocks/large_sandstone_blocks_albedo.jpg" id="1_7hsmd"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/large_sandstone_blocks/large_sandstone_blocks_normal.jpg" id="2_daid1"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/large_sandstone_blocks/large_sandstone_blocks_arm.jpg" id="3_uspl6"]
+
+[resource]
+albedo_texture = ExtResource("1_7hsmd")
+orm_texture = ExtResource("3_uspl6")
+normal_enabled = true
+normal_texture = ExtResource("2_daid1")
+texture_filter = 5

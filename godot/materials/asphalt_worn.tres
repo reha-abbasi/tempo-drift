@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/worn_asphalt/worn_asphalt_albedo.jpg" id="1_nkfmx"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/worn_asphalt/worn_asphalt_normal.jpg" id="2_avoqq"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/worn_asphalt/worn_asphalt_arm.jpg" id="3_b1bpw"]
+
+[resource]
+albedo_texture = ExtResource("1_nkfmx")
+orm_texture = ExtResource("3_b1bpw")
+normal_enabled = true
+normal_texture = ExtResource("2_avoqq")
+texture_filter = 5

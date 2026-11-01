@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/cobblestone_floor_04/cobblestone_floor_04_albedo.jpg" id="1_dwooy"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/cobblestone_floor_04/cobblestone_floor_04_normal.jpg" id="2_2jtkm"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/cobblestone_floor_04/cobblestone_floor_04_arm.jpg" id="3_g0bvm"]
+
+[resource]
+albedo_texture = ExtResource("1_dwooy")
+orm_texture = ExtResource("3_g0bvm")
+normal_enabled = true
+normal_texture = ExtResource("2_2jtkm")
+texture_filter = 5

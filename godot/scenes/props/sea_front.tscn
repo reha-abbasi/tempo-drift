@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/sea_front.gd" id="1_b1avs"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/sea_rail.res" id="2_blw05"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dokrb"]
+albedo_color = Color(0.16, 0.35, 0.54, 1)
+metallic = 0.3
+roughness = 0.12
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_q5ljb"]
+material = SubResource("StandardMaterial3D_dokrb")
+size = Vector2(400, 48)
+
+[node name="SeaFront" type="Node3D" unique_id=523142241]
+script = ExtResource("1_b1avs")
+
+[node name="Rail" type="MeshInstance3D" parent="." unique_id=2060385262]
+mesh = ExtResource("2_blw05")
+
+[node name="Sea" type="MeshInstance3D" parent="." unique_id=723922376]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.5, -1.2, -24)
+mesh = SubResource("PlaneMesh_q5ljb")

@@ -1,0 +1,81 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/city.gd" id="1_43dok"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_5/section_0.tscn" id="2_2l00t"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_5/section_1.tscn" id="3_tfa3u"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_5/section_2.tscn" id="4_aokr3"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_5/section_3.tscn" id="5_wbdwo"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/taxi.tscn" id="6_7eacv"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/truck.tscn" id="7_m3bhs"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/bus.tscn" id="8_wuy8g"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/hovercab.tscn" id="9_5t865"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="10_2ltlu"]
+[ext_resource type="Shader" path="res://materials/shaders/sky.gdshader" id="11_j88g5"]
+[ext_resource type="PackedScene" path="res://scenes/landmarks/capetown.tscn" id="12_74fn2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eclms"]
+shader = ExtResource("11_j88g5")
+shader_parameter/top = Color(0.3529412, 0.40784314, 0.72156864, 1)
+shader_parameter/mid = Color(0.78431374, 0.627451, 0.7529412, 1)
+shader_parameter/hor = Color(1, 0.65882355, 0.5647059, 1)
+shader_parameter/sun_color = Color(1, 0.78431374, 0.627451, 1)
+shader_parameter/sun_dir = Vector3(0.119092405, 0.029773101, -0.9924367)
+shader_parameter/low = Color(0.16470589, 0.3529412, 0.5411765, 1)
+shader_parameter/sea = 1.0
+shader_parameter/stars = 0.0
+shader_parameter/moon_dir = null
+shader_parameter/moon_cut = null
+shader_parameter/moon_r = null
+
+[sub_resource type="Sky" id="Sky_l4m8a"]
+sky_material = SubResource("ShaderMaterial_eclms")
+
+[sub_resource type="Environment" id="Environment_f5scq"]
+background_mode = 2
+sky = SubResource("Sky_l4m8a")
+ambient_light_source = 2
+ambient_light_color = Color(0.6345098, 0.62196076, 0.7254902, 1)
+ambient_light_energy = 0.43290144
+tonemap_mode = 3
+tonemap_exposure = 0.8296296
+tonemap_white = 16.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.96
+fog_enabled = true
+fog_light_color = Color(0.78431374, 0.627451, 0.65882355, 1)
+fog_density = 0.0040314286
+fog_sky_affect = 0.0
+
+[node name="CapeTown" type="Node3D" unique_id=371867840]
+script = ExtResource("1_43dok")
+display_name = "Cape Town"
+sections = Array[PackedScene]([ExtResource("2_2l00t"), ExtResource("3_tfa3u"), ExtResource("4_aokr3"), ExtResource("5_wbdwo")])
+traffic = {
+"barrier": ExtResource("10_2ltlu"),
+"bus": ExtResource("8_wuy8g"),
+"hovercab": ExtResource("9_5t865"),
+"taxi": ExtResource("6_7eacv"),
+"truck": ExtResource("7_m3bhs")
+}
+car_colors = Array[Color]([Color(0.101960786, 0.10980392, 0.13333334, 1), Color(0.16470589, 0.16470589, 0.1882353, 1), Color(0.22745098, 0.101960786, 0.101960786, 1)])
+night = 0.1989795918367347
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=309131026]
+environment = SubResource("Environment_f5scq")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=2129247713]
+transform = Transform3D(-0.9928768, -0.0035473227, 0.119092405, 0, 0.9995567, 0.029773101, -0.11914522, 0.029561022, -0.9924367, 0, 30, 0)
+light_color = Color(1, 0.72156864, 0.59607846, 1)
+light_energy = 0.70346487
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0
+
+[node name="Street" type="Node3D" parent="." unique_id=714319570]
+
+[node name="Horizon" type="Node3D" parent="." unique_id=1855519001]
+
+[node name="Landmark" type="Node3D" parent="Horizon" unique_id=1697703314 instance=ExtResource("12_74fn2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -340)

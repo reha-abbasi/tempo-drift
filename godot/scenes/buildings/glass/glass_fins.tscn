@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/glass_fins.res" id="1_y4hjc"]
+
+[node name="GlassFins" type="Node3D" unique_id=1173460127]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=1710338829]
+cast_shadow = 0
+visibility_range_end = 520.0
+mesh = ExtResource("1_y4hjc")

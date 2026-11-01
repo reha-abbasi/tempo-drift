@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/newyork.res" id="1_weorn"]
+
+[node name="Newyork" type="Node3D" unique_id=978669165]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1184324575]
+cast_shadow = 0
+mesh = ExtResource("1_weorn")
+
+[node name="Beacon" type="OmniLight3D" parent="." unique_id=180289998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 112, 0)
+light_color = Color(1, 0.3, 0.25, 1)

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/neon_pole.res" id="1_jrlh2"]
+
+[node name="NeonPole" type="Node3D" unique_id=866504666]
+
+[node name="Pole" type="MeshInstance3D" parent="." unique_id=1819760346]
+visibility_range_end = 240.0
+mesh = ExtResource("1_jrlh2")
+
+[node name="Light" type="OmniLight3D" parent="." unique_id=326545796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 0)
+light_color = Color(1, 0.35, 0.85, 1)
+light_energy = 2.0
+distance_fade_enabled = true
+distance_fade_begin = 70.0
+distance_fade_length = 20.0
+omni_range = 8.0

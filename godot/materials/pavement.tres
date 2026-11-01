@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/pavement_02/pavement_02_albedo.jpg" id="1_2tboq"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/pavement_02/pavement_02_normal.jpg" id="2_ujvah"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/pavement_02/pavement_02_arm.jpg" id="3_07oqa"]
+
+[resource]
+albedo_texture = ExtResource("1_2tboq")
+orm_texture = ExtResource("3_07oqa")
+normal_enabled = true
+normal_texture = ExtResource("2_ujvah")
+texture_filter = 5

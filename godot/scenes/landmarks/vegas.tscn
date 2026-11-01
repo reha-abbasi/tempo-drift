@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/vegas.res" id="1_0isja"]
+
+[node name="Vegas" type="Node3D" unique_id=1839555858]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1628265247]
+cast_shadow = 0
+mesh = ExtResource("1_0isja")

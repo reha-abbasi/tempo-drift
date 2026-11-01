@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/deco.gd" id="1_0s71e"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/drone.tscn" id="2_j7cbe"]
+[ext_resource type="Script" path="res://scripts/traffic.gd" id="3_60b0r"]
+
+[node name="Police" type="Node3D" unique_id=804034703]
+script = ExtResource("1_0s71e")
+kind = "police"
+
+[node name="Drone0" type="Node3D" parent="." unique_id=1212573925]
+
+[node name="Body" type="Node3D" parent="Drone0" unique_id=2061763656 instance=ExtResource("2_j7cbe")]
+script = ExtResource("3_60b0r")
+
+[node name="Red" type="OmniLight3D" parent="Drone0" unique_id=2065614677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.3, 0)
+light_color = Color(1, 0.12, 0.18, 1)
+light_energy = 3.0
+
+[node name="Blue" type="OmniLight3D" parent="Drone0" unique_id=313288996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.3, 0)
+light_color = Color(0.16, 0.42, 1, 1)
+light_energy = 3.0
+
+[node name="Drone1" type="Node3D" parent="." unique_id=1169528066]
+
+[node name="Body" type="Node3D" parent="Drone1" unique_id=1341668722 instance=ExtResource("2_j7cbe")]
+script = ExtResource("3_60b0r")
+
+[node name="Red" type="OmniLight3D" parent="Drone1" unique_id=658945572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.3, 0)
+light_color = Color(1, 0.12, 0.18, 1)
+light_energy = 3.0
+
+[node name="Blue" type="OmniLight3D" parent="Drone1" unique_id=1103992026]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.3, 0)
+light_color = Color(0.16, 0.42, 1, 1)
+light_energy = 3.0
+
+[node name="Drone2" type="Node3D" parent="." unique_id=1791830034]
+
+[node name="Body" type="Node3D" parent="Drone2" unique_id=398973495 instance=ExtResource("2_j7cbe")]
+script = ExtResource("3_60b0r")
+
+[node name="Red" type="OmniLight3D" parent="Drone2" unique_id=1880759706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.3, 0)
+light_color = Color(1, 0.12, 0.18, 1)
+light_energy = 3.0
+
+[node name="Blue" type="OmniLight3D" parent="Drone2" unique_id=1213202665]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.3, 0)
+light_color = Color(0.16, 0.42, 1, 1)
+light_energy = 3.0

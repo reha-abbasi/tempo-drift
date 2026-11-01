@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/losangeles.res" id="1_batox"]
+
+[node name="Losangeles" type="Node3D" unique_id=956550893]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=781708199]
+cast_shadow = 0
+mesh = ExtResource("1_batox")

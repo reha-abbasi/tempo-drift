@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/props/plane_tree.res" id="1_6m3y1"]
+
+[node name="PlaneTree" type="Node3D" unique_id=1630393909]
+
+[node name="Tree" type="MeshInstance3D" parent="." unique_id=658041128]
+visibility_range_end = 240.0
+mesh = ExtResource("1_6m3y1")

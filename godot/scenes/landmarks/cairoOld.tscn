@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/cairoOld.res" id="1_ch30q"]
+
+[node name="CairoOld" type="Node3D" unique_id=1912317352]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1474414609]
+cast_shadow = 0
+mesh = ExtResource("1_ch30q")

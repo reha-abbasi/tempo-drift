@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/istanbul.res" id="1_2qmjt"]
+
+[node name="Istanbul" type="Node3D" unique_id=1988330248]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=590898873]
+cast_shadow = 0
+mesh = ExtResource("1_2qmjt")

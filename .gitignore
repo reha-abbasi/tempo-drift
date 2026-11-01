@@ -1,6 +1,7 @@
-# Godot 4 cache / editor data
+# Godot's cache (rebuilt when the project is opened)
 .godot/
 *.translation
+override.cfg
 
 # Builds
 export/
@@ -12,6 +13,3 @@ build/
 .DS_Store
 Thumbs.db
 godot/tools/node_modules
-godot/tools/.bake.html
-godot/game/.godot/
-godot/previews/

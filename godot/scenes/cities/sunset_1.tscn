@@ -1,0 +1,81 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/city.gd" id="1_oru8y"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_1/section_0.tscn" id="2_svxot"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_1/section_1.tscn" id="3_lqoki"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_1/section_2.tscn" id="4_iqcnw"]
+[ext_resource type="PackedScene" path="res://scenes/cities/sunset_1/section_3.tscn" id="5_ghma2"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/taxi.tscn" id="6_uw2wa"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/truck.tscn" id="7_hna08"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/bus.tscn" id="8_jb48f"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/hovercab.tscn" id="9_0qx45"]
+[ext_resource type="PackedScene" path="res://scenes/traffic/barrier.tscn" id="10_x2k3x"]
+[ext_resource type="Shader" path="res://materials/shaders/sky.gdshader" id="11_e5k2c"]
+[ext_resource type="PackedScene" path="res://scenes/landmarks/rio.tscn" id="12_crp2t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_usiim"]
+shader = ExtResource("11_e5k2c")
+shader_parameter/top = Color(0.45490196, 0.40784314, 0.74509805, 1)
+shader_parameter/mid = Color(0.83137256, 0.6117647, 0.7529412, 1)
+shader_parameter/hor = Color(1, 0.627451, 0.6117647, 1)
+shader_parameter/sun_color = Color(1, 0.74509805, 0.61960787, 1)
+shader_parameter/sun_dir = Vector3(0.11907334, 0.034729727, -0.99227786)
+shader_parameter/low = Color(0.18039216, 0.2901961, 0.5254902, 1)
+shader_parameter/sea = 1.0
+shader_parameter/stars = 0.0
+shader_parameter/moon_dir = null
+shader_parameter/moon_cut = null
+shader_parameter/moon_r = null
+
+[sub_resource type="Sky" id="Sky_kngvb"]
+sky_material = SubResource("ShaderMaterial_usiim")
+
+[sub_resource type="Environment" id="Environment_vvvkk"]
+background_mode = 2
+sky = SubResource("Sky_kngvb")
+ambient_light_source = 2
+ambient_light_color = Color(0.6345098, 0.62196076, 0.7254902, 1)
+ambient_light_energy = 0.43290144
+tonemap_mode = 3
+tonemap_exposure = 0.8296296
+tonemap_white = 16.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.04
+glow_hdr_threshold = 0.96
+fog_enabled = true
+fog_light_color = Color(0.8156863, 0.6039216, 0.6745098, 1)
+fog_density = 0.0040314286
+fog_sky_affect = 0.0
+
+[node name="RiodeJaneiro" type="Node3D" unique_id=1740662230]
+script = ExtResource("1_oru8y")
+display_name = "Rio de Janeiro"
+sections = Array[PackedScene]([ExtResource("2_svxot"), ExtResource("3_lqoki"), ExtResource("4_iqcnw"), ExtResource("5_ghma2")])
+traffic = {
+"barrier": ExtResource("10_x2k3x"),
+"bus": ExtResource("8_jb48f"),
+"hovercab": ExtResource("9_0qx45"),
+"taxi": ExtResource("6_uw2wa"),
+"truck": ExtResource("7_hna08")
+}
+car_colors = Array[Color]([Color(0.101960786, 0.10980392, 0.13333334, 1), Color(0.16470589, 0.16470589, 0.1882353, 1), Color(0.22745098, 0.101960786, 0.101960786, 1)])
+night = 0.16581632653061223
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1413478434]
+environment = SubResource("Environment_vvvkk")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1647859600]
+transform = Transform3D(-0.9928769, -0.0041378816, 0.119073346, 0, 0.99939686, 0.03472973, -0.11914522, 0.034482345, -0.9922779, 0, 30, 0)
+light_color = Color(1, 0.6901961, 0.627451, 1)
+light_energy = 0.70346487
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 60.0
+
+[node name="Street" type="Node3D" parent="." unique_id=671155841]
+
+[node name="Horizon" type="Node3D" parent="." unique_id=2032239548]
+
+[node name="Landmark" type="Node3D" parent="Horizon" unique_id=840526951 instance=ExtResource("12_crp2t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -340)

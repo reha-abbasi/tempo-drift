@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/shaders/vertex_glow.gdshader" id="1_fw0h1"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_fw0h1")

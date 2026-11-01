@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/syd_2.res" id="1_4biga"]
+
+[node name="Syd2" type="Node3D" unique_id=682294066]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=1905235674]
+cast_shadow = 0
+visibility_range_end = 520.0
+mesh = ExtResource("1_4biga")

@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/rio.res" id="1_6yfka"]
+
+[node name="Rio" type="Node3D" unique_id=840526951]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=682369061]
+cast_shadow = 0
+mesh = ExtResource("1_6yfka")

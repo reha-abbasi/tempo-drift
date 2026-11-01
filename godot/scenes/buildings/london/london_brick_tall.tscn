@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/london_brick_tall.res" id="1_bm2yj"]
+
+[node name="LondonBrickTall" type="Node3D" unique_id=1272005348]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=942786732]
+cast_shadow = 0
+visibility_range_end = 250.0
+visibility_range_end_margin = 30.0
+visibility_range_fade_mode = 1
+mesh = ExtResource("1_bm2yj")

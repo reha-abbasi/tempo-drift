@@ -1,0 +1,12 @@
+[gd_resource type="ORMMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/rectangular_facade_tiles_02/rectangular_facade_tiles_02_albedo.jpg" id="1_387s5"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/rectangular_facade_tiles_02/rectangular_facade_tiles_02_normal.jpg" id="2_072h8"]
+[ext_resource type="Texture2D" path="res://assets/polyhaven/textures/rectangular_facade_tiles_02/rectangular_facade_tiles_02_arm.jpg" id="3_vd28a"]
+
+[resource]
+albedo_texture = ExtResource("1_387s5")
+orm_texture = ExtResource("3_vd28a")
+normal_enabled = true
+normal_texture = ExtResource("2_072h8")
+texture_filter = 5

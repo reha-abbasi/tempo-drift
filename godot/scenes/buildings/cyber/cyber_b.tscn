@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/buildings/cyber_b.res" id="1_t5p4t"]
+
+[node name="CyberB" type="Node3D" unique_id=1938968479]
+
+[node name="Building" type="MeshInstance3D" parent="." unique_id=600592971]
+cast_shadow = 0
+visibility_range_end = 520.0
+mesh = ExtResource("1_t5p4t")

@@ -1,0 +1,74 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/traffic.gd" id="1_ficto"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/traffic/drone.res" id="2_vfuht"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xry31"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.31, 0.38, 0.35)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cfjdo"]
+material = SubResource("StandardMaterial3D_xry31")
+top_radius = 0.476
+bottom_radius = 0.476
+height = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q2mh2"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.31, 0.38, 0.35)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_s3xgq"]
+material = SubResource("StandardMaterial3D_q2mh2")
+top_radius = 0.476
+bottom_radius = 0.476
+height = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7rn7"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.31, 0.38, 0.35)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_b6x8p"]
+material = SubResource("StandardMaterial3D_x7rn7")
+top_radius = 0.476
+bottom_radius = 0.476
+height = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxjg7"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.31, 0.38, 0.35)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_usi34"]
+material = SubResource("StandardMaterial3D_yxjg7")
+top_radius = 0.476
+bottom_radius = 0.476
+height = 0.01
+
+[node name="Drone" type="Node3D" unique_id=2061763656]
+script = ExtResource("1_ficto")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1549769785]
+mesh = ExtResource("2_vfuht")
+
+[node name="Rotor" type="MeshInstance3D" parent="." unique_id=2040393870 groups=["spin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.868, 0.308, -0.588)
+mesh = SubResource("CylinderMesh_cfjdo")
+
+[node name="@MeshInstance3D@2" type="MeshInstance3D" parent="." unique_id=1155198723 groups=["spin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.868, 0.308, 0.588)
+mesh = SubResource("CylinderMesh_s3xgq")
+
+[node name="@MeshInstance3D@3" type="MeshInstance3D" parent="." unique_id=678292109 groups=["spin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.868, 0.308, -0.588)
+mesh = SubResource("CylinderMesh_b6x8p")
+
+[node name="@MeshInstance3D@4" type="MeshInstance3D" parent="." unique_id=1396293717 groups=["spin"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.868, 0.308, 0.588)
+mesh = SubResource("CylinderMesh_usi34")

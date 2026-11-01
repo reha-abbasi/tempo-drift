@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/meshes/landmarks/reykjavik.res" id="1_q8rcp"]
+
+[node name="Reykjavik" type="Node3D" unique_id=1946268201]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1134060020]
+cast_shadow = 0
+mesh = ExtResource("1_q8rcp")

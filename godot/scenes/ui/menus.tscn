@@ -1,0 +1,2619 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/menus.gd" id="1_y8rkf"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_brkvs"]
+[ext_resource type="Texture2D" path="res://ui/icons/coin.svg" id="3_86lrg"]
+[ext_resource type="Texture2D" path="res://ui/icons/gear.svg" id="4_5i44c"]
+[ext_resource type="Texture2D" path="res://ui/icons/garage.svg" id="5_hcymh"]
+[ext_resource type="Texture2D" path="res://ui/icons/missions.svg" id="6_35ekw"]
+[ext_resource type="Texture2D" path="res://ui/icons/scores.svg" id="7_4yivb"]
+[ext_resource type="Script" path="res://scripts/ui/world_map.gd" id="8_rhnpv"]
+
+[sub_resource type="Gradient" id="Gradient_53ouh"]
+offsets = PackedFloat32Array(0, 0.16, 0.44, 0.62, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0, 0.03137255, 0.023529412, 0.0627451, 0, 0.03137255, 0.023529412, 0.0627451, 0.7, 0.03137255, 0.023529412, 0.0627451, 0.94)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_dcdr1"]
+gradient = SubResource("Gradient_53ouh")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_koe64"]
+content_margin_left = 11.0
+content_margin_top = 5.0
+content_margin_right = 11.0
+content_margin_bottom = 5.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.83, 0.36, 0.35)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eh5dg"]
+content_margin_left = 11.0
+content_margin_top = 5.0
+content_margin_right = 11.0
+content_margin_bottom = 5.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_44g8l"]
+content_margin_left = 11.0
+content_margin_top = 5.0
+content_margin_right = 11.0
+content_margin_bottom = 5.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.3)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3wey"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.45)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.22)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1pldg"]
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.35)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_840q5"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ygxnl"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dg3l"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 1, 1, 0.1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6pa1"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 1, 1, 0.06)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hcgms"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4byi7"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 1, 1, 0.1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gxaew"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 1, 1, 0.06)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lflqu"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6nyd2"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 1, 1, 0.1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mn70s"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 1, 1, 0.06)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a042l"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.4)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4sy80"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.4)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s2m0p"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ciqkm"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.039215688, 0.03137255, 0.07058824, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u1gob"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.14)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2716d"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.14)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_na0xr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.3529412, 0.41568628, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t13ko"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.14)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="Gradient" id="Gradient_g2os3"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0.9, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4iief"]
+gradient = SubResource("Gradient_g2os3")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6rbtr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g05om"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_36ue4"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.14)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iohwd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.14)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qceo"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.83137256, 0.36078432, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6vuv"]
+content_margin_left = 12.0
+content_margin_top = 11.0
+content_margin_right = 12.0
+content_margin_bottom = 11.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.86)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.16)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pamtp"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.83137256, 0.36078432, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 17
+corner_radius_top_right = 17
+corner_radius_bottom_right = 17
+corner_radius_bottom_left = 17
+
+[sub_resource type="Gradient" id="Gradient_afrp5"]
+offsets = PackedFloat32Array(0, 0.15, 0.5, 0.72, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.6, 0.03137255, 0.023529412, 0.0627451, 0, 0.03137255, 0.023529412, 0.0627451, 0, 0.03137255, 0.023529412, 0.0627451, 0.88, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ld7ej"]
+gradient = SubResource("Gradient_afrp5")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_0s0vr"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0.9, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2b3dl"]
+gradient = SubResource("Gradient_0s0vr")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_05vtp"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0.9, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_82ue8"]
+gradient = SubResource("Gradient_05vtp")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_ssyhx"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0.9, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0xt7e"]
+gradient = SubResource("Gradient_ssyhx")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4tjv1"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eckya"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uph2c"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opu85"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fce6s"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ocotj"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbqmk"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="Gradient" id="Gradient_qbry4"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0.9, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sn360"]
+gradient = SubResource("Gradient_qbry4")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0g4f3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.2)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aqss5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.45, 0.36, 0.2, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.83, 0.36, 0.6)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g0i1f"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.3)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="Gradient" id="Gradient_qpq8o"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.03137255, 0.023529412, 0.0627451, 0.55, 0.03137255, 0.023529412, 0.0627451, 0.9, 0.03137255, 0.023529412, 0.0627451, 0.95)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vnnrf"]
+gradient = SubResource("Gradient_qpq8o")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rgrk7"]
+content_margin_left = 18.0
+content_margin_top = 18.0
+content_margin_right = 18.0
+content_margin_bottom = 18.0
+bg_color = Color(0.078431375, 0.0627451, 0.11764706, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.83, 0.36, 0.45)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(1, 0.7, 0.35, 0.35)
+shadow_size = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qj1gx"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(1, 0.83137256, 0.36078432, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 99
+corner_radius_top_right = 99
+corner_radius_bottom_right = 99
+corner_radius_bottom_left = 99
+
+[node name="Menus" type="CanvasLayer" unique_id=2139067616]
+script = ExtResource("1_y8rkf")
+
+[node name="Root" type="Control" parent="." unique_id=1274421556]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("2_brkvs")
+
+[node name="Home" type="Control" parent="Root" unique_id=580911706]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Home" unique_id=1257729938]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_dcdr1")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Home" unique_id=920380012]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Home/Margin" unique_id=185403788]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="TopBar" type="HBoxContainer" parent="Root/Home/Margin/Column" unique_id=1993158426]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Wallet" type="PanelContainer" parent="Root/Home/Margin/Column/TopBar" unique_id=622009289]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_koe64")
+
+[node name="Row" type="HBoxContainer" parent="Root/Home/Margin/Column/TopBar/Wallet" unique_id=565387290]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Coin" type="TextureRect" parent="Root/Home/Margin/Column/TopBar/Wallet/Row" unique_id=2137588620]
+custom_minimum_size = Vector2(13, 13)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_86lrg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WalletText" type="Label" parent="Root/Home/Margin/Column/TopBar/Wallet/Row" unique_id=323260701]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "0"
+
+[node name="StarTot" type="PanelContainer" parent="Root/Home/Margin/Column/TopBar" unique_id=1027184017]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_eh5dg")
+
+[node name="Row" type="HBoxContainer" parent="Root/Home/Margin/Column/TopBar/StarTot" unique_id=1586100653]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="StarTotText" type="Label" parent="Root/Home/Margin/Column/TopBar/StarTot/Row" unique_id=1020847777]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "★ 0/72"
+
+[node name="Gap" type="Control" parent="Root/Home/Margin/Column/TopBar" unique_id=919513487]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LogBtn" type="Button" parent="Root/Home/Margin/Column/TopBar" unique_id=2054147281]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_44g8l")
+theme_override_font_sizes/font_size = 12
+text = "✦ v27"
+
+[node name="SetBtn" type="Button" parent="Root/Home/Margin/Column/TopBar" unique_id=1980518727]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_k3wey")
+icon = ExtResource("4_5i44c")
+expand_icon = true
+
+[node name="LogoGap" type="Control" parent="Root/Home/Margin/Column" unique_id=451082228]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+
+[node name="Logo" type="Label" parent="Root/Home/Margin/Column" unique_id=1783435509]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Logo"
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(1, 0.96862745, 0.91764706, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.7, 0.48, 0.6)
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/shadow_outline_size = 16
+text = "TEMPO DRIFT"
+horizontal_alignment = 1
+
+[node name="WelcomeBox" type="PanelContainer" parent="Root/Home/Margin/Column" unique_id=1584241443]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1pldg")
+
+[node name="Welcome" type="Label" parent="Root/Home/Margin/Column/WelcomeBox" unique_id=2107877454]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.96862745, 0.91764706, 1)
+text = "Welcome, pilot! Fly through time to the beat."
+
+[node name="Spacer" type="Control" parent="Root/Home/Margin/Column" unique_id=1738054849]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Sheet" type="VBoxContainer" parent="Root/Home/Margin/Column" unique_id=1816651130]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Eras" type="PanelContainer" parent="Root/Home/Margin/Column/Sheet" unique_id=1715125436]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_840q5")
+
+[node name="Row" type="HBoxContainer" parent="Root/Home/Margin/Column/Sheet/Eras" unique_id=1962945114]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="EraOld" type="Button" parent="Root/Home/Margin/Column/Sheet/Eras/Row" unique_id=1881494585]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_ygxnl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3dg3l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_e6pa1")
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "PAST"
+
+[node name="EraSunset" type="Button" parent="Root/Home/Margin/Column/Sheet/Eras/Row" unique_id=1251574596]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_hcgms")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4byi7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_gxaew")
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "PRESENT"
+
+[node name="EraRain" type="Button" parent="Root/Home/Margin/Column/Sheet/Eras/Row" unique_id=1133195419]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_lflqu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_6nyd2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mn70s")
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "FUTURE"
+
+[node name="EraLine" type="HBoxContainer" parent="Root/Home/Margin/Column/Sheet" unique_id=1407355654]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="EraPrev" type="Button" parent="Root/Home/Margin/Column/Sheet/EraLine" unique_id=1874219535]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_a042l")
+theme_override_font_sizes/font_size = 22
+text = "‹"
+
+[node name="EraInfo" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/EraLine" unique_id=1743128959]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="EraSub" type="Label" parent="Root/Home/Margin/Column/Sheet/EraLine/EraInfo" unique_id=931373621]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "London 1890 → Rome 1948"
+horizontal_alignment = 1
+
+[node name="EraMus" type="Label" parent="Root/Home/Margin/Column/Sheet/EraLine/EraInfo" unique_id=988766101]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.84705883, 0.8156863, 0.9254902, 1)
+text = "1890–1955 · swing music"
+horizontal_alignment = 1
+
+[node name="EraNext" type="Button" parent="Root/Home/Margin/Column/Sheet/EraLine" unique_id=952241283]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_4sy80")
+theme_override_font_sizes/font_size = 22
+text = "›"
+
+[node name="Start" type="Button" parent="Root/Home/Margin/Column/Sheet" unique_id=2002008362]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+
+[node name="PlayText" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/Start" unique_id=1649757660]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="PlayLabel" type="Label" parent="Root/Home/Margin/Column/Sheet/Start/PlayText" unique_id=1690908387]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.101960786, 0.039215688, 0.015686275, 1)
+text = "▶ PLAY"
+horizontal_alignment = 1
+
+[node name="PlaySub" type="Label" parent="Root/Home/Margin/Column/Sheet/Start/PlayText" unique_id=1052358962]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.1, 0.04, 0.02, 0.75)
+text = "choose a city · ★ 0/24"
+horizontal_alignment = 1
+
+[node name="Seg" type="HBoxContainer" parent="Root/Home/Margin/Column/Sheet" unique_id=1331197923]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ModeEp" type="Button" parent="Root/Home/Margin/Column/Sheet/Seg" unique_id=921474093]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_s2m0p")
+
+[node name="Text" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/Seg/ModeEp" unique_id=810620748]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="ModeEpLabel" type="Label" parent="Root/Home/Margin/Column/Sheet/Seg/ModeEp/Text" unique_id=765693036]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 13
+text = "FLIGHT SCHOOL"
+horizontal_alignment = 1
+
+[node name="EpsSub" type="Label" parent="Root/Home/Margin/Column/Sheet/Seg/ModeEp/Text" unique_id=1202039170]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "learn the moves"
+horizontal_alignment = 1
+
+[node name="ModeInf" type="Button" parent="Root/Home/Margin/Column/Sheet/Seg" unique_id=1571562817]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_ciqkm")
+
+[node name="Text" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/Seg/ModeInf" unique_id=998967296]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="ModeInfLabel" type="Label" parent="Root/Home/Margin/Column/Sheet/Seg/ModeInf/Text" unique_id=2130056966]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 13
+text = "ENDLESS"
+horizontal_alignment = 1
+
+[node name="InfSub" type="Label" parent="Root/Home/Margin/Column/Sheet/Seg/ModeInf/Text" unique_id=688853390]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "no best yet"
+horizontal_alignment = 1
+
+[node name="Tiles" type="HBoxContainer" parent="Root/Home/Margin/Column/Sheet" unique_id=2008674174]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="GarageBtn" type="Button" parent="Root/Home/Margin/Column/Sheet/Tiles" unique_id=1553743984]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_u1gob")
+
+[node name="Text" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/Tiles/GarageBtn" unique_id=1610069350]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Root/Home/Margin/Column/Sheet/Tiles/GarageBtn/Text" unique_id=527694468]
+modulate = Color(1, 0.8862745, 0.72156864, 1)
+custom_minimum_size = Vector2(50, 22)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5_hcymh")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GarageBtnLabel" type="Label" parent="Root/Home/Margin/Column/Sheet/Tiles/GarageBtn/Text" unique_id=681436709]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 11
+text = "GARAGE"
+horizontal_alignment = 1
+
+[node name="MisBtn" type="Button" parent="Root/Home/Margin/Column/Sheet/Tiles" unique_id=854354064]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_2716d")
+
+[node name="Text" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/Tiles/MisBtn" unique_id=918433739]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Root/Home/Margin/Column/Sheet/Tiles/MisBtn/Text" unique_id=686123466]
+modulate = Color(1, 0.8862745, 0.72156864, 1)
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("6_35ekw")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MisBtnLabel" type="Label" parent="Root/Home/Margin/Column/Sheet/Tiles/MisBtn/Text" unique_id=1500690075]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 11
+text = "MISSIONS"
+horizontal_alignment = 1
+
+[node name="MisBadge" type="PanelContainer" parent="Root/Home/Margin/Column/Sheet/Tiles/MisBtn" unique_id=725900490]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 0
+offset_left = 86.0
+offset_top = 6.0
+offset_right = 86.0
+offset_bottom = 6.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_na0xr")
+
+[node name="BoardBtn" type="Button" parent="Root/Home/Margin/Column/Sheet/Tiles" unique_id=2103004882]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_t13ko")
+
+[node name="Text" type="VBoxContainer" parent="Root/Home/Margin/Column/Sheet/Tiles/BoardBtn" unique_id=145693957]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Root/Home/Margin/Column/Sheet/Tiles/BoardBtn/Text" unique_id=838381370]
+modulate = Color(1, 0.8862745, 0.72156864, 1)
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_4yivb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BoardBtnLabel" type="Label" parent="Root/Home/Margin/Column/Sheet/Tiles/BoardBtn/Text" unique_id=972964207]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 11
+text = "SCORES"
+horizontal_alignment = 1
+
+[node name="Eps" type="Control" parent="Root" unique_id=1042371198]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Eps" unique_id=1639365632]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_4iief")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Eps" unique_id=292130481]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Eps/Margin" unique_id=482770264]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Eps/Margin/Column" unique_id=1765812491]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="EpsBack" type="Button" parent="Root/Eps/Margin/Column/Head" unique_id=1672664800]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="EraTitle" type="HBoxContainer" parent="Root/Eps/Margin/Column/Head" unique_id=1258449928]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MapPrev" type="Button" parent="Root/Eps/Margin/Column/Head/EraTitle" unique_id=182208690]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_6rbtr")
+theme_override_font_sizes/font_size = 17
+text = "‹"
+
+[node name="EpsTitle" type="Label" parent="Root/Eps/Margin/Column/Head/EraTitle" unique_id=2051109658]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "PAST"
+
+[node name="MapNext" type="Button" parent="Root/Eps/Margin/Column/Head/EraTitle" unique_id=969345868]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_g05om")
+theme_override_font_sizes/font_size = 17
+text = "›"
+
+[node name="EpsStars" type="Label" parent="Root/Eps/Margin/Column/Head" unique_id=1796827506]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "★ 0/24"
+horizontal_alignment = 2
+
+[node name="WMapFrame" type="PanelContainer" parent="Root/Eps/Margin/Column" unique_id=951594326]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 190)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_36ue4")
+
+[node name="WMap" type="Control" parent="Root/Eps/Margin/Column/WMapFrame" unique_id=1679778253]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+script = ExtResource("8_rhnpv")
+
+[node name="TutPin" type="Button" parent="Root/Eps/Margin/Column" unique_id=159138297]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_iohwd")
+
+[node name="Row" type="HBoxContainer" parent="Root/Eps/Margin/Column/TutPin" unique_id=1990982216]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -12.0
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="TutBadge" type="PanelContainer" parent="Root/Eps/Margin/Column/TutPin/Row" unique_id=729286713]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8qceo")
+
+[node name="TutStar" type="Label" parent="Root/Eps/Margin/Column/TutPin/Row/TutBadge" unique_id=493790251]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "✦"
+horizontal_alignment = 1
+
+[node name="Text" type="VBoxContainer" parent="Root/Eps/Margin/Column/TutPin/Row" unique_id=1530620843]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="TutName" type="Label" parent="Root/Eps/Margin/Column/TutPin/Row/Text" unique_id=1408401271]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 13
+text = "Flight School"
+
+[node name="TutSub" type="Label" parent="Root/Eps/Margin/Column/TutPin/Row/Text" unique_id=211642748]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "learn the moves · about a minute"
+
+[node name="TutState" type="Label" parent="Root/Eps/Margin/Column/TutPin/Row" unique_id=1603843858]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "START HERE"
+
+[node name="EpCard" type="PanelContainer" parent="Root/Eps/Margin/Column" unique_id=744421440]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_f6vuv")
+
+[node name="V" type="VBoxContainer" parent="Root/Eps/Margin/Column/EpCard" unique_id=1738948211]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Eps/Margin/Column/EpCard/V" unique_id=821612790]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="EcNumBox" type="PanelContainer" parent="Root/Eps/Margin/Column/EpCard/V/Head" unique_id=587958911]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pamtp")
+
+[node name="EcNum" type="Label" parent="Root/Eps/Margin/Column/EpCard/V/Head/EcNumBox" unique_id=1614678472]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.078431375, 0.047058824, 0.023529412, 1)
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Name" type="VBoxContainer" parent="Root/Eps/Margin/Column/EpCard/V/Head" unique_id=1487977255]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="EcName" type="Label" parent="Root/Eps/Margin/Column/EpCard/V/Head/Name" unique_id=1125889859]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 16
+text = "London 1890"
+clip_text = true
+
+[node name="EcSub" type="Label" parent="Root/Eps/Margin/Column/EpCard/V/Head/Name" unique_id=1533462892]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "112 BPM · saloon piano"
+clip_text = true
+
+[node name="St" type="VBoxContainer" parent="Root/Eps/Margin/Column/EpCard/V/Head" unique_id=1055726090]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="EcStars" type="Label" parent="Root/Eps/Margin/Column/EpCard/V/Head/St" unique_id=1081434913]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 2
+
+[node name="EcGrade" type="Label" parent="Root/Eps/Margin/Column/EpCard/V/Head/St" unique_id=1163597396]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+horizontal_alignment = 2
+
+[node name="EpPlay" type="Button" parent="Root/Eps/Margin/Column/EpCard/V" unique_id=571744101]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "PLAY EPISODE 1"
+
+[node name="EpsLegend" type="Label" parent="Root/Eps/Margin/Column" unique_id=1079442599]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "★ clear the song · ★★ grade A (95% of the notes) · ★★★ grade S (99%, no crash). Clearing an episode opens the next; 10★ in an era opens the next era."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Garage" type="Control" parent="Root" unique_id=457495626]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Garage" unique_id=1384265953]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_ld7ej")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Garage" unique_id=80633309]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Garage/Margin" unique_id=1311327378]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Garage/Margin/Column" unique_id=1678181971]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="GarageBack" type="Button" parent="Root/Garage/Margin/Column/Head" unique_id=468184162]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="GarageTitle" type="Label" parent="Root/Garage/Margin/Column/Head" unique_id=1093835784]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "GARAGE"
+horizontal_alignment = 1
+
+[node name="GWallet" type="Label" parent="Root/Garage/Margin/Column/Head" unique_id=848422759]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "0"
+horizontal_alignment = 2
+
+[node name="Tabs" type="HBoxContainer" parent="Root/Garage/Margin/Column" unique_id=1707859864]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="GtCars" type="Button" parent="Root/Garage/Margin/Column/Tabs" unique_id=1561541765]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "CARS"
+
+[node name="GtPilots" type="Button" parent="Root/Garage/Margin/Column/Tabs" unique_id=946712769]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "PILOTS"
+
+[node name="GSpace" type="Control" parent="Root/Garage/Margin/Column" unique_id=1223499739]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GCard" type="VBoxContainer" parent="Root/Garage/Margin/Column" unique_id=1231515732]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Row" type="HBoxContainer" parent="Root/Garage/Margin/Column/GCard" unique_id=608080182]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="CarPrev" type="Button" parent="Root/Garage/Margin/Column/GCard/Row" unique_id=439516323]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 44)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 22
+text = "‹"
+
+[node name="GName" type="VBoxContainer" parent="Root/Garage/Margin/Column/GCard/Row" unique_id=538636736]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="CarName" type="Label" parent="Root/Garage/Margin/Column/GCard/Row/GName" unique_id=1721751089]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "ARROW"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CarAbout" type="Label" parent="Root/Garage/Margin/Column/GCard/Row/GName" unique_id=607540543]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CarPerk" type="Label" parent="Root/Garage/Margin/Column/GCard/Row/GName" unique_id=778856248]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.56078434, 0.9647059, 1, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CarPrice" type="Label" parent="Root/Garage/Margin/Column/GCard/Row/GName" unique_id=627198927]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CarNext" type="Button" parent="Root/Garage/Margin/Column/GCard/Row" unique_id=1342476456]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 44)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 22
+text = "›"
+
+[node name="CarDots" type="HBoxContainer" parent="Root/Garage/Margin/Column/GCard" unique_id=5084506]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CarAct" type="Button" parent="Root/Garage/Margin/Column/GCard" unique_id=542945540]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "YOUR CAR"
+
+[node name="Row2" type="HBoxContainer" parent="Root/Garage/Margin/Column/GCard" unique_id=1476206969]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="CarView" type="Button" parent="Root/Garage/Margin/Column/GCard/Row2" unique_id=1243086320]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "IN-GAME VIEW"
+
+[node name="CarCoins" type="Button" parent="Root/Garage/Margin/Column/GCard/Row2" unique_id=489643380]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "+5,000 COINS (DEV)"
+
+[node name="Missions" type="Control" parent="Root" unique_id=514505827]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Missions" unique_id=1872148648]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_2b3dl")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Missions" unique_id=488677181]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Missions/Margin" unique_id=1610194748]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Missions/Margin/Column" unique_id=22047746]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="MissionsBack" type="Button" parent="Root/Missions/Margin/Column/Head" unique_id=1390733318]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="MissionsTitle" type="Label" parent="Root/Missions/Margin/Column/Head" unique_id=1170836462]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "MISSIONS"
+horizontal_alignment = 1
+
+[node name="MissionsTot" type="Label" parent="Root/Missions/Margin/Column/Head" unique_id=1541841407]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 2
+
+[node name="MList" type="VBoxContainer" parent="Root/Missions/Margin/Column" unique_id=32827858]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="MisLegend" type="Label" parent="Root/Missions/Margin/Column" unique_id=629013366]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "Three missions at a time. Finish one to earn its coins, and a harder one takes its place."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="DailyLabel" type="Label" parent="Root/Missions/Margin/Column" unique_id=1003675030]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "DAILY GIFT"
+
+[node name="DailyNote" type="Label" parent="Root/Missions/Margin/Column" unique_id=706457876]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Board" type="Control" parent="Root" unique_id=1009795851]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Board" unique_id=410523871]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_82ue8")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Board" unique_id=639894959]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Board/Margin" unique_id=2145070905]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Board/Margin/Column" unique_id=1659145239]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="BoardBack" type="Button" parent="Root/Board/Margin/Column/Head" unique_id=1713203842]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="BoardTitle" type="Label" parent="Root/Board/Margin/Column/Head" unique_id=1869074915]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "HIGH SCORES"
+horizontal_alignment = 1
+
+[node name="BoardTot" type="Label" parent="Root/Board/Margin/Column/Head" unique_id=1461740196]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 2
+
+[node name="BoardTabs" type="HBoxContainer" parent="Root/Board/Margin/Column" unique_id=226332951]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="TabOld" type="Button" parent="Root/Board/Margin/Column/BoardTabs" unique_id=2067806542]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "Past"
+
+[node name="TabSunset" type="Button" parent="Root/Board/Margin/Column/BoardTabs" unique_id=204626027]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "Present"
+
+[node name="TabRain" type="Button" parent="Root/Board/Margin/Column/BoardTabs" unique_id=1068658557]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "Future"
+
+[node name="BoardListScroll" type="ScrollContainer" parent="Root/Board/Margin/Column" unique_id=871072802]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="BoardList" type="VBoxContainer" parent="Root/Board/Margin/Column/BoardListScroll" unique_id=555843240]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="InfLabel" type="Label" parent="Root/Board/Margin/Column/BoardListScroll/BoardList" unique_id=1403455628]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "ENDLESS · YOUR TOP 5"
+
+[node name="BoardInf" type="VBoxContainer" parent="Root/Board/Margin/Column/BoardListScroll/BoardList" unique_id=895264346]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+
+[node name="EpsLabel" type="Label" parent="Root/Board/Margin/Column/BoardListScroll/BoardList" unique_id=1593341417]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "EPISODES · STARS, BEST GRADE AND SCORE"
+
+[node name="BoardEps" type="VBoxContainer" parent="Root/Board/Margin/Column/BoardListScroll/BoardList" unique_id=451891872]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+
+[node name="BoardLegend" type="Label" parent="Root/Board/Margin/Column" unique_id=510845008]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "Saved on this device."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Settings" type="Control" parent="Root" unique_id=882253078]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Settings" unique_id=1794139133]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_0xt7e")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Settings" unique_id=1893709430]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Settings/Margin" unique_id=1391356247]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Settings/Margin/Column" unique_id=1836203178]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="SettingsBack" type="Button" parent="Root/Settings/Margin/Column/Head" unique_id=1191011071]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="SettingsTitle" type="Label" parent="Root/Settings/Margin/Column/Head" unique_id=1503039774]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="SettingsTot" type="Label" parent="Root/Settings/Margin/Column/Head" unique_id=402522356]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 2
+
+[node name="SetList" type="VBoxContainer" parent="Root/Settings/Margin/Column" unique_id=568445671]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="SndMenuRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=1960912386]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4tjv1")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/SndMenuRow" unique_id=605547660]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/SndMenuRow/H" unique_id=1908853276]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="SndMenuName" type="Label" parent="Root/Settings/Margin/Column/SetList/SndMenuRow/H/T" unique_id=944040167]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Sound"
+
+[node name="SndMenuSub" type="Label" parent="Root/Settings/Margin/Column/SetList/SndMenuRow/H/T" unique_id=1738831934]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "music and effects"
+autowrap_mode = 3
+
+[node name="SndMenu" type="Button" parent="Root/Settings/Margin/Column/SetList/SndMenuRow/H" unique_id=694527978]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "SOUND ON"
+
+[node name="SyncBtnRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=1164408471]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_eckya")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/SyncBtnRow" unique_id=1449977218]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/SyncBtnRow/H" unique_id=577097633]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="SyncBtnName" type="Label" parent="Root/Settings/Margin/Column/SetList/SyncBtnRow/H/T" unique_id=1390700321]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Audio sync"
+
+[node name="SyncBtnSub" type="Label" parent="Root/Settings/Margin/Column/SetList/SyncBtnRow/H/T" unique_id=173651427]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "automatic"
+autowrap_mode = 3
+
+[node name="SyncBtn" type="Button" parent="Root/Settings/Margin/Column/SetList/SyncBtnRow/H" unique_id=1843405683]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "SET UP"
+
+[node name="FxBtnRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=159184166]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uph2c")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/FxBtnRow" unique_id=2028181724]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/FxBtnRow/H" unique_id=1677230354]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="FxBtnName" type="Label" parent="Root/Settings/Margin/Column/SetList/FxBtnRow/H/T" unique_id=167761211]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Reduce effects"
+
+[node name="FxBtnSub" type="Label" parent="Root/Settings/Margin/Column/SetList/FxBtnRow/H/T" unique_id=2066132055]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "no rain, fewer sparks, steadier view"
+autowrap_mode = 3
+
+[node name="FxBtn" type="Button" parent="Root/Settings/Margin/Column/SetList/FxBtnRow/H" unique_id=592674258]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "OFF"
+
+[node name="HapBtnRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=1091444811]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_opu85")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/HapBtnRow" unique_id=2024503720]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/HapBtnRow/H" unique_id=269856246]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="HapBtnName" type="Label" parent="Root/Settings/Margin/Column/SetList/HapBtnRow/H/T" unique_id=1263501680]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Haptics"
+
+[node name="HapBtnSub" type="Label" parent="Root/Settings/Margin/Column/SetList/HapBtnRow/H/T" unique_id=816048413]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "a buzz on catches and crashes"
+autowrap_mode = 3
+
+[node name="HapBtn" type="Button" parent="Root/Settings/Margin/Column/SetList/HapBtnRow/H" unique_id=1296273810]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "HAPTICS ON"
+
+[node name="LevelBtnRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=1307166923]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fce6s")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/LevelBtnRow" unique_id=1389413382]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/LevelBtnRow/H" unique_id=412117178]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="LevelBtnName" type="Label" parent="Root/Settings/Margin/Column/SetList/LevelBtnRow/H/T" unique_id=907482189]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Endless difficulty"
+
+[node name="LevelBtnSub" type="Label" parent="Root/Settings/Margin/Column/SetList/LevelBtnRow/H/T" unique_id=1573642507]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "how fast Endless gets"
+autowrap_mode = 3
+
+[node name="LevelBtn" type="Button" parent="Root/Settings/Margin/Column/SetList/LevelBtnRow/H" unique_id=425106313]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "NORMAL"
+
+[node name="TutBtnRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=1348767900]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ocotj")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/TutBtnRow" unique_id=323263837]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/TutBtnRow/H" unique_id=2147387761]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="TutBtnName" type="Label" parent="Root/Settings/Margin/Column/SetList/TutBtnRow/H/T" unique_id=1757560554]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Flight School"
+
+[node name="TutBtnSub" type="Label" parent="Root/Settings/Margin/Column/SetList/TutBtnRow/H/T" unique_id=1782933246]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "replay the tutorial"
+autowrap_mode = 3
+
+[node name="TutBtn" type="Button" parent="Root/Settings/Margin/Column/SetList/TutBtnRow/H" unique_id=1071073263]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "PLAY"
+
+[node name="DevBtnRow" type="PanelContainer" parent="Root/Settings/Margin/Column/SetList" unique_id=1326052522]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pbqmk")
+
+[node name="H" type="HBoxContainer" parent="Root/Settings/Margin/Column/SetList/DevBtnRow" unique_id=406502133]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="T" type="VBoxContainer" parent="Root/Settings/Margin/Column/SetList/DevBtnRow/H" unique_id=15901903]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="DevBtnName" type="Label" parent="Root/Settings/Margin/Column/SetList/DevBtnRow/H/T" unique_id=1624740288]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 14
+text = "Dev mode"
+
+[node name="DevBtnSub" type="Label" parent="Root/Settings/Margin/Column/SetList/DevBtnRow/H/T" unique_id=1072218933]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "opens every era and episode, test coins in the Garage"
+autowrap_mode = 3
+
+[node name="DevBtn" type="Button" parent="Root/Settings/Margin/Column/SetList/DevBtnRow/H" unique_id=255953272]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 36)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_font_sizes/font_size = 12
+text = "ON"
+
+[node name="SetLegend" type="Label" parent="Root/Settings/Margin/Column" unique_id=713502028]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "Every note is a ring: swipe left and right to change lanes, up to hop, down to dive. Swipe just before the note for EXCELLENT. Everything is saved on this device."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Sync" type="Control" parent="Root" unique_id=368517566]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Sync" unique_id=1797316624]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_sn360")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Sync" unique_id=412156966]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Sync/Margin" unique_id=2050691758]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Sync/Margin/Column" unique_id=1802632333]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="SyncBack" type="Button" parent="Root/Sync/Margin/Column/Head" unique_id=1607030492]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="SyncTitle" type="Label" parent="Root/Sync/Margin/Column/Head" unique_id=1148552015]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "AUDIO SYNC"
+horizontal_alignment = 1
+
+[node name="SyncTot" type="Label" parent="Root/Sync/Margin/Column/Head" unique_id=701957787]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 2
+
+[node name="SyncLegend" type="Label" parent="Root/Sync/Margin/Column" unique_id=535837586]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+text = "Use the speaker or headphones you play with. Press START, then tap the pad on every click you hear: four to warm up, then eight that count."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="SyncPad" type="Button" parent="Root/Sync/Margin/Column" unique_id=1454890357]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_0g4f3")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aqss5")
+theme_override_styles/hover = SubResource("StyleBoxFlat_g0i1f")
+
+[node name="Text" type="VBoxContainer" parent="Root/Sync/Margin/Column/SyncPad" unique_id=232917611]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+alignment = 1
+
+[node name="SyncBig" type="Label" parent="Root/Sync/Margin/Column/SyncPad/Text" unique_id=1994541716]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 30
+text = "START"
+horizontal_alignment = 1
+
+[node name="SyncCount" type="Label" parent="Root/Sync/Margin/Column/SyncPad/Text" unique_id=2038884921]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.84705883, 0.8156863, 0.9254902, 1)
+text = "12 clicks · about 8 seconds"
+horizontal_alignment = 1
+
+[node name="SyncRes" type="VBoxContainer" parent="Root/Sync/Margin/Column" unique_id=422493241]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="SyncResLabel" type="Label" parent="Root/Sync/Margin/Column/SyncRes" unique_id=139658032]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.5647059, 0.5921569, 0.6509804, 1)
+text = "SOUND DELAY"
+horizontal_alignment = 1
+
+[node name="SyncVal" type="Label" parent="Root/Sync/Margin/Column/SyncRes" unique_id=1180947085]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 22
+text = "AUTO"
+horizontal_alignment = 1
+
+[node name="SyncNote" type="Label" parent="Root/Sync/Margin/Column/SyncRes" unique_id=782120394]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7882353, 0.7607843, 0.84705883, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Row" type="HBoxContainer" parent="Root/Sync/Margin/Column" unique_id=1871330051]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="SyncMinus" type="Button" parent="Root/Sync/Margin/Column/Row" unique_id=2015387231]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "− 10 ms"
+
+[node name="SyncPlus" type="Button" parent="Root/Sync/Margin/Column/Row" unique_id=1368362902]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "+ 10 ms"
+
+[node name="SyncAuto" type="Button" parent="Root/Sync/Margin/Column" unique_id=109692202]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "USE AUTOMATIC"
+
+[node name="Changes" type="Control" parent="Root" unique_id=2080667169]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Wash" type="TextureRect" parent="Root/Changes" unique_id=2074266508]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vnnrf")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="Root/Changes" unique_id=1771132217]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Root/Changes/Margin" unique_id=1625088307]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="Head" type="HBoxContainer" parent="Root/Changes/Margin/Column" unique_id=524147562]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="ChangesBack" type="Button" parent="Root/Changes/Margin/Column/Head" unique_id=1086396840]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"GhostButton"
+text = "‹ BACK"
+
+[node name="ChangesTitle" type="Label" parent="Root/Changes/Margin/Column/Head" unique_id=183590024]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 15
+text = "CHANGE LOG"
+horizontal_alignment = 1
+
+[node name="ChangesTot" type="Label" parent="Root/Changes/Margin/Column/Head" unique_id=594509481]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+horizontal_alignment = 2
+
+[node name="CLogScroll" type="ScrollContainer" parent="Root/Changes/Margin/Column" unique_id=2113583648]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="CLog" type="VBoxContainer" parent="Root/Changes/Margin/Column/CLogScroll" unique_id=1883530429]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Gift" type="Control" parent="Root" unique_id=1958110538]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Dim" type="ColorRect" parent="Root/Gift" unique_id=944926061]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.023529412, 0.015686275, 0.047058824, 0.55)
+
+[node name="Center" type="CenterContainer" parent="Root/Gift" unique_id=1453322020]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="GiftCard" type="PanelContainer" parent="Root/Gift/Center" unique_id=282564386]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rgrk7")
+
+[node name="V" type="VBoxContainer" parent="Root/Gift/Center/GiftCard" unique_id=692556400]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="GiftTitle" type="Label" parent="Root/Gift/Center/GiftCard/V" unique_id=1527248517]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "DAILY GIFT"
+horizontal_alignment = 1
+
+[node name="GiftDay" type="Label" parent="Root/Gift/Center/GiftCard/V" unique_id=645962075]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "DAY 1"
+horizontal_alignment = 1
+
+[node name="Amt" type="HBoxContainer" parent="Root/Gift/Center/GiftCard/V" unique_id=119377922]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Coin" type="TextureRect" parent="Root/Gift/Center/GiftCard/V/Amt" unique_id=665948269]
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_86lrg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GiftAmt" type="Label" parent="Root/Gift/Center/GiftCard/V/Amt" unique_id=538989406]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Big"
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 0.83137256, 0.36078432, 1)
+text = "+100"
+
+[node name="GiftNext" type="Label" parent="Root/Gift/Center/GiftCard/V" unique_id=843533323]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.84705883, 0.8156863, 0.9254902, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="GiftClaim" type="Button" parent="Root/Gift/Center/GiftCard/V" unique_id=1404293936]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+text = "CLAIM"
+
+[node name="Toast" type="PanelContainer" parent="Root" unique_id=1139335465]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 58.0
+offset_right = 150.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qj1gx")
+
+[node name="ToastText" type="Label" parent="Root/Toast" unique_id=2110292743]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Eyebrow"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.101960786, 0.039215688, 0.015686275, 1)
+horizontal_alignment = 1
