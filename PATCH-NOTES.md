@@ -19,6 +19,7 @@ Murat's Godot version becomes `main`, with the first city of the new music.
 - **No Next button after Berlin**, since nothing else is open yet.
 - **Only the current version is named.** The front page shows v28 at the top; the old mentions of the web game's
   version number are gone from the front page, the Godot guide and the code.
+- **The ✦ version pill on the main menu reads the newest change-log entry**, so it always shows the current version.
 - **`main` is now Murat's Godot version** (branch `murat-godot-remake`). Reha's earlier Godot version (`godot/game/`)
   and the Lane Runner draft leave `main`; both are still in the history.
 

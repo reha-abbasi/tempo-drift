@@ -194,7 +194,7 @@ func home(root: Control) -> void:
 	pill("StarTot", top, "★ 0/72", Color.WHITE, Color(1, 1, 1, 0.22))
 	var sp := ctl("Control", "Gap", top, false)
 	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var log := btn("LogBtn", top, "✦ v27", "GhostButton", 30)
+	var log := btn("LogBtn", top, "✦ v28", "GhostButton", 30)
 	log.add_theme_font_size_override("font_size", 12)
 	log.add_theme_stylebox_override("normal", box(Color(INK, 0.55), 99, Color(1, 1, 1, 0.3), 1, Vector2(11, 5)))
 	var gear := btn("SetBtn", top, "", "GhostButton", 34)

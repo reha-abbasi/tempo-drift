@@ -180,7 +180,9 @@ func _render_home() -> void:
 	%InfSub.text = "best %s" % _commas(int(best[0].s)) if best.size() > 0 else "no best yet"
 	%StarTotText.text = "★ %d/72" % Save.total_stars()
 	%WalletText.text = _commas(Save.wallet())
-	%LogBtn.text = "✦ v28"
+	# the version on the pill is always the newest entry of the change log, so it can never show an old number
+	var log_top: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/changelog.json"))
+	%LogBtn.text = "✦ v%s" % log_top[0].v
 	for m in [["EraOld", "old"], ["EraSunset", "sunset"], ["EraRain", "rain"]]:
 		var b: Button = get_node("%" + m[0])
 		var on: bool = m[1] == key
