@@ -297,9 +297,9 @@ def build(c, flavour='melodic', ease=None):
     L['jet'].x = jet.x + wind(n) * 0.5
 
     # the melody: every ring note on melA / melB, the in-between notes on ghost; clearer in the early cities
-    # (melodic: the breathy flute the user picked, at its own level, 3 dB above the options page where it was matched
-    # to the old lead, as asked)
-    lead = acid if warehouse else leads.breath_flute
+    # (melodic: the breathy flute the user picked, 6 dB above its own level, which was already 3 dB above the options
+    # page where it was matched to the old lead)
+    lead = acid if warehouse else (lambda p, d, accent=True: leads.breath_flute(p, d, accent) * 10 ** (6.0 / 20))
     place_lead(L, c, lead, ease)
     finish_lead(L, S, ease, kicks, room_size=0.5 if warehouse else 0.85, bright_db=3.0)
     return L, S
