@@ -8,9 +8,11 @@ What changed in `main`, newest first. Every update to `main` adds an entry here.
 A second city opens, London 1890, with acoustic jazz, and Berlin 2075 gets new sounds. Both picked from several
 rounds of tries. The notes and the rings are the same as before in both cities.
 
-- **London 1890 is open** (the Past's first city), next to Berlin. Its music is a swinging pub band, a "knees-up":
-  the melody on a honky-tonk piano, with banjo, accordion, tuba, a two-beat kit and tambourine, all recorded
-  instruments (no techno). The melody sits a little under the band.
+- **London 1890 is open** (the Past's first city), next to Berlin. Its music is a music-hall pub band played by real
+  recorded instruments: the melody on a trumpet, with an old upright pub piano, trombone, tuba, a soft violin section,
+  a strumstick and a harmonica in place of banjo and accordion, a rope-tension snare kit and tambourine, all in one
+  warm hall. Each player is a few milliseconds off the beat, like real musicians; the melody stays on the rings and sits
+  a little under the band. No techno.
 - **Berlin's melody is an 80s synth brass** (Surge XT's "Synth Brass 1"), with its brightest overtones softened so
   it doesn't sound harsh. It replaces the breathy flute.
 - **Warmer Berlin band:** the bass ("Deep End"), the pads ("MKS-70 Warm Pad") and the arpeggio ("Nice Pluck 1") are
@@ -23,7 +25,9 @@ rounds of tries. The notes and the rings are the same as before in both cities.
   ("+300") pop up at the car, swoop along a curve into the score at the top and vanish; the score counts them in,
   swells and flashes their colour (gold for a perfect catch, cyan for good, pale for OK), with a little ✦ burst.
 - **Unlocking:** the open cities are listed in `OPEN` in `godot/scripts/save.gd` (now `rain: [5]`, `old: [0]`).
-- **Music tools:** `jazz.py` builds the Past's acoustic bands (ten styles) on recorded instruments through FluidSynth,
+- **Music tools:** `jazz.py` builds the Past's acoustic bands; `sampler.py` plays the free CC0 Versilian sample
+  libraries (VCSL, VSCO 2 CE), the rest through FluidSynth; `listen.py` draws a song's spectrogram and flags clicks,
+  clipping and harsh spots;
   `surge_render.py` plays parts on Surge XT sounds, `melodies.py` writes new melodies on a city's chords (for later
   tries), `audition.py` scores Surge sounds for harshness. See `godot/tools/music/README.md`.
 - **The project is named "Tempo Drift v29 Brass & Swing".**

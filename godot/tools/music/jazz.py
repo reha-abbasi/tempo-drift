@@ -9,6 +9,7 @@ import numpy as np
 from engine import *
 from arr import *
 from gm import Part
+import sampler
 from techno import wind
 
 # drum kits (bank 128) and the GM drum notes used here
@@ -54,6 +55,27 @@ STYLES = {
     'smoky': dict(title='Smoky Sax', lead=TENOR, oct=-12, tame=True, ring=0.95, drums=('ride', 'jazz'), bass=('walk', UPRIGHT),
                   comp=[('stride_rh', MELLOW_PIANO, -21)], fill=('answer', MELLOW_PIANO), perc='rim',
                   od=('hits', BRASS2)),
+    # the pub band again, on real recordings: a detuned pub upright, a strummed strumstick for the banjo, a chromatic
+    # harmonica for the accordion (the same free-reed sound), a concert tuba, a rope-tension snare kit, a tambourine
+    'pub_real': dict(title='Pub Knees-Up (real instruments)', lead='pub_piano', ring=1.4, drums=('twobeat', 'standard'),
+                     real_kit='parlour_kit', bass=('two', 'tuba_sus'),
+                     comp=[('banjo', 'strumstick', -21), ('oompah', 'harmonica', -24)], fill=('answer', 'harmonica'),
+                     perc='tamb', od=('hits', 'upright_piano'), humanize=True),
+
+    # the fuller pub band: the pub piano moves into the band (chords on the off-beats), a trombone holds long notes and
+    # slides into each chord, a soft violin section warms the middle, trumpet hits for the big moments, the whole band
+    # in a music hall; the melody on a trumpet (the music-hall cornet sound) or a solo violin (a pub fiddle)
+    'pub_full': dict(title='Pub Band, fuller (trumpet melody)', lead='trumpet', tame=True, ring=0.95,
+                     drums=('twobeat', 'standard'), real_kit='parlour_kit', bass=('two', 'tuba_sus'),
+                     comp=[('banjo', 'strumstick', -22), ('stride_rh', 'pub_piano', -22), ('oompah', 'harmonica', -26),
+                           ('tailgate', 'trombone', -24), ('pads', 'violins', -28)],
+                     fill=('answer', 'harmonica'), perc='tamb', od=('hits', 'trumpet_stac'), humanize=True, hall=1.0),
+    'pub_full_violin': dict(title='Pub Band, fuller (violin melody)', lead='solo_violin', tame=True, tame_db=-8.0, lead_vel=60,
+                            ring=0.95,
+                            drums=('twobeat', 'standard'), real_kit='parlour_kit', bass=('two', 'tuba_sus'),
+                            comp=[('banjo', 'strumstick', -22), ('stride_rh', 'pub_piano', -22), ('oompah', 'harmonica', -26),
+                                  ('tailgate', 'trombone', -24), ('pads', 'violins', -29)],
+                            fill=('answer', 'trumpet_stac'), perc='tamb', od=('hits', 'trumpet_stac'), humanize=True, hall=1.0),
 }
 
 
@@ -93,15 +115,27 @@ def build(c, style='noir', ease=None, mel_db=0.0):
     at, hv, rng = S.at, S.hv, S.rng
     beat = S.beat
 
+    hum = st.get('humanize', False)
+    seed = [0]
+
+    def mk(ins, jitter=0.009, lag=0.004):
+        # a General MIDI sound (program, bank), or a recorded instrument from the sample libraries (its name);
+        # recorded players are humanised: a few ms off the grid at random, laid back a touch
+        if not isinstance(ins, str):
+            return Part(*ins)
+        seed[0] += 1
+        return sampler.RPart(sampler.get(ins), jitter if hum else 0.0, lag if hum else 0.0, seed[0])
+
     kit = st['drums'][1] if st['drums'] else 'jazz'
-    dr = Part(KIT[kit], drums=True)          # the kit
-    pc = Part(KIT['standard'], drums=True)   # extra percussion
-    od_dr = Part(KIT['standard'], drums=True)
-    jet = Part(KIT['standard'], drums=True)
-    bpart = Part(*st['bass'][1])
-    comps = [(pat, Part(*ins), db) for pat, ins, db in st['comp']]
-    fill = Part(*st['fill'][1])
-    odp = Part(*st['od'][1])
+    real_kit = st.get('real_kit')
+    dr = sampler.RPart(sampler.get(real_kit), 0.004 if hum else 0.0) if real_kit else Part(KIT[kit], drums=True)   # the kit
+    pc = sampler.RPart(sampler.get(real_kit)) if real_kit else Part(KIT['standard'], drums=True)   # extra percussion
+    od_dr = sampler.RPart(sampler.get(real_kit)) if real_kit else Part(KIT['standard'], drums=True)
+    jet = sampler.RPart(sampler.get(real_kit)) if real_kit else Part(KIT['standard'], drums=True)
+    bpart = mk(st['bass'][1])
+    comps = [(pat, mk(ins), db) for pat, ins, db in st['comp']]
+    fill = mk(st['fill'][1])
+    odp = mk(st['od'][1])
 
     notes = c['notes']
     note_ts = [x['t'] for x in notes]
@@ -293,8 +327,10 @@ def build(c, style='noir', ease=None, mel_db=0.0):
     R_bass = bpart.render(bpm, D)
     R_comp = [(pat, p.render(bpm, D), db) for pat, p, db in comps]
 
+    hall = st.get('hall', 0.0)      # 0: a small dry room; 1: a music hall, the whole band in one warm space
+
     def room(x, size=0.45, wet=0.18):
-        return reverb(x, size=size, damp=0.55, wet=wet)
+        return reverb(x, size=min(0.95, size + 0.3 * hall), damp=0.55, wet=wet * (1.0 + 0.8 * hall))
 
     def warm(x, lo=50.0, hi=10000.0):
         """a gentle period colour: no rumble, the very top eased, nothing gritty"""
@@ -321,10 +357,10 @@ def build(c, style='noir', ease=None, mel_db=0.0):
     # ---- the melody, on the style's lead instrument
     ring, ghost_g, _, _ = lead_levels(ease)
     eighth = beat / 2.0
-    mel = {'melA': Part(*st['lead']), 'melB': Part(*st['lead']), 'ghost': Part(*st['lead'])}
+    mel = {k: mk(st['lead'], 0.003, 0.0) for k in ('melA', 'melB', 'ghost')}     # the melody stays tight on the rings
     o = st.get('oct', 0)      # saxes and the muted trumpet play an octave down, in their warm range (the rings don't move)
     for i, nt in enumerate(notes):
-        mel['melA' if i % 2 == 0 else 'melB'].note(nt['t'], max(0.25, nt['len'] * eighth * st['ring']), nt['note'] + o, 110)
+        mel['melA' if i % 2 == 0 else 'melB'].note(nt['t'], max(0.25, nt['len'] * eighth * st['ring']), nt['note'] + o, st.get('lead_vel', 110))
     for g in c['ghosts']:
         mel['ghost'].note(g['t'], max(0.22, g['len'] * eighth * st['ring']), g['note'] + o, 88)
     kicks = []
@@ -332,7 +368,8 @@ def build(c, style='noir', ease=None, mel_db=0.0):
         x = warm(p.render(bpm, D), 120 if o else 150, 11000)
         if st.get('tame'):
             # horns, reeds and the violin: ease the 2-5 kHz bite so they sing instead of squeak
-            x = eq(x, pb.PeakFilter(3200, -5.0, 0.7), pb.HighShelfFilter(6000, -3.0), pb.LowpassFilter(9000))
+            td = st.get('tame_db', -5.0)
+            x = eq(x, pb.PeakFilter(3200, td, 0.7), pb.HighShelfFilter(6000, -3.0 + 0.5 * (td + 5.0)), pb.LowpassFilter(9000 if td > -6 else 7000))
         x = level(x, -15 + mel_db)     # mel_db: the user's melody trim (London picks: -4 dB)
         L[k].x = x * (ring if k != 'ghost' else ghost_g) / 0.55
     finish_lead(L, S, ease, kicks, hp_hz=150, bright_db=0.0, room_size=0.5)

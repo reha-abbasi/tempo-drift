@@ -12,6 +12,8 @@ then sidechain pumping, echo, reverb and mastering.
 | `leads.py` | Melody instruments modelled on real ones: breathy flute (in the game), marimba, glass keys, plucked string, analog pluck |
 | `render.py` | Renders the layers the game plays, and a preview mp3 of a good run |
 | `jazz.py`, `jazz_render.py` | The Past's acoustic jazz bands (ragtime, music hall, dixieland, gypsy, noir trio, big band, pub, vibes, parlour, smoky sax) on recorded instruments; London uses `pub` with `--mel=-4` |
+| `sampler.py` | Plays real recorded instruments from the free CC0 Versilian libraries (VCSL, VSCO 2 CE): nearest sample, velocity layers, rotating takes, human timing. London uses `pub_full` |
+| `listen.py` | Draws a song's spectrogram and reports loudness, peaks, clicks, squashed and harsh stretches |
 | `gm.py` | Plays a part on a General MIDI instrument through FluidSynth and the MuseScore General sample library |
 | `surge_render.py` | Plays the bass, pads, arpeggio and melody on Surge XT sounds; `game KEY OUT --stems` writes the game's layers (Berlin uses `mel_tron`) |
 | `melodies.py` | Writes new melodies on a city's own chords (hook, heroic, dark); the rings would move with them |
@@ -61,4 +63,16 @@ range, and horns, reeds and the violin get the 2-5 kHz bite eased; the rings don
 
 ```bash
 .venv/bin/python jazz_render.py out pub --mel=-4 --stems    # course: courses/old_0.json; out/pub/<layer>.ogg -> audio/old_0/
+```
+
+## Real instruments (London 1890, from v29)
+
+London's band is played by real recordings from two free, public-domain (CC0) sample libraries by Versilian Studios:
+[VCSL](https://github.com/sgossner/VCSL) (upright piano, strumstick, harmonica, rope-tension snare, bass drum, hi-hat,
+tambourine, cymbal, woodblock) and [VSCO 2 CE](https://github.com/sgossner/VSCO-2-CE) (tuba, trumpet, trombone,
+violins, double bass). The samples are not in this repo (about 2 GB): clone only the folders listed in `sampler.py`
+(`git clone --filter=blob:none --sparse`) into `samples/vcsl` and `samples/vsco` next to the tools, and set `LIB`.
+
+```bash
+.venv/bin/python jazz_render.py out pub_full --mel=-4 --stems    # out/pub_full/<layer>.ogg -> audio/old_0/
 ```
