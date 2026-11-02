@@ -14,6 +14,7 @@ then sidechain pumping, echo, reverb and mastering.
 | `jazz.py`, `jazz_render.py` | The Past's acoustic jazz bands (ragtime, music hall, dixieland, gypsy, noir trio, big band, pub, vibes, parlour, smoky sax) on recorded instruments; London uses `pub` with `--mel=-4` |
 | `sampler.py` | Plays real recorded instruments from the free CC0 Versilian libraries (VCSL, VSCO 2 CE): nearest sample, velocity layers, rotating takes, human timing. London uses `pub_full` |
 | `listen.py` | Draws a song's spectrogram and reports loudness, peaks, clicks, squashed and harsh stretches |
+| `menu.py` | The main-menu theme, one tune in four arrangements (traveller, lofi, neon, eras) as seamless loops; the game uses `traveller` (`audio/menu/theme.ogg`) |
 | `gm.py` | Plays a part on a General MIDI instrument through FluidSynth and the MuseScore General sample library |
 | `surge_render.py` | Plays the bass, pads, arpeggio and melody on Surge XT sounds; `game KEY OUT --stems` writes the game's layers (Berlin uses `mel_tron`) |
 | `melodies.py` | Writes new melodies on a city's own chords (hook, heroic, dark); the rings would move with them |

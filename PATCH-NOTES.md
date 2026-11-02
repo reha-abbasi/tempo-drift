@@ -24,9 +24,12 @@ rounds of tries. The notes and the rings are the same as before in both cities.
 - **Points instead of timing words.** Catching a ring no longer shows OK / GOOD / EXCELLENT. The points you got
   ("+300") pop up at the car, swoop along a curve into the score at the top and vanish; the score counts them in,
   swells and flashes their colour (gold for a perfect catch, cyan for good, pale for OK), with a little ✦ burst.
+- **The main menu has its own music**, "Time Traveller": a new tune written for Tempo Drift, on a string section,
+  a rippling upright piano, plucked bass and brushes, the tune first on violins and then on a soft trumpet (real
+  recordings). A seamless 40-second loop, a little quieter than the episodes. The menus no longer reuse Berlin's song.
 - **Unlocking:** the open cities are listed in `OPEN` in `godot/scripts/save.gd` (now `rain: [5]`, `old: [0]`).
 - **Music tools:** `jazz.py` builds the Past's acoustic bands; `sampler.py` plays the free CC0 Versilian sample
-  libraries (VCSL, VSCO 2 CE), the rest through FluidSynth; `listen.py` draws a song's spectrogram and flags clicks,
+  libraries (VCSL, VSCO 2 CE), the rest through FluidSynth; `menu.py` makes the menu theme (four arrangements); `listen.py` draws a song's spectrogram and flags clicks,
   clipping and harsh spots;
   `surge_render.py` plays parts on Surge XT sounds, `melodies.py` writes new melodies on a city's chords (for later
   tries), `audition.py` scores Surge sounds for harshness. See `godot/tools/music/README.md`.
