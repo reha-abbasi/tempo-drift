@@ -11,6 +11,9 @@ then sidechain pumping, echo, reverb and mastering.
 | `techno.py` | The Future's techno, flavours `melodic` (in the game) and `warehouse` |
 | `leads.py` | Melody instruments modelled on real ones: breathy flute (in the game), marimba, glass keys, plucked string, analog pluck |
 | `render.py` | Renders the layers the game plays, and a preview mp3 of a good run |
+| `surge_render.py` | Plays the bass, pads, arpeggio and melody on Surge XT sounds; `game KEY OUT --stems` writes the game's layers (Berlin uses `mel_tron`) |
+| `melodies.py` | Writes new melodies on a city's own chords (hook, heroic, dark); the rings would move with them |
+| `audition.py` | Scores Surge sounds on a short phrase: how much harsh 2–6 kHz, how noisy, how bright |
 
 The melody stands out most in the first city (London 1890) and blends further into the band in each city after that,
 up to Las Vegas 2099: louder and drier ring notes early, more echo and busier parts later (`ease_for` in `arr.py`).
@@ -31,3 +34,18 @@ The layers are the ones `scripts/music.gd` plays: `core` (drums and bass), `full
 (Overdrive), `jet` (the jetpack), `ghost` (the melody's in-between notes), `melA` and `melB` (the ring notes). They are
 mastered together: one compressor and limiter curve, measured on the whole band, is applied to every layer, so they
 still add up to the mastered song in the game.
+
+## Surge XT sounds (Berlin, from v29)
+
+Berlin's bass, pads, arpeggio and melody are played by [Surge XT](https://surge-synthesizer.github.io/) 1.3.4, a free,
+open-source synthesizer, loaded as a VST3 plugin through `pedalboard`. `surge_render.py` expects the plugin at
+`surge/root/usr/lib/vst3/Surge XT.vst3` and its factory sounds at `surge/root/usr/share/surge-xt/patches_factory`
+(the Linux `.deb`, unpacked next to the script), and the course at `courses/rain_5.json` (a copy of
+`../../data/rain_5.json`).
+
+```bash
+.venv/bin/python surge_render.py game out mel_tron --stems   # out/mel_tron/<layer>.ogg -> audio/rain_5/
+```
+
+Sounds that measure harsh (lots of 2–6 kHz, or noisy) were left out on purpose: they sounded artificial. Every mix
+also goes through `phone_bass` in `techno.py`, so the bass line still comes through on a phone speaker.

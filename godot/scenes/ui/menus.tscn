@@ -811,7 +811,7 @@ focus_mode = 0
 theme_type_variation = &"GhostButton"
 theme_override_styles/normal = SubResource("StyleBoxFlat_44g8l")
 theme_override_font_sizes/font_size = 12
-text = "✦ v28"
+text = "✦ v29"
 
 [node name="SetBtn" type="Button" parent="Root/Home/Margin/Column/TopBar" unique_id=1980518727]
 unique_name_in_owner = true

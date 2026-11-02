@@ -138,7 +138,29 @@ def wind(n, seconds_per_sweep=4.0):
 
 # ------------------------------------------------------------------ arrangement
 
-def build(c, flavour='melodic', ease=None):
+def phone_bass(x):
+    """bass you can hear on a phone: phone speakers play almost nothing under ~150 Hz, so the deep sub alone sounds
+    like a strained speaker there. Cut the rumble under 30 Hz, ease the sub a little, and add a soft octave above the
+    bass (a gently bent copy of the 45-120 Hz band, kept under 450 Hz) so a small speaker still hears the bass line.
+    Kept low and smooth on purpose: overtones up to 1 kHz made the bass sound harsh (v29 first try)"""
+    low = eq(x, pb.HighpassFilter(45), pb.LowpassFilter(120), pb.LowpassFilter(120))
+    pk = np.max(np.abs(low)) + 1e-9
+    u = low / pk
+    octave = np.tanh(2.0 * u * u) * pk                 # even overtones: mostly the octave, no buzz
+    over = eq(octave, pb.HighpassFilter(110), pb.HighpassFilter(110), pb.LowpassFilter(450), pb.LowpassFilter(450))
+    over = level(over, active_rms_db(low) - 9.0)
+    y = eq(x, pb.HighpassFilter(30), pb.HighpassFilter(30), pb.LowShelfFilter(60, -3.0, 0.7))
+    return y + over
+
+
+def build(c, flavour='melodic', ease=None, ext=None, mel=None, style=None):
+    """ext: optional fn(part, notes, seconds) -> stereo audio that plays the bass / chords / arp instead of the built-in
+    synths (notes: (start s, length s, MIDI note, velocity)); used to try Surge XT sounds.
+    mel: optional melody changes that keep every note on its ring: {'lead': part name ext plays the melody on,
+    'double': keep the flute under it, 'octave': semitones to shift, 'ring_len': how long notes are held,
+    'ghosts': False drops the in-between notes}"""
+    mel = mel or {}
+    # style: None, 'tron' (80s film score: a big gated snare instead of the clap) or 'cyber' (darker, driven drums)
     ease = ease_for(c) if ease is None else ease
     S = Song(c)
     D = S.dur
@@ -157,8 +179,16 @@ def build(c, flavour='melodic', ease=None):
     CR = crash()
     SH = shaker()
     RM = rim()
+    if style == 'tron':
+        # the 80s gated snare: a fat snare into a big room, the room cut off sharply after a quarter second
+        g = reverb(snare(0.2, 185), size=0.95, damp=0.3, wet=1.2, dry=1.0)
+        gate = np.clip((0.26 * SR - np.arange(g.shape[-1])) / (0.03 * SR), 0, 1)
+        GS = eq(g * gate, pb.LowpassFilter(5000), pb.PeakFilter(3500, -4.0, 0.8))
+    if style == 'cyber':
+        K = kick(42, 200, 0.03, 0.4, 0.9, 4.0)
     kicks = []
     n_bars = len(S.bars)
+    notes = {'bass': [], 'chords': [], 'arp': []}
 
     for b in range(n_bars):
         B = S.bars[b]
@@ -180,9 +210,12 @@ def build(c, flavour='melodic', ease=None):
             kicks.append(S.t(b, q))
         if sec != 'I':
             for q in (1, 3):
+                if style == 'tron':
+                    drums.add(GS, S.t(b, q), 0.75)
+                    continue
                 drums.add(CL, S.t(b, q), 0.55 if warehouse else 0.42)
                 if not warehouse:
-                    drums.add(SN, S.t(b, q), 0.22)
+                    drums.add(SN, S.t(b, q), 0.22 if style != 'cyber' else 0.4)
         for q in range(4):
             if sec in ('B', 'C'):
                 hats_open.add(OH, S.t(b, q + 0.5), 1.0, 0.15)
@@ -211,6 +244,7 @@ def build(c, flavour='melodic', ease=None):
                     if s16 >= 14 and b % 2 == 1:
                         p = bn + iv[2]
                     bassL.add(rollbass(p, 0.1, bright), S.t(b, s16 / 4), 0.92 if s16 % 4 != 2 else 1.08)
+                    notes['bass'].append((S.t(b, s16 / 4), 0.1, p, 92 if s16 % 4 != 2 else 108))
         # ---- harmony
         if sec != 'I':
             if warehouse:
@@ -220,6 +254,7 @@ def build(c, flavour='melodic', ease=None):
             else:
                 v = voicing(root, iv, 57, 72) + [bass_note(root, 45)]
                 chords.add(pad(v, S.bar * 0.98, bright), S.t(b, 0), 1.15)
+                notes['chords'] += [(S.t(b, 0), S.bar * 0.98, q, 80) for q in v]
         # ---- arpeggio (band level 3)
         if sec not in ('I',):
             tones = voicing(root, iv, 64, 76)
@@ -233,6 +268,7 @@ def build(c, flavour='melodic', ease=None):
                 else:
                     p = seq[s16 % len(seq)] + (12 if (s16 // 4) % 2 else 0)
                     arp.add(pluck(p, 0.1, bright), S.t(b, s16 / 4), 1.0 if s16 % 4 == 0 else 0.75, -0.5 if s16 % 2 else 0.5)
+                    notes['arp'].append((S.t(b, s16 / 4), 0.1, p, 100 if s16 % 4 == 0 else 78))
         # ---- percussion (band level 4)
         if sec != 'I':
             for s16 in range(16):
@@ -258,6 +294,13 @@ def build(c, flavour='melodic', ease=None):
             jet.add(hb, S.t(b, q + 0.3), 0.4)
 
     n = L['core'].n
+    if ext:
+        # the outside instrument takes over each part, at the level the built-in synth played it
+        for part, layer in (('bass', bassL), ('chords', chords), ('arp', arp)):
+            if notes[part]:
+                x = ext(part, notes[part], D)[:, :n]
+                y = np.zeros((2, n)); y[:, :x.shape[1]] = x
+                layer.x = level(y, active_rms_db(layer.x))
     sc_hard = sidechain(n, kicks, 1.0, 0.24)
     sc_bass = sidechain(n, kicks, 0.55 if warehouse else 0.9, 0.1 if warehouse else 0.12)
     sc_mid = sidechain(n, kicks, 0.55, 0.18)
@@ -273,6 +316,10 @@ def build(c, flavour='melodic', ease=None):
     rum = sat(rum * 3.0, 2.5) * sc_hard * (0.2 if warehouse else 0.1)
 
     drums_x = eq(drums.x, pb.HighShelfFilter(7000, 4.0))
+    if style == 'cyber':
+        # driven and darker: the whole kit through saturation, the top end rolled off
+        dr = active_rms_db(drums_x)
+        drums_x = level(eq(sat(drums_x * 2.2, 2.0), pb.LowpassFilter(8500), pb.PeakFilter(180, 2.5, 0.8)), dr + 0.5)
     bass_x = eq(bassL.x * sc_bass, pb.HighpassFilter(32), pb.PeakFilter(900, 2.0, 1.0), pb.LowShelfFilter(75, 0.0 if warehouse else 1.5))
     if warehouse:
         ch = delay(chords.x, S.beat * 0.75, feedback=0.55, mix=0.45, hp_hz=400, lp_hz=2800)
@@ -286,6 +333,8 @@ def build(c, flavour='melodic', ease=None):
     ride_x = eq(ride_l.x, pb.HighpassFilter(2500))
 
     core = drums_x + bass_x + rum
+    if mel.get('phone', True):
+        core = phone_bass(core)
     L['core'].x = core
     L['full'].x = core + ch + oh_x + ride_x
 
@@ -300,6 +349,22 @@ def build(c, flavour='melodic', ease=None):
     # (melodic: the breathy flute the user picked, 6 dB above its own level, which was already 3 dB above the options
     # page where it was matched to the old lead)
     lead = acid if warehouse else (lambda p, d, accent=True: leads.breath_flute(p, d, accent) * 10 ** (6.0 / 20))
-    place_lead(L, c, lead, ease)
+    shift = mel.get('octave', 0)
+    rl = mel.get('ring_len', 0.85)
+    cc = dict(c, notes=[dict(x, note=x['note'] + shift) for x in c['notes']],
+              ghosts=[dict(x, note=x['note'] + shift) for x in c['ghosts']] if mel.get('ghosts', True) else [])
+    place_lead(L, cc, lead, ease, ring_len=rl)
+    if ext and mel.get('lead'):
+        # the outside instrument plays the melody, each line at the flute's level (or under it, doubling it)
+        eighth = c['beat'] / 2.0
+        lines = {'melA': [x for i, x in enumerate(cc['notes']) if i % 2 == 0],
+                 'melB': [x for i, x in enumerate(cc['notes']) if i % 2 == 1], 'ghost': cc['ghosts']}
+        for k, xs in lines.items():
+            if not xs:
+                continue
+            nn = [(x['t'], max(0.1, x['len'] * eighth * rl), x['note'], 100 if k != 'ghost' else 72) for x in xs]
+            y = np.zeros((2, n)); z = ext(mel['lead'], nn, D)[:, :n]; y[:, :z.shape[1]] = z
+            want = active_rms_db(L[k].x)
+            L[k].x = level(y, want) + L[k].x * 0.6 if mel.get('double') else level(y, want)
     finish_lead(L, S, ease, kicks, room_size=0.5 if warehouse else 0.85, bright_db=3.0)
     return L, S
