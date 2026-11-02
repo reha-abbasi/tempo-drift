@@ -3,10 +3,10 @@ extends Node
 ## the cars and pilots you own, missions, the daily gift, Endless high scores and settings.
 
 const PATH := "user://tempo_drift.json"
-## For now only Berlin 2075 (the Future's sixth city) is open: it has the new music. The other cities stay on the map,
-## locked, and open one by one as their new music is made (add them here).
-const TEST_MAP := "rain"
-const TEST_EP := 5
+## The cities with the new music are open: Berlin 2075 (the Future's sixth city) and London 1890 (the Past's first).
+## The other cities stay on the map, locked, and open one by one as their new music is made (add them here).
+const OPEN := {"rain": [5], "old": [0]}
+const HOME_MAP := "rain"
 
 var data := {
 	"episodes": {},      # "old-0" -> {stars, score, acc, grade}
@@ -31,7 +31,8 @@ func _ready() -> void:
 					data[k].merge(d[k], true)
 				else:
 					data[k] = d[k]
-	data.map = TEST_MAP
+	if not OPEN.has(str(data.map)):
+		data.map = HOME_MAP
 
 
 func write() -> void:
@@ -74,24 +75,23 @@ func dev() -> bool:
 
 
 func era_open(map: String) -> bool:
-	return map == TEST_MAP
+	return OPEN.has(map)
 
 
 func unlocked(map: String, i: int) -> bool:
-	return map == TEST_MAP and i == TEST_EP
+	return OPEN.has(map) and i in OPEN[map]
 
 
 func next_episode(map: String) -> int:
-	## the first episode not yet cleared (or the weakest, when all are); in this build, Berlin
-	if map == TEST_MAP:
-		return TEST_EP
+	## the first open episode not yet cleared (or the weakest open one, when all are)
 	if not era_open(map):
 		return -1
-	for i in 8:
+	var open: Array = OPEN[map]
+	for i in open:
 		if int(ep(map, i).stars) == 0:
-			return i if unlocked(map, i) else -1
-	var best := 0
-	for i in 8:
+			return i
+	var best: int = open[0]
+	for i in open:
 		if int(ep(map, i).stars) < int(ep(map, best).stars):
 			best = i
 	return best

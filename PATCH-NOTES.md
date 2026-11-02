@@ -3,20 +3,30 @@
 What changed in `main`, newest first. Every update to `main` adds an entry here. The game's own change log
 (the ✦ pill on the main menu, `godot/data/changelog.json`) has the same versions in shorter words.
 
-## v29 Synth Brass · 2 Nov 2026
+## v29 Brass & Swing · 2 Nov 2026
 
-New sounds for Berlin 2075, picked from three rounds of tries. The notes and the rings are the same as in v28.
+A second city opens, London 1890, with acoustic jazz, and Berlin 2075 gets new sounds. Both picked from several
+rounds of tries. The notes and the rings are the same as before in both cities.
 
-- **The melody is an 80s synth brass** (Surge XT's "Synth Brass 1"), with its brightest overtones softened so it
-  doesn't sound harsh. It replaces the breathy flute.
-- **Warmer band:** the bass ("Deep End"), the pads ("MKS-70 Warm Pad") and the arpeggio ("Nice Pluck 1") are now
-  played by Surge XT, a free synthesizer, instead of the game's own synths. The drums are unchanged.
-- **Bass you can hear on a phone, and smooth.** Phone speakers play almost nothing under ~150 Hz, so the deep bass
+- **London 1890 is open** (the Past's first city), next to Berlin. Its music is a swinging pub band, a "knees-up":
+  the melody on a honky-tonk piano, with banjo, accordion, tuba, a two-beat kit and tambourine, all recorded
+  instruments (no techno). The melody sits a little under the band.
+- **Berlin's melody is an 80s synth brass** (Surge XT's "Synth Brass 1"), with its brightest overtones softened so
+  it doesn't sound harsh. It replaces the breathy flute.
+- **Warmer Berlin band:** the bass ("Deep End"), the pads ("MKS-70 Warm Pad") and the arpeggio ("Nice Pluck 1") are
+  now played by Surge XT, a free synthesizer, instead of the game's own synths. The drums are unchanged.
+- **Smooth bass that you can hear on a phone.** Phone speakers play almost nothing under ~150 Hz, so the deep bass
   alone sounded strained there. The lowest sub is now a little lower, and a soft octave above the bass line is added
-  (kept under 450 Hz, so it doesn't buzz), so the bass comes through on small speakers too.
-- **Music tools:** `surge_render.py` plays parts on Surge XT sounds, `melodies.py` writes new melodies on a city's
-  chords (for later tries), `audition.py` scores Surge sounds for harshness. See `godot/tools/music/README.md`.
-- **The project is named "Tempo Drift v29 Synth Brass".**
+  (kept under 450 Hz, so it doesn't buzz). In Berlin's intro, where only drums and bass play, the bass starts dark
+  and opens up as the band comes in, so it never sounds bare or clipped.
+- **Points instead of timing words.** Catching a ring no longer shows OK / GOOD / EXCELLENT. The points you got
+  ("+300") pop up at the car, swoop along a curve into the score at the top and vanish; the score counts them in,
+  swells and flashes their colour (gold for a perfect catch, cyan for good, pale for OK), with a little ✦ burst.
+- **Unlocking:** the open cities are listed in `OPEN` in `godot/scripts/save.gd` (now `rain: [5]`, `old: [0]`).
+- **Music tools:** `jazz.py` builds the Past's acoustic bands (ten styles) on recorded instruments through FluidSynth,
+  `surge_render.py` plays parts on Surge XT sounds, `melodies.py` writes new melodies on a city's chords (for later
+  tries), `audition.py` scores Surge sounds for harshness. See `godot/tools/music/README.md`.
+- **The project is named "Tempo Drift v29 Brass & Swing".**
 
 ## v28 New Music · 1 Nov 2026
 

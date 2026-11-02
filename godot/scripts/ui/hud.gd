@@ -18,6 +18,8 @@ var _pop_until := 0.0
 var _pop_t := 9.0
 var _pop_len := 0.95
 var _judge_t := 9.0
+var _in_flight := 0      # points flying to the score: the score shows them when they land
+var _score_bump := 0.0
 var _flash := 0.0
 var _od := false
 var _last_count := -1
@@ -36,6 +38,7 @@ func setup(ep: Dictionary, r: Rules) -> void:
 	if Launch.mode == "episode" and int(ep.i) < 2 and ep.map == "old":
 		_hint("SWIPE ← → LANES · ↑ HOP · ↓ DIVE" if int(ep.i) == 0 else "EVERY NOTE IS A MOVE · SWIPE AS THE RING CLOSES", r.first_t + r.BAR * 2.0)
 	form(2)
+	%Score.pivot_offset = %Score.size / 2.0
 
 
 func hold(arrow: String, text: String) -> void:
@@ -54,7 +57,9 @@ func _hint(text: String, until: float) -> void:
 func update(t: float) -> void:
 	var dt := get_process_delta_time()
 	_clock += dt
-	%Score.text = _commas(rules.score)
+	%Score.text = _commas(rules.score - _in_flight)
+	_score_bump = maxf(0.0, _score_bump - dt * 5.0)
+	%Score.scale = Vector2.ONE * (1.0 + 0.22 * _score_bump * _score_bump)
 	%Combo.text = "%d COMBO" % rules.combo if rules.combo >= 5 else ""
 	%Mel.visible = not rules.melody_on and not rules.over and rules.combo == 0 and rules.J.m > 0
 	# lives and rescue
@@ -160,18 +165,78 @@ func judged(grade: String, r: Rules) -> void:
 	%CoinN.text = _commas(_coins)
 	%Coins.scale = Vector2.ONE * 1.12
 	create_tween().tween_property(%Coins, "scale", Vector2.ONE, 0.24)
-	if grade != "":
-		_judge(Rules.TIMING[grade].say, JUDGE_COLORS[grade])
+	# no timing word: the points you got fly from the car into the score (gold EXCELLENT, cyan GOOD, pale OK)
+	var pts: int = (int(Rules.TIMING[grade].pts) if grade != "" else 100) * r.score_mult()
+	_fly_points(pts, JUDGE_COLORS.get(grade, Color.WHITE) if grade != "" else Color.WHITE)
+
+
+func _fly_points(pts: int, c: Color) -> void:
+	var hud := %Judge.get_parent() as Control
+	var cam := get_viewport().get_camera_3d()
+	var ride := get_tree().current_scene.get_node_or_null("Ride") as Node3D
+	var from := hud.get_global_rect().get_center() + Vector2(0, 60)
+	if cam and ride:
+		from = cam.unproject_position(ride.global_position + Vector3(0, 1.26, 0))
+	var l := Label.new()
+	l.theme_type_variation = "Judge"
+	l.text = "+" + _commas(pts)
+	l.add_theme_color_override("font_color", c)
+	l.add_theme_font_size_override("font_size", 30)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(l)
+	l.reset_size()
+	l.pivot_offset = l.size / 2.0
+	var start := from - l.size / 2.0 + Vector2(randf_range(-18.0, 18.0), 0)
+	l.global_position = start
+	l.scale = Vector2.ONE * 0.3
+	_in_flight += pts
+	var end: Vector2 = %Score.get_global_rect().get_center() - l.size / 2.0
+	var bend := start.lerp(end, 0.35) + Vector2(randf_range(-90.0, 90.0), -60.0)
+	var tw := l.create_tween()
+	# pop in with a little overshoot, hang for a moment, then swoop along a curve into the score, shrinking
+	tw.tween_property(l, "scale", Vector2.ONE * 1.3, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(l, "global_position", start + Vector2(0, -26), 0.2).set_ease(Tween.EASE_OUT)
+	tw.tween_property(l, "scale", Vector2.ONE, 0.08)
+	tw.tween_interval(0.1)
+	var a0 := start + Vector2(0, -26)
+	tw.tween_method(func(k: float) -> void:
+		var q := a0.lerp(bend, k).lerp(bend.lerp(end, k), k)
+		l.global_position = q
+		l.scale = Vector2.ONE * lerpf(1.0, 0.35, k)
+		l.rotation = sin(k * PI) * 0.18
+		l.modulate.a = 1.0 - 0.4 * k * k, 0.0, 1.0, 0.42).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tw.tween_callback(func() -> void:
+		_land(pts, c)
+		l.queue_free())
+
+
+func _land(pts: int, c: Color) -> void:
+	## the points arrive: the score counts them in, swells for a moment and flashes their colour, and a spark bursts
+	_in_flight = maxi(0, _in_flight - pts)
+	_score_bump = 1.0
+	%Score.modulate = c.lerp(Color.WHITE, 0.25)
+	%Score.create_tween().tween_property(%Score, "modulate", Color.WHITE, 0.3)
+	var hud := %Judge.get_parent() as Control
+	var spark := Label.new()
+	spark.theme_type_variation = "Judge"
+	spark.text = "✦"
+	spark.add_theme_color_override("font_color", c)
+	spark.add_theme_font_size_override("font_size", 34)
+	spark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(spark)
+	spark.reset_size()
+	spark.pivot_offset = spark.size / 2.0
+	spark.global_position = %Score.get_global_rect().get_center() - spark.size / 2.0
+	spark.scale = Vector2.ONE * 0.4
+	var tw := spark.create_tween().set_parallel()
+	tw.tween_property(spark, "scale", Vector2.ONE * 2.4, 0.35).set_ease(Tween.EASE_OUT)
+	tw.tween_property(spark, "rotation", 1.2, 0.35)
+	tw.tween_property(spark, "modulate:a", 0.0, 0.35).set_ease(Tween.EASE_IN)
+	tw.chain().tween_callback(spark.queue_free)
 
 
 func missed(_r: Rules) -> void:
 	pass
-
-
-func _judge(text: String, c: Color) -> void:
-	%Judge.text = text
-	%Judge.add_theme_color_override("font_color", c)
-	_judge_t = 0.0
 
 
 func pop(text: String, kind: String, pri: int) -> void:

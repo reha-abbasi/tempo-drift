@@ -320,7 +320,22 @@ def build(c, flavour='melodic', ease=None, ext=None, mel=None, style=None):
         # driven and darker: the whole kit through saturation, the top end rolled off
         dr = active_rms_db(drums_x)
         drums_x = level(eq(sat(drums_x * 2.2, 2.0), pb.LowpassFilter(8500), pb.PeakFilter(180, 2.5, 0.8)), dr + 0.5)
-    bass_x = eq(bassL.x * sc_bass, pb.HighpassFilter(32), pb.PeakFilter(900, 2.0, 1.0), pb.LowShelfFilter(75, 0.0 if warehouse else 1.5))
+    if ext:
+        # Surge's basses already carry their own overtones: no 900 Hz lift, and the top rounded off so a saw bass
+        # doesn't buzz
+        bass_x = eq(bassL.x * sc_bass, pb.HighpassFilter(32), pb.PeakFilter(900, -2.0, 0.8), pb.LowpassFilter(1800),
+                    pb.LowShelfFilter(75, 1.5))
+    else:
+        bass_x = eq(bassL.x * sc_bass, pb.HighpassFilter(32), pb.PeakFilter(900, 2.0, 1.0), pb.LowShelfFilter(75, 0.0 if warehouse else 1.5))
+    # the intro: the bass starts dark (only its low end) and opens up as the band comes in, so it never sounds bare
+    first = next((b for b, B in enumerate(S.bars) if B['sec'] != 'I'), 0)
+    if first:
+        lo_part = eq(bass_x, pb.LowpassFilter(220), pb.LowpassFilter(220))
+        hi_part = bass_x - lo_part
+        t = np.arange(n) / SR
+        t_open = first * S.bar
+        open_ = np.clip(0.2 + 0.8 * (t - (t_open - S.bar)) / S.bar, 0.2, 1.0)    # 20 %, opening over the last intro bar
+        bass_x = lo_part + hi_part * open_
     if warehouse:
         ch = delay(chords.x, S.beat * 0.75, feedback=0.55, mix=0.45, hp_hz=400, lp_hz=2800)
         ch = reverb(ch, size=0.85, damp=0.6, wet=0.35, pre_hp=300)

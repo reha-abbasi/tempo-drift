@@ -11,6 +11,8 @@ then sidechain pumping, echo, reverb and mastering.
 | `techno.py` | The Future's techno, flavours `melodic` (in the game) and `warehouse` |
 | `leads.py` | Melody instruments modelled on real ones: breathy flute (in the game), marimba, glass keys, plucked string, analog pluck |
 | `render.py` | Renders the layers the game plays, and a preview mp3 of a good run |
+| `jazz.py`, `jazz_render.py` | The Past's acoustic jazz bands (ragtime, music hall, dixieland, gypsy, noir trio, big band, pub, vibes, parlour, smoky sax) on recorded instruments; London uses `pub` with `--mel=-4` |
+| `gm.py` | Plays a part on a General MIDI instrument through FluidSynth and the MuseScore General sample library |
 | `surge_render.py` | Plays the bass, pads, arpeggio and melody on Surge XT sounds; `game KEY OUT --stems` writes the game's layers (Berlin uses `mel_tron`) |
 | `melodies.py` | Writes new melodies on a city's own chords (hook, heroic, dark); the rings would move with them |
 | `audition.py` | Scores Surge sounds on a short phrase: how much harsh 2–6 kHz, how noisy, how bright |
@@ -49,3 +51,14 @@ open-source synthesizer, loaded as a VST3 plugin through `pedalboard`. `surge_re
 
 Sounds that measure harsh (lots of 2–6 kHz, or noisy) were left out on purpose: they sounded artificial. Every mix
 also goes through `phone_bass` in `techno.py`, so the bass line still comes through on a phone speaker.
+
+## Acoustic jazz (London 1890, from v29)
+
+The Past's bands are played by recorded instruments: `gm.py` writes each part as MIDI and renders it with
+[FluidSynth](https://www.fluidsynth.org/) and the MuseScore General sample library (`MuseScore_General_Full.sf2`,
+the jazz and brush drum kits included). Saxes and the muted trumpet play the melody an octave down, in their warm
+range, and horns, reeds and the violin get the 2-5 kHz bite eased; the rings don't move.
+
+```bash
+.venv/bin/python jazz_render.py out pub --mel=-4 --stems    # course: courses/old_0.json; out/pub/<layer>.ogg -> audio/old_0/
+```
