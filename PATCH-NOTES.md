@@ -3,16 +3,24 @@
 What changed in `main`, newest first. Every update to `main` adds an entry here. The game's own change log
 (the ✦ pill on the main menu, `godot/data/changelog.json`) has the same versions in shorter words.
 
-## v29 Brass & Swing · 2 Nov 2026
+## v29 Brass & Swing · 2–3 Nov 2026
 
-A second city opens, London 1890, with acoustic jazz, and Berlin 2075 gets new sounds. Both picked from several
-rounds of tries. The notes and the rings are the same as before in both cities.
+Two more cities open, London 1890 with acoustic jazz and Rio de Janeiro with a real samba band, and Berlin 2075 gets
+new sounds. All picked from several rounds of tries. In London and Berlin the notes and rings are the same as
+before; Rio has a new tune, so its rings were laid out again to follow it.
 
 - **London 1890 is open** (the Past's first city), next to Berlin. Its music is a music-hall pub band played by real
   recorded instruments: the melody on a trumpet, with an old upright pub piano, trombone, tuba, a soft violin section,
   a strumstick and a harmonica in place of banjo and accordion, a rope-tension snare kit and tambourine, all in one
   warm hall. Each player is a few milliseconds off the beat, like real musicians; the melody stays on the rings and sits
   a little under the band. No techno.
+- **Rio de Janeiro is open** (the Present's second city). Its band is real musicians: a samba-school percussion
+  section (surdos, snares, tamborims, shakers) from recorded loops, with a carnival street crowd underneath. The
+  melody is a new marchinha, a bouncy carnival march written for the game (original, in the spirit of the old Rio
+  carnival songs), played by a tenor sax and a nylon-string classical guitar together, the sax tongued short like a
+  carnival band. The guitar is a real Spanish classical guitar recorded note by note at three strengths.
+- **Rio's rings follow the new tune:** 107 rings (one per melody note) and 23 vehicles, laid out by the web game's
+  own rules; a perfect flight plays every note and never crashes.
 - **Berlin's melody is an 80s synth brass** (Surge XT's "Synth Brass 1"), with its brightest overtones softened so
   it doesn't sound harsh. It replaces the breathy flute.
 - **Warmer Berlin band:** the bass ("Deep End"), the pads ("MKS-70 Warm Pad") and the arpeggio ("Nice Pluck 1") are
@@ -27,12 +35,14 @@ rounds of tries. The notes and the rings are the same as before in both cities.
 - **The main menu has its own music**, "Time Traveller": a new tune written for Tempo Drift, on a string section,
   a rippling upright piano, plucked bass and brushes, the tune first on violins and then on a soft trumpet (real
   recordings). A seamless 40-second loop, a little quieter than the episodes. The menus no longer reuse Berlin's song.
-- **Unlocking:** the open cities are listed in `OPEN` in `godot/scripts/save.gd` (now `rain: [5]`, `old: [0]`).
+- **Unlocking:** the open cities are listed in `OPEN` in `godot/scripts/save.gd` (now `rain: [5]`, `old: [0]`, `sunset: [1]`).
 - **Music tools:** `jazz.py` builds the Past's acoustic bands; `sampler.py` plays the free CC0 Versilian sample
   libraries (VCSL, VSCO 2 CE), the rest through FluidSynth; `menu.py` makes the menu theme (four arrangements); `listen.py` draws a song's spectrogram and flags clicks,
   clipping and harsh spots;
   `surge_render.py` plays parts on Surge XT sounds, `melodies.py` writes new melodies on a city's chords (for later
-  tries), `audition.py` scores Surge sounds for harshness. See `godot/tools/music/README.md`.
+  tries), `audition.py` scores Surge sounds for harshness; `rio_real.py` builds Rio on recorded loops, `carnival.py` holds
+  its tunes, `expr.py` plays a melody with phrasing; `tools/bake/bake_tune.mjs` lays out the rings for a new tune.
+  See `godot/tools/music/README.md`.
 - **The project is named "Tempo Drift v29 Brass & Swing".**
 
 ## v28 New Music · 1 Nov 2026

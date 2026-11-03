@@ -35,6 +35,19 @@ def _load(path):
     return _cache[path]
 
 
+def _pitch(x, a=0.03, b=0.4):
+    """the fundamental of a recording (harmonic product spectrum: robust for bright or short sounds)"""
+    m = x.mean(0)[int(a * SR):int(b * SR)]
+    m = m * np.hanning(len(m))
+    F = np.abs(np.fft.rfft(m, 1 << 18))
+    f = np.fft.rfftfreq(1 << 18, 1 / SR)
+    H = F.copy()
+    for k in (2, 3, 4):
+        H[:len(F) // k] *= F[::k][:len(F) // k]
+    sel = (f > 25) & (f < 2500)
+    return f[sel][np.argmax(H[sel])]
+
+
 def _note(name, octave_shift):
     m = re.match(r'([A-G][#b]?)(-?\d)$', name)
     return PC[m.group(1)] + 12 * (int(m.group(2)) + 1 + octave_shift)
@@ -43,7 +56,8 @@ def _note(name, octave_shift):
 class Instrument:
     """files: glob under LIB; rx: regex with named groups note, vel (optional), rr (optional)"""
 
-    def __init__(self, pattern, rx, octave_shift=1, release=0.25, gain=1.0, vel_names=None, max_len=None, honky=0.0):
+    def __init__(self, pattern, rx, octave_shift=1, release=0.25, gain=1.0, vel_names=None, max_len=None, honky=0.0,
+                 auto_octave=False):
         self.release, self.gain, self.max_len, self.honky = release, gain, max_len, honky
         self.zones = []          # (midi, vel_rank, path)
         for p in sorted(glob.glob(os.path.join(LIB, pattern), recursive=True)):
@@ -56,6 +70,14 @@ class Instrument:
             self.zones.append((_note(d['note'], octave_shift), v, p))
         if not self.zones:
             raise ValueError('no samples for ' + pattern)
+        if auto_octave:
+            # measure a middle recording's pitch and fix the library's octave numbering
+            mid = sorted(self.zones)[len(self.zones) // 2]
+            f = _pitch(_load(mid[2]))
+            want = 440 * 2 ** ((mid[0] - 69) / 12)
+            k = int(round(np.log2(f / want)))
+            if k:
+                self.zones = [(n + 12 * k, v, p) for n, v, p in self.zones]
         self.vels = sorted({z[1] for z in self.zones})
         self._rr = {}
 
@@ -178,6 +200,12 @@ INSTRUMENTS = {
     'tuba': lambda: Instrument('vsco/Brass/Tuba/stac/*.wav', r'stac_(?P<note>[A-G]#?\d)_v(?P<vel>\d)_rr\d', release=0.15),
     'tuba_sus': lambda: Instrument('vsco/Brass/Tuba/sus/*.wav', r'sus_(?P<note>[A-G]#?\d)_v(?P<vel>\d)', release=0.2),
     'trumpet': lambda: Instrument('vsco/Brass/Trumpet/sus/*.wav', r'sus_(?P<note>[A-G]#?\d)_v(?P<vel>\d)', release=0.18),
+    'trumpet_vib': lambda: Instrument('vsco/Brass/Trumpet/susvib/*.wav', r'susvib_(?P<note>[A-G]#?\d)_v(?P<vel>\d)', release=0.2),
+    'tenor_sax': lambda: Instrument(V + 'Aerophones/Reed Aerophones/Tenor Saxophone/Non-Vibrato/*.wav',
+                                    r'NV_Main_(?P<note>[A-G]#?\d)_vl(?P<vel>\d)', release=0.15, auto_octave=True),
+    'tenor_vib': lambda: Instrument(V + 'Aerophones/Reed Aerophones/Tenor Saxophone/Vibrato/*.wav',
+                                    r'Vib_Main_(?P<note>[A-G]#?\d)_var', release=0.18, auto_octave=True),
+    'muted_trumpet': lambda: Instrument('vsco/Brass/Trumpet/harmonM-sus/*.wav', r'harmonM-sus_(?P<note>[A-G]#?\d)_v(?P<vel>\d)', release=0.18),
     'trumpet_stac': lambda: Instrument('vsco/Brass/Trumpet/stac/*.wav', r'stac_(?P<note>[A-G]#?\d)_v(?P<vel>\d)', release=0.12),
     'trombone': lambda: Instrument('vsco/Brass/OldTrombone/Sustain/*.wav', r'Sustain_(?P<note>[A-G]#?\d)_v(?P<vel>\d)_\d', release=0.25),
     'trombone_short': lambda: Instrument('vsco/Brass/OldTrombone/Short/*.wav', r'Short_(?P<note>[A-G]#?\d)_v(?P<vel>\d)_\d', release=0.15),
@@ -185,11 +213,69 @@ INSTRUMENTS = {
     'solo_violin': lambda: Instrument('vsco/Strings/Solo Violin/Arco Vib/*.wav', r'ArcoVib_(?P<note>[A-G]#?\d)_(?P<vel>p|f)', octave_shift=0,
                                       release=0.25, vel_names=['p', 'f']),
     'bass_pizz': lambda: Instrument('vsco/Strings/Solo Contrabass/Pizz/*.wav', r'Pizz_(?P<note>[A-G]#?\d)_v(?P<vel>\d)_rr\d', release=0.3),
+    # Rio
+    # University of Iowa MIS: a Raimundo 118 Spanish classical guitar, every note pp/mf/ff (free, no restrictions),
+    # cut from its chromatic scales by split_iowa.py, the chamber's rumble filtered out
+    'iowa_guitar': lambda: Instrument('iowa_guitar/*.wav', r'(?P<note>[A-G]#?\d)_(?P<vel>pp|mf|ff)\.wav', octave_shift=0,
+                                      release=0.25, vel_names=['pp', 'mf', 'ff'], max_len=4.0),
+    'nylon_guitar': lambda: Instrument('freepats/x_g_SFZ+FLAC.7z/*/samples/*.flac', r'^(?P<note>[A-G]#?\d)\.flac$', release=0.3,
+                                       max_len=3.0, auto_octave=True),
+    'marimba': lambda: Instrument(V + 'Idiophones/Struck Idiophones/Marimba/*.wav', r'Outrigger_(?P<note>[A-G]#?\d)_(?P<vel>soft|med|loud)',
+                                  release=0.3, vel_names=['soft', 'med', 'loud']),   # pitch check fooled by the bars' overtones
+    'vibes': lambda: Instrument(V + 'Idiophones/Struck Idiophones/Vibraphone/Soft Mallets/*.wav', r'soft_(?P<note>[A-G]#?\d)_',
+                                release=0.5, max_len=3.0, auto_octave=True),
+    'tenor_sax': lambda: Instrument(V + 'Aerophones/Reed Aerophones/Tenor Saxophone/Non-Vibrato/*.wav',
+                                    r'NV_Main_(?P<note>[A-G]#?\d)_vl(?P<vel>\d)', release=0.15, auto_octave=True),
+    'tenor_stac': lambda: Instrument(V + 'Aerophones/Reed Aerophones/Tenor Saxophone/Staccato/*.wav',
+                                     r'Staccato_Main_(?P<note>[A-G]#?\d)_vl(?P<vel>\d)', release=0.1, auto_octave=True),
+    'recorder': lambda: Instrument(V + 'Aerophones/Edge-blown Aerophones/Baroque Alto Recorder/Sustain/*.wav',
+                                   r'Sus_(?P<note>[A-G]#?\d)_', release=0.12, auto_octave=True),
+    'harp': lambda: Instrument(V + 'Chordophones/Composite Chordophones/Concert Harp/*.wav', r'KSHarp_(?P<note>[A-G]#?\d)_(?P<vel>mf|f)',
+                               release=0.8, vel_names=['mf', 'f'], max_len=3.0, auto_octave=True),
+    'epiano': lambda: Instrument(V + 'Electrophones/TX81Z/FM Piano/*.wav', r'FMPiano_(?P<note>[A-G]#?\d)_vl(?P<vel>\d)', release=0.4,
+                                 max_len=3.0, auto_octave=True),
 }
 DR = V + 'Membranophones/Struck Membranophones/'
 ID = V + 'Idiophones/Struck Idiophones/'
 KITS = {
     # General MIDI drum numbers -> (recordings, gain, cut-off seconds or None)
+    # Latin percussion, General MIDI numbers: 35 big bass drum (surdo), 36 kick, 38 snare, 40 snare without snares (caixa
+    # body), 37 stick, 39 claps, 42/46 hi-hat, 49 cymbal, 54 tambourine (pandeiro), 56 cowbell, 60/61 bongos, 62 quinto,
+    # 63 conga, 64 tumba, 65 muted conga, 66 muted bongo (tamborim), 67/68 agogo, 69 cabasa, 70 shaker, 71/72 whistle,
+    # 73/74 guiro, 75 claves, 80/81 triangle, 43 frame drum (zabumba body), 92 ocean drum
+    'latin_kit': lambda: Kit({
+        35: (DR + 'Bass Drum 2/bassdrum_hit_[mf]*.wav', 1.0, 1.2),
+        36: (DR + 'Bass Drum 1/*.wav', 1.0, None),
+        38: (DR + 'Snare Drum, Modern 1/Snare2_HitSN_*.wav', 0.7, None),
+        40: (DR + 'Snare Drum, Modern 1/Snare2_HitNS_*.wav', 0.7, None),
+        37: (DR + 'Snare Drum, Modern 1/Snare2_stick_*.wav', 0.8, None),
+        39: (ID + 'Claps/Clap_rr*.wav', 0.8, None),
+        42: (ID + 'Hi-Hat Cymbal/HiHat_HitC_*.wav', 0.6, 0.4),
+        46: (ID + 'Hi-Hat Cymbal/HiHat_HitO_*.wav', 0.5, None),
+        49: (ID + 'Suspended Cymbal 1/susCymb1_hit_[fm]*1.wav', 0.5, None),
+        54: (ID + 'Tambourine 2/*Hit*.wav', 0.7, None),
+        56: (ID + 'Cowbells/Cowbell1_Hit_*.wav', 0.6, None),
+        60: (DR + 'Bongos/BongoH_Hit1_*.wav', 0.8, None),
+        61: (DR + 'Bongos/BongoL_Hit1_*.wav', 0.8, None),
+        62: (DR + 'Conga/Quinto_HitN_*.wav', 0.8, None),
+        63: (DR + 'Conga/Conga_HitN_*.wav', 0.8, None),
+        64: (DR + 'Conga/Tumba_HitN_*.wav', 0.8, None),
+        65: (DR + 'Conga/Conga_HitFM_*.wav', 0.8, None),
+        66: (DR + 'Bongos/BongoH_HitMuted1_*.wav', 0.8, None),
+        67: (ID + 'Agogo Bells/Agogo_High_*.wav', 0.6, None),
+        68: (ID + 'Agogo Bells/Agogo_Low_*.wav', 0.6, None),
+        69: (ID + 'Cabasa/Cabasa1_Hit_*.wav', 0.6, None),
+        70: (ID + 'Shaker, Small/*_Down_*.wav', 0.5, 0.25),
+        71: ('vcsl/Aerophones/Edge-blown Aerophones/Ball Whistle/*Short*.wav', 0.4, None),
+        72: ('vcsl/Aerophones/Edge-blown Aerophones/Ball Whistle/*Long*.wav', 0.4, None),
+        73: (ID + 'Guiro/Guiro_Hit_*.wav', 0.6, None),
+        74: (ID + 'Guiro/Guiro_Med_*.wav', 0.6, None),
+        75: (ID + 'Claves/Claves1_Hit_*.wav', 0.6, None),
+        80: (ID + 'Triangles/Triangle1_HitM_*.wav', 0.5, 0.12),     # damped by the hand between hits, as players do
+        81: (ID + 'Triangles/Triangle1_Hit_*.wav', 0.5, 0.45),
+        43: (DR + 'Bass Drum 1/*.wav', 0.9, 0.5),
+        92: ('vcsl/Membranophones/Other Membranophones/Ocean Drum/*.wav', 0.5, None),
+    }),
     'parlour_kit': lambda: Kit({
         36: (DR + 'Bass Drum 1/*.wav', 1.0, None),
         38: (DR + 'Snare Drum, Rope Tension/Hi/*_sn_*.wav', 0.8, None),

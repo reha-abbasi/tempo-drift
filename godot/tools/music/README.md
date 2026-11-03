@@ -19,6 +19,11 @@ then sidechain pumping, echo, reverb and mastering.
 | `surge_render.py` | Plays the bass, pads, arpeggio and melody on Surge XT sounds; `game KEY OUT --stems` writes the game's layers (Berlin uses `mel_tron`) |
 | `melodies.py` | Writes new melodies on a city's own chords (hook, heroic, dark); the rings would move with them |
 | `audition.py` | Scores Surge sounds on a short phrase: how much harsh 2–6 kHz, how noisy, how bright |
+| `rio_real.py`, `rio_render.py` | Rio de Janeiro on loops recorded by real players (escola de samba, bossa, baião, bloco, ijexá, eletrônico); the game uses `escola` |
+| `carnival.py` | Original Rio melodies in the shape of famous carnival, samba and bossa songs (marchinha in the game) |
+| `expr.py` | The expressive melody player: phrasing, dynamics, vibrato; `samba` (tongued sax) and `guitar` (plucked) styles |
+| `tune_bars.py` | Writes a `carnival.py` tune as bar melodies for `tools/bake/bake_tune.mjs`, which lays the rings out for it |
+| `split_iowa.py` | Cuts the University of Iowa guitar recordings into one file per note |
 
 The melody stands out most in the first city (London 1890) and blends further into the band in each city after that,
 up to Las Vegas 2099: louder and drier ring notes early, more echo and busier parts later (`ease_for` in `arr.py`).
@@ -76,4 +81,26 @@ violins, double bass). The samples are not in this repo (about 2 GB): clone only
 
 ```bash
 .venv/bin/python jazz_render.py out pub_full --mel=-4 --stems    # out/pub_full/<layer>.ogg -> audio/old_0/
+```
+
+## Rio de Janeiro (from v29)
+
+Rio's band is real musicians: CC0 loops from [Freesound](https://freesound.org) (samba-school percussion, a
+carnival street recording, bossa-nova guitar), stretched to 120 BPM and shifted onto Rio's chords. Who recorded
+each loop: `loops/meta.json`; `loops/fs_get.py ID...` downloads them into `loops/raw` (not in the repo).
+
+The melody is a new marchinha (`carnival.py`, `marcha`) played by a tenor saxophone (VCSL, CC0) and a nylon-string
+classical guitar together. The guitar is the [University of Iowa](https://theremin.music.uiowa.edu/MIS.html)
+Raimundo 118 recorded note by note at three strengths (free to use without restrictions), cut with `split_iowa.py`
+into `samples/iowa_guitar`; it plays an octave below the written notes, a guitarist's natural range.
+
+The rings follow the new tune: the course is baked by the web game's own generator with the tune in place of its
+melody, then the level scene is rebuilt.
+
+```bash
+.venv/bin/python tune_bars.py marcha marcha_bars.json
+node ../bake/bake_tune.mjs ../../../web/game.html sunset 1 marcha_bars.json ../../data/sunset_1.json
+LEVEL="sunset 1" godot --headless --path ../.. res://tools/editor/runner.tscn -- build_one_level
+.venv/bin/python rio_render.py out escola --stems --melody=sax_samba+guitar_low --course=../../data/sunset_1.json
+# out/escola/<layer>.ogg -> audio/sunset_1/
 ```

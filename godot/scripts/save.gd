@@ -3,9 +3,10 @@ extends Node
 ## the cars and pilots you own, missions, the daily gift, Endless high scores and settings.
 
 const PATH := "user://tempo_drift.json"
-## The cities with the new music are open: Berlin 2075 (the Future's sixth city) and London 1890 (the Past's first).
+## The cities with the new music are open: Berlin 2075 (the Future's sixth city), London 1890 (the Past's first) and
+## Rio de Janeiro (the Present's second).
 ## The other cities stay on the map, locked, and open one by one as their new music is made (add them here).
-const OPEN := {"rain": [5], "old": [0]}
+const OPEN := {"rain": [5], "old": [0], "sunset": [1]}
 const HOME_MAP := "rain"
 
 var data := {

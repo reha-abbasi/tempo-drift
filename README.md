@@ -4,13 +4,14 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
-**Current version: v29 Brass & Swing** (2 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
+**Current version: v29 Brass & Swing** (2–3 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
 
 ![Tempo Drift: the era map, London 1890 and Rio de Janeiro](.github/screenshots.png)
 
-> **New music, one city at a time.** The music is being remade city by city. Two cities are open so far: **Berlin 2075**,
-> with melodic techno and an 80s synth-brass melody, and **London 1890**, with a music-hall pub band on real
-> recorded instruments. The menus have their own theme. The other 22 cities are still on the map, locked, and open one by one as their new music is made. The old music is taken out. The tools that make the
+> **New music, one city at a time.** The music is being remade city by city. Three cities are open so far: **Berlin 2075**,
+> with melodic techno and an 80s synth-brass melody, **London 1890**, with a music-hall pub band on real
+> recorded instruments, and **Rio de Janeiro**, with a samba-school band and a carnival march on sax and nylon guitar.
+> The menus have their own theme. The other 21 cities are still on the map, locked, and open one by one as their new music is made. The old music is taken out. The tools that make the
 > music are in [`godot/tools/music/`](godot/tools/music).
 >
 > What changed in each update: [`PATCH-NOTES.md`](PATCH-NOTES.md).
