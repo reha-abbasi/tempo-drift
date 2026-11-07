@@ -20,8 +20,19 @@ jobs:
     timeout-minutes: 120
     env:
       GODOT: "4.7.2"
+    defaults:
+      run:
+        shell: bash   # stops at the first failing command, even inside a pipe
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      - name: Xcode 26 (Godot's iPhone template is built against the iOS 26 SDK)
+        run: |
+          ls -d /Applications/Xcode*.app
+          x=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$x" ]; then echo "No Xcode 26 on this machine"; exit 1; fi
+          sudo xcode-select -s "$x"
+          xcodebuild -version
 
       - name: Godot and its iPhone export template
         run: |
