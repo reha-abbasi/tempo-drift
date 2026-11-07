@@ -6,13 +6,18 @@ of the song.
 
 **Current version: v29 Brass & Swing** (2–7 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
 
-![Tempo Drift: the era map, London 1890 and Rio de Janeiro](.github/screenshots.png)
+![Tempo Drift: the Future's map, London 1890 at gaslight dusk, Rio de Janeiro at sunset and Berlin 2075 at night](.github/screenshots.png)
 
-> **New music, one city at a time.** The music is being remade city by city. Three cities are open so far: **Berlin 2075**,
-> with melodic techno and an 80s synth-brass melody, **London 1890**, with a music-hall pub band on real
-> recorded instruments, and **Rio de Janeiro**, with a samba-school band and a carnival march on sax and nylon guitar.
-> The menus have their own theme. The other 21 cities are still on the map, locked, and open one by one as their new music is made. The old music is taken out. The tools that make the
-> music are in [`godot/tools/music/`](godot/tools/music).
+> **Three cities are open, each with its own music and look.**
+> - **London 1890**: a music-hall pub band on real recorded instruments, over wet cobbles at gaslight dusk.
+> - **Rio de Janeiro**: a samba-school band and a carnival march on sax and nylon guitar, along Copacabana's wave
+>   promenade at sunset.
+> - **Berlin 2075**: melodic techno and an 80s synth-brass melody, on a wet neon street under the TV tower.
+>
+> The band grows grander the longer you keep playing notes, a friend flies in with a spare car after a crash, the car
+> bounces off the road's edges, and on a phone it taps along with every note. The other 21 cities are on the map,
+> locked, and open one by one as their music is made. The music tools are in
+> [`godot/tools/music/`](godot/tools/music).
 >
 > What changed in each update: [`PATCH-NOTES.md`](PATCH-NOTES.md).
 
@@ -23,8 +28,10 @@ This repo holds two versions of the same game:
 | **Godot** (the one to build on) | [`godot/`](godot) | Open `godot/project.godot` in [Godot 4.7.2](https://godotengine.org/download/archive/4.7.2-stable/). Guide: [`godot/README.md`](godot/README.md) |
 | **Web** (the original, one HTML file) | [`web/`](web) | https://reha-abbasi.github.io/tempo-drift/ · edit `web/game.html` |
 
-The Godot version started from the web version's rules: the same rules, menus, garage, map and missions. Its courses were made by running the web game's own code
-(`godot/tools/bake/`); its music is now being remade city by city with `godot/tools/music/`.
+The Godot version started from the web version's rules: the same rules, menus, garage, map and missions. Its courses
+were made by running the web game's own code (`godot/tools/bake/`); its music is being remade city by city with
+`godot/tools/music/`, and the open cities have their own light, street detail, cars and note rings
+(`godot/scripts/gfx_*.gd`).
 
 ## Test on an iPhone
 
