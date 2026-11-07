@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_outline.gdshader" id="1_07d5f"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_07d5f")
+shader_parameter/color = null
+shader_parameter/energy = null
+shader_parameter/grow = null

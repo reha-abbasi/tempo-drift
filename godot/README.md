@@ -44,6 +44,10 @@ and stays in `data/endless_*.json`.
 - The run's extras, each its own script that `run.gd` makes at the start of a run: `scripts/flow_music.gd` (the band
   grows with Flow), `scripts/rescue_plane.gd` (a friend brings the spare car), `scripts/edge_bounce.gd` (the ride
   bounces off the road's edges), `scripts/swipes.gd` (touch swipes) and `scripts/haptics.gd` (the phone taps along).
+- The open cities' look on top of their scenes: `scripts/gfx_light.gd` (light, sky, haze and colour per city),
+  `scripts/gfx_world*.gd` (richer streets and skylines, baked into `scenes/gfx_world/` by `scripts/gfx_world_bake.gd`)
+  and `scripts/gfx_ride.gd` (the cars, note rings, traffic and effects from `scenes/gfx_ride/`, built by
+  `tools/editor/build_gfx_ride.gd` and `build_gfx_ride_traffic.gd`). `scripts/meshkit.gd` builds meshes for them.
 - `scripts/catalog.gd`: the eras, cities, cars, pilots, prices and missions, with the web game's names and words.
 - `data/`: each song's timing (`<map>_<i>.json`, `school_<map>.json`), the Endless loops, the city looks.
 - `audio/`: Reha's recordings for the 24 episodes (`.ogg`, one file per layer of the band), and the rendered

@@ -47,6 +47,7 @@ var _bounce: Node3D = null   # the ride bounces off the edges of the road (scrip
 var _rescue: Node3D = null   # a friend brings the spare car after a crash (scripts/rescue_plane.gd)
 var _haptics: Node = null    # the phone taps along with the run (scripts/haptics.gd)
 var flow_music: FlowMusic    # the band grows while you keep playing notes (scripts/flow_music.gd)
+var _gfx_ride: Node3D = null # the look of the cars, rings, traffic and effects (scripts/gfx_ride.gd)
 
 @onready var music: Music = $Music
 @onready var camera: Camera3D = $Camera3D
@@ -108,6 +109,13 @@ func _ready() -> void:
 	else:
 		city = (load("res://scenes/cities/%s_%d.tscn" % [info.map, info.i]) as PackedScene).instantiate()
 		$CityHolder.add_child(city)
+	# the open cities' richer streets, facades and skylines (scripts/gfx_world.gd), then their light and sky
+	# (scripts/gfx_light.gd), which lights and reflects that detail too
+	if GfxWorld.dresses(info.map, info.i):
+		var gw := GfxWorld.new()
+		city.add_child(gw)
+		gw.setup(city, lv.get_node("Street") if lv else null, info.map, info.i, bool(Save.data.settings.get("fx_low", false)))
+	add_child(preload("res://scripts/gfx_light.gd").new().setup($CityHolder, city, "%s_%d" % [info.map, info.i]))
 	# the car in the era's paint, the pilot ready for the jetpack
 	car = (load("res://scenes/cars/%s.tscn" % Save.data.car) as PackedScene).instantiate()
 	ride.add_child(car)
@@ -116,6 +124,9 @@ func _ready() -> void:
 	pilot = (load("res://scenes/pilots/%s.tscn" % Save.data.pilot) as PackedScene).instantiate()
 	ride.add_child(pilot)
 	pilot.visible = false
+	_gfx_ride = preload("res://scripts/gfx_ride.gd").new()
+	add_child(_gfx_ride)
+	_gfx_ride.setup(self)
 	if not menu:
 		_haptics = preload("res://scripts/haptics.gd").new()
 		add_child(_haptics)
@@ -337,6 +348,8 @@ func show_ride(car_key: String, pilot_key: String, show_pilot: bool) -> void:
 		pilot.queue_free()
 		pilot = (load("res://scenes/pilots/%s.tscn" % pilot_key) as PackedScene).instantiate()
 		ride.add_child(pilot)
+	if _gfx_ride:
+		_gfx_ride.dress()
 	_show_pilot = show_pilot
 
 

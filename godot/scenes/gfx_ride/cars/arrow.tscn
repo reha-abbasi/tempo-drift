@@ -1,0 +1,129 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/gfx_ride_car.gd" id="1_6lks0"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/gfx_ride/car_arrow.res" id="2_uckqa"]
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_exhaust.gdshader" id="3_x3xg2"]
+[ext_resource type="Shader" path="res://materials/shaders/glow.gdshader" id="4_nbcpf"]
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_hover.gdshader" id="5_j38x5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oo2s6"]
+render_priority = 0
+shader = ExtResource("3_x3xg2")
+shader_parameter/core = null
+shader_parameter/outer = null
+shader_parameter/intensity = null
+shader_parameter/heat = null
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3nvmg"]
+material = SubResource("ShaderMaterial_oo2s6")
+top_radius = 0.09
+bottom_radius = 0.0135
+height = 0.63
+radial_segments = 16
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fa45s"]
+render_priority = 0
+shader = ExtResource("4_nbcpf")
+shader_parameter/color = null
+shader_parameter/intensity = 1.8
+shader_parameter/softness = null
+
+[sub_resource type="QuadMesh" id="QuadMesh_mmx3e"]
+material = SubResource("ShaderMaterial_fa45s")
+size = Vector2(0.45, 0.45)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fnswa"]
+render_priority = 0
+shader = ExtResource("3_x3xg2")
+shader_parameter/core = null
+shader_parameter/outer = null
+shader_parameter/intensity = null
+shader_parameter/heat = null
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ffg2x"]
+material = SubResource("ShaderMaterial_fnswa")
+top_radius = 0.09
+bottom_radius = 0.0135
+height = 0.63
+radial_segments = 16
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ql37q"]
+render_priority = 0
+shader = ExtResource("4_nbcpf")
+shader_parameter/color = null
+shader_parameter/intensity = 1.8
+shader_parameter/softness = null
+
+[sub_resource type="QuadMesh" id="QuadMesh_3olfy"]
+material = SubResource("ShaderMaterial_ql37q")
+size = Vector2(0.45, 0.45)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hjg2j"]
+render_priority = 0
+shader = ExtResource("5_j38x5")
+shader_parameter/color = null
+shader_parameter/intensity = null
+
+[sub_resource type="QuadMesh" id="QuadMesh_gie2k"]
+material = SubResource("ShaderMaterial_hjg2j")
+size = Vector2(1.7, 2.6)
+
+[node name="Arrow" type="Node3D" unique_id=418911858]
+script = ExtResource("1_6lks0")
+livery = Color(0.78431374, 0.0627451, 0.18039216, 1)
+stripe_color = Color(0.9647059, 0.9490196, 0.91764706, 1)
+stripe_x = 0.5
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1421997367]
+mesh = ExtResource("2_uckqa")
+
+[node name="Flame0" type="Node3D" parent="." unique_id=115892111 groups=["flame"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.11, 0.96)
+
+[node name="Cone" type="MeshInstance3D" parent="Flame0" unique_id=1072276045]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0.315)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_3nvmg")
+
+[node name="Glow" type="MeshInstance3D" parent="Flame0" unique_id=1344832809]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_mmx3e")
+
+[node name="Flame1" type="Node3D" parent="." unique_id=730037807 groups=["flame"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.11, 0.96)
+
+[node name="Cone" type="MeshInstance3D" parent="Flame1" unique_id=686283049]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0.315)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_ffg2x")
+
+[node name="Glow" type="MeshInstance3D" parent="Flame1" unique_id=895957116]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_3olfy")
+
+[node name="Hover" type="MeshInstance3D" parent="." unique_id=1023782818]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -0.06, 0)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_gie2k")
+
+[node name="Headlamps" type="SpotLight3D" parent="." unique_id=1574886612]
+transform = Transform3D(1, 0, 0, 0, 0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0, 0.1, -1)
+light_color = Color(1, 0.9, 0.75, 1)
+light_energy = 2.5
+spot_range = 18.0
+spot_angle = 26.0
+
+[node name="Underglow" type="OmniLight3D" parent="." unique_id=217011799]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7, 0.3)
+light_energy = 1.6
+omni_range = 4.0
+
+[node name="KeyLight" type="OmniLight3D" parent="." unique_id=506645386]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 2.2)
+omni_range = 4.5

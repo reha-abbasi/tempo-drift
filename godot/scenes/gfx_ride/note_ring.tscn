@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/gfx_ride_ring.gd" id="1_ktaw6"]
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_ring.gdshader" id="2_wlyb4"]
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_cue.gdshader" id="3_8g4o3"]
+[ext_resource type="Shader" path="res://materials/shaders/ring.gdshader" id="4_lniau"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/track/badge_magnet.res" id="5_qka6g"]
+[ext_resource type="ArrayMesh" path="res://assets/meshes/track/badge_shield.res" id="6_12fth"]
+[ext_resource type="FontFile" path="res://fonts/Syncopate-Bold.ttf" id="7_ytsak"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8jwy6"]
+render_priority = -1
+shader = ExtResource("2_wlyb4")
+shader_parameter/energy = null
+
+[sub_resource type="QuadMesh" id="QuadMesh_q8e1e"]
+material = SubResource("ShaderMaterial_8jwy6")
+size = Vector2(2.7, 2.7)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xwpwh"]
+render_priority = 0
+shader = ExtResource("3_8g4o3")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dvgh3"]
+material = SubResource("ShaderMaterial_xwpwh")
+size = Vector2(1.9, 1.9)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vxbqf"]
+render_priority = 0
+shader = ExtResource("4_lniau")
+shader_parameter/color = Color(1, 0.35, 0.3, 1)
+shader_parameter/energy = 2.4
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tp0kd"]
+render_priority = 0
+shader = ExtResource("4_lniau")
+shader_parameter/color = Color(0.45, 0.95, 1, 1)
+shader_parameter/energy = 2.4
+shader_parameter/fill = null
+shader_parameter/alpha = null
+
+[node name="NoteRing" type="Node3D" unique_id=312361058]
+script = ExtResource("1_ktaw6")
+
+[node name="Disc" type="MeshInstance3D" parent="." unique_id=673151039]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_q8e1e")
+
+[node name="Cue" type="MeshInstance3D" parent="." unique_id=795868340]
+visible = false
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dvgh3")
+
+[node name="Magnet" type="MeshInstance3D" parent="." unique_id=363710944]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_vxbqf")
+cast_shadow = 0
+mesh = ExtResource("5_qka6g")
+
+[node name="Shield" type="MeshInstance3D" parent="." unique_id=743788653]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_tp0kd")
+cast_shadow = 0
+mesh = ExtResource("6_12fth")
+
+[node name="Double" type="Label3D" parent="." unique_id=155631142]
+visible = false
+pixel_size = 0.004
+modulate = Color(1, 0.82, 0.3, 1)
+text = "2×"
+font = ExtResource("7_ytsak")
+font_size = 96
+outline_size = 0
+
+[node name="Glow" type="OmniLight3D" parent="." unique_id=416411998]
+light_color = Color(1, 0.89, 0.72, 1)
+light_energy = 0.8
+omni_range = 3.0

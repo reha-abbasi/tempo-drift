@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_paint.gdshader" id="1_5tpa5"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_5tpa5")
+shader_parameter/paint = null
+shader_parameter/metal = null
+shader_parameter/rough = null
+shader_parameter/rim = null
+shader_parameter/stripe_x = null
+shader_parameter/stripe_w = null
+shader_parameter/stripe = null
+shader_parameter/glow = null
+shader_parameter/glow_color = null
+shader_parameter/night = null

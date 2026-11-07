@@ -9,7 +9,29 @@ Two more cities open, London 1890 with acoustic jazz and Rio de Janeiro with a r
 new sounds. All picked from several rounds of tries. In London and Berlin the notes and rings are the same as
 before; Rio has a new tune, so its rings were laid out again to follow it. Five new things to play with, each
 built and reviewed over three rounds and then picked: Flow music, the rescue plane, the edge bounce, surer swipes
-and haptic beats.
+and haptic beats. And the three open cities look much better: new light and sky, richer streets, new cars and
+note rings, picked from two rounds of graphics tries.
+
+- **New light and sky.** London 1890 is a warm gaslight dusk: a low golden sun rakes the facades, Big Ben stands
+  against a sunset band, the windows are lit and the gas lamps throw pools of light on the cobbles. Rio is a real
+  golden hour instead of the pink haze: violet-blue above, gold at the horizon, the sun low beside Sugarloaf, palms
+  and hills in silhouette. Berlin 2075 is a blue-violet neon night with wide glow and a wet road that mirrors the
+  neon further down the street while staying calm near the car. The garage shows your car under a spotlight.
+- **Richer streets.** London: wet cobbles with puddles and tram rails, lit shop windows, gilt signs on iron
+  brackets, fruit barrows, post boxes, flower baskets on the lamps, houses of different colours and heights, and
+  St Paul's, spires and chimneys behind Big Ben. Rio: Copacabana's black-and-white wave pavement, the beach with
+  surf alongside, parasols, a lifeguard post, proper palms, curved promenade lamps, striped awnings, café tables,
+  lit signs, and Sugarloaf and Corcovado in the distance. Berlin: towers lit floor by floor, signs with real words,
+  skybridges, a maglev line, holograms and the TV tower against the night sky. Baked ahead of time
+  (`scripts/gfx_world_bake.gd`), so a run starts as fast as before.
+- **New cars and note rings.** All five cars are real flying machines now, each with its own look (a red racer, a
+  teal pod with a glowing halo, a black 80s wedge with neon edges, a police flyer with flashing lights, an indigo
+  flying wing), with glowing engines and an underglow. The rings are glowing hoops in their height colour (blue
+  low, gold middle, pink high) with a clear arrow; a thin ring closes in for the timing, a played note bursts
+  white, a missed one breaks up grey. Short engine trails, catch sparkles, a crash fireball, gold streaks in
+  Overdrive, a longer jetpack flame, and traffic that fits each era (1930s cars, double-deckers and biplanes in
+  London; taxis, trucks, buses and hover-cabs in Rio; hovering taxis, freighters, buses and cargo drones in
+  Berlin). A phone does no more work than before; most frames draw fewer objects.
 
 - **Flow music.** The longer you keep playing notes without missing, the grander the band gets: eight steps, each on
   the first beat of a bar after a short drum fill, ending with an "anthem" where the tune is doubled an octave up.

@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://materials/gfx_ride/ride_glass.gdshader" id="1_pumup"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_pumup")
+shader_parameter/tint = null
+shader_parameter/night = null
