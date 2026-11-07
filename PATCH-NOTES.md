@@ -3,11 +3,37 @@
 What changed in `main`, newest first. Every update to `main` adds an entry here. The game's own change log
 (the ✦ pill on the main menu, `godot/data/changelog.json`) has the same versions in shorter words.
 
-## v29 Brass & Swing · 2–3 Nov 2026
+## v29 Brass & Swing · 2–7 Nov 2026
 
 Two more cities open, London 1890 with acoustic jazz and Rio de Janeiro with a real samba band, and Berlin 2075 gets
 new sounds. All picked from several rounds of tries. In London and Berlin the notes and rings are the same as
-before; Rio has a new tune, so its rings were laid out again to follow it.
+before; Rio has a new tune, so its rings were laid out again to follow it. Five new things to play with, each
+built and reviewed over three rounds and then picked: Flow music, the rescue plane, the edge bounce, surer swipes
+and haptic beats.
+
+- **Flow music.** The longer you keep playing notes without missing, the grander the band gets: eight steps, each on
+  the first beat of a bar after a short drum fill, ending with an "anthem" where the tune is doubled an octave up.
+  New parts per city: London bigger drums, a violin counter-melody and a brass section (anthem on violins); Rio
+  extra surdos, repiniques, horn riffs and violins with the crowd (anthem on trumpet); Berlin a wide synth pad, big
+  drums and bells (anthem on a soft lead). A miss makes the music lose its spark on the next beat (duller, a little
+  quieter, the newest part drops out), and it comes back as you catch notes again. Seven marks under the Flow bar
+  show the step: gold for the grand ones, flashing red when one is lost. The songs themselves are unchanged; the
+  new parts are extra layers (`tools/music/flow_layers.py`).
+- **The rescue plane.** After a crash the car comes back sooner: 15 played notes in London and Rio (was 23 and 25),
+  17 in Berlin (was 34), and a miss costs only a quarter of a note. When the meter is full, your own car rises up
+  behind you with a friend (the Fox Pilot) at the wheel, who grabs your hand and pulls you into the seat on the
+  beat, then hops out on a jetpack, waves and flies off. You keep steering, and nothing can hit you meanwhile.
+- **Edge bounce.** Swipe past the far-left or far-right lane and the car squishes against a soft wall at the road's
+  edge and springs back with a wobble, a few gold stars, a shimmer on the edge and a "boing" (higher with each
+  bump in a row); on the jetpack the pilot twirls. Only the drawing moves: catches and crashes are unchanged.
+- **Surer swipes on phones.** Each finger has its own swipe, so a resting thumb no longer sends the car the wrong way;
+  after a left/right swipe you can keep steering without lifting your finger; and a swipe made a moment before the
+  car is back after a crash is no longer lost. Ordinary flicks move exactly as before (`tests/swipe_check.tscn`).
+- **Haptic beats.** The phone taps softly on every note you play, knocks on a miss, and buzzes for the big moments
+  (crash, new car, Overdrive, shield save, power-up, the band stepping up, the finish), with the web game's own
+  patterns. Follows the Haptics setting.
+- **No more melody clicks.** Catching a note right after a miss made a small click (the melody switched back on in
+  one jump); each melody line now plays on its own player and glides in and out.
 
 - **London 1890 is open** (the Past's first city), next to Berlin. Its music is a music-hall pub band played by real
   recorded instruments: the melody on a trumpet, with an old upright pub piano, trombone, tuba, a soft violin section,

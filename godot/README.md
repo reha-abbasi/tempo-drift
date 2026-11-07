@@ -41,6 +41,9 @@ and stays in `data/endless_*.json`.
 
 - `scripts/rules.gd`: the game rules, a line-by-line port of the web game's (flying, rings, timing grades, Flow,
   Overdrive, lives and rescue, power-ups, scoring, stars). `scripts/run.gd` plays a level with them.
+- The run's extras, each its own script that `run.gd` makes at the start of a run: `scripts/flow_music.gd` (the band
+  grows with Flow), `scripts/rescue_plane.gd` (a friend brings the spare car), `scripts/edge_bounce.gd` (the ride
+  bounces off the road's edges), `scripts/swipes.gd` (touch swipes) and `scripts/haptics.gd` (the phone taps along).
 - `scripts/catalog.gd`: the eras, cities, cars, pilots, prices and missions, with the web game's names and words.
 - `data/`: each song's timing (`<map>_<i>.json`, `school_<map>.json`), the Endless loops, the city looks.
 - `audio/`: Reha's recordings for the 24 episodes (`.ogg`, one file per layer of the band), and the rendered
@@ -53,7 +56,7 @@ and stays in `data/endless_*.json`.
 | `tools/bake/bake_courses.mjs` | Makes the Flight School and Endless courses by running the web game's own generator: `node tools/bake/bake_courses.mjs ../web/game.html data` |
 | `tools/bake/render_audio.mjs` | Renders the music the web game plays live (loop songs, menu, intro, effects) with its own code: `node tools/bake/render_audio.mjs ../web/game.html <wav dir>`, then `tools/editor/pack_baked.gd` packs the WAVs |
 | `tools/fetch_polyhaven.py` | Downloads the CC0 textures (Poly Haven) the streets and buildings use |
-| `tests/` | Checks: `rules_sim` (every course flown perfectly), `level_check` (levels match their courses), `load_all` (every scene opens), and picture tests (`run_shot`, `city_shot`, `menu_shot`, …) |
+| `tests/` | Checks: `rules_sim` (every course flown perfectly), `level_check` (levels match their courses), `swipe_check` (touch swipes never make a move a finger didn't mean), `load_all` (every scene opens), and picture tests (`run_shot`, `city_shot`, `menu_shot`, …) |
 
 Run a check with `godot --headless --path godot res://tests/<name>.tscn` from the repo folder.
 

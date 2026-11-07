@@ -1,0 +1,169 @@
+# the touch events of tests/tries/feel_record.gd's player on Rio (steer: one finger that stays down and drags back to
+# turn back), logged from a film with try_feel on: song frame (30 fps, frame 0 = song time 0), touch/drag, finger, x, y, pressed
+248 touch 0 167.0 640.0 true
+249 drag 0 181.7 640.0 
+250 drag 0 222.3 640.0 
+251 drag 0 237.0 640.0 
+264 drag 0 224.5 640.0 
+265 drag 0 190.0 640.0 
+266 drag 0 177.5 640.0 
+278 touch 0 177.5 640.0 false
+279 touch 0 223.0 640.0 true
+280 drag 0 208.3 640.0 
+281 drag 0 167.7 640.0 
+282 drag 0 153.0 640.0 
+294 drag 0 165.5 640.0 
+295 drag 0 200.0 640.0 
+296 drag 0 212.5 640.0 
+309 drag 0 200.0 640.0 
+310 drag 0 165.5 640.0 
+311 drag 0 153.0 640.0 
+323 touch 0 153.0 640.0 false
+324 touch 0 195.0 612.0 true
+325 drag 0 195.0 626.7 
+326 drag 0 195.0 667.3 
+327 drag 0 195.0 682.0 
+368 touch 0 195.0 682.0 false
+369 touch 0 167.0 640.0 true
+370 drag 0 181.7 640.0 
+371 drag 0 222.3 640.0 
+372 drag 0 237.0 640.0 
+384 drag 0 224.5 640.0 
+385 drag 0 190.0 640.0 
+386 drag 0 177.5 640.0 
+399 drag 0 190.0 640.0 
+400 drag 0 224.5 640.0 
+401 drag 0 237.0 640.0 
+413 touch 0 237.0 640.0 false
+414 touch 0 167.0 640.0 true
+415 drag 0 181.7 640.0 
+416 drag 0 222.3 640.0 
+417 drag 0 237.0 640.0 
+429 drag 0 224.5 640.0 
+430 drag 0 190.0 640.0 
+431 drag 0 177.5 640.0 
+443 touch 0 177.5 640.0 false
+444 touch 0 223.0 640.0 true
+445 drag 0 208.3 640.0 
+446 drag 0 167.7 640.0 
+447 drag 0 153.0 640.0 
+459 drag 0 165.5 640.0 
+460 drag 0 200.0 640.0 
+461 drag 0 212.5 640.0 
+473 touch 0 212.5 640.0 false
+474 touch 0 167.0 640.0 true
+475 drag 0 181.7 640.0 
+476 drag 0 222.3 640.0 
+477 drag 0 237.0 640.0 
+488 touch 0 237.0 640.0 false
+489 touch 0 195.0 668.0 true
+490 drag 0 195.0 653.3 
+491 drag 0 195.0 612.7 
+492 drag 0 195.0 598.0 
+503 touch 0 195.0 598.0 false
+504 touch 0 195.0 612.0 true
+505 drag 0 195.0 626.7 
+506 drag 0 195.0 667.3 
+507 drag 0 195.0 682.0 
+508 touch 0 195.0 682.0 false
+509 touch 0 195.0 668.0 true
+510 drag 0 195.0 653.3 
+511 drag 0 195.0 612.7 
+512 drag 0 195.0 598.0 
+517 touch 0 195.0 598.0 false
+518 touch 0 223.0 640.0 true
+519 drag 0 208.3 640.0 
+520 drag 0 167.7 640.0 
+521 drag 0 153.0 640.0 
+532 touch 0 153.0 640.0 false
+533 touch 0 223.0 640.0 true
+534 drag 0 208.3 640.0 
+535 drag 0 167.7 640.0 
+536 drag 0 153.0 640.0 
+547 touch 0 153.0 640.0 false
+548 touch 0 195.0 612.0 true
+549 drag 0 195.0 626.7 
+550 drag 0 195.0 667.3 
+551 drag 0 195.0 682.0 
+562 touch 0 195.0 682.0 false
+563 touch 0 195.0 668.0 true
+564 drag 0 195.0 653.3 
+565 drag 0 195.0 612.7 
+566 drag 0 195.0 598.0 
+567 touch 0 195.0 598.0 false
+568 touch 0 195.0 612.0 true
+569 drag 0 195.0 626.7 
+570 drag 0 195.0 667.3 
+571 drag 0 195.0 682.0 
+577 touch 0 195.0 682.0 false
+578 touch 0 167.0 640.0 true
+579 drag 0 181.7 640.0 
+580 drag 0 222.3 640.0 
+581 drag 0 237.0 640.0 
+592 touch 0 237.0 640.0 false
+593 touch 0 167.0 640.0 true
+594 drag 0 181.7 640.0 
+595 drag 0 222.3 640.0 
+596 drag 0 237.0 640.0 
+608 drag 0 224.5 640.0 
+609 drag 0 190.0 640.0 
+610 drag 0 177.5 640.0 
+623 drag 0 190.0 640.0 
+624 drag 0 224.5 640.0 
+625 drag 0 237.0 640.0 
+638 drag 0 224.5 640.0 
+639 drag 0 190.0 640.0 
+640 drag 0 177.5 640.0 
+652 touch 0 177.5 640.0 false
+653 touch 0 223.0 640.0 true
+654 drag 0 208.3 640.0 
+655 drag 0 167.7 640.0 
+656 drag 0 153.0 640.0 
+668 drag 0 165.5 640.0 
+669 drag 0 200.0 640.0 
+670 drag 0 212.5 640.0 
+683 drag 0 200.0 640.0 
+684 drag 0 165.5 640.0 
+685 drag 0 153.0 640.0 
+697 touch 0 153.0 640.0 false
+698 touch 0 195.0 668.0 true
+699 drag 0 195.0 653.3 
+700 drag 0 195.0 612.7 
+701 drag 0 195.0 598.0 
+712 touch 0 195.0 598.0 false
+713 touch 0 195.0 612.0 true
+714 drag 0 195.0 626.7 
+715 drag 0 195.0 667.3 
+716 drag 0 195.0 682.0 
+717 touch 0 195.0 682.0 false
+718 touch 0 195.0 668.0 true
+719 drag 0 195.0 653.3 
+720 drag 0 195.0 612.7 
+721 drag 0 195.0 598.0 
+727 touch 0 195.0 598.0 false
+728 touch 0 167.0 640.0 true
+729 drag 0 181.7 640.0 
+730 drag 0 222.3 640.0 
+731 drag 0 237.0 640.0 
+743 drag 0 224.5 640.0 
+744 drag 0 190.0 640.0 
+745 drag 0 177.5 640.0 
+758 drag 0 190.0 640.0 
+759 drag 0 224.5 640.0 
+760 drag 0 237.0 640.0 
+772 touch 0 237.0 640.0 false
+773 touch 0 167.0 640.0 true
+774 drag 0 181.7 640.0 
+775 drag 0 222.3 640.0 
+776 drag 0 237.0 640.0 
+803 drag 0 224.5 640.0 
+804 drag 0 190.0 640.0 
+805 drag 0 177.5 640.0 
+817 touch 0 177.5 640.0 false
+818 touch 0 223.0 640.0 true
+819 drag 0 208.3 640.0 
+820 drag 0 167.7 640.0 
+821 drag 0 153.0 640.0 
+833 drag 0 165.5 640.0 
+834 drag 0 200.0 640.0 
+835 drag 0 212.5 640.0 

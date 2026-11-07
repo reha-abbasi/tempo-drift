@@ -4,7 +4,7 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
-**Current version: v29 Brass & Swing** (2–3 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
+**Current version: v29 Brass & Swing** (2–7 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
 
 ![Tempo Drift: the era map, London 1890 and Rio de Janeiro](.github/screenshots.png)
 

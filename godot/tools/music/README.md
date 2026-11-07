@@ -20,6 +20,7 @@ then sidechain pumping, echo, reverb and mastering.
 | `melodies.py` | Writes new melodies on a city's own chords (hook, heroic, dark); the rings would move with them |
 | `audition.py` | Scores Surge sounds on a short phrase: how much harsh 2–6 kHz, how noisy, how bright |
 | `rio_real.py`, `rio_render.py` | Rio de Janeiro on loops recorded by real players (escola de samba, bossa, baião, bloco, ijexá, eletrônico); the game uses `escola` |
+| `flow_layers.py` | Flow music's extra layers for London, Rio and Berlin (grander parts, fills, the octave-up anthem), mastered with each song's own gain so they add up in the game |
 | `carnival.py` | Original Rio melodies in the shape of famous carnival, samba and bossa songs (marchinha in the game) |
 | `expr.py` | The expressive melody player: phrasing, dynamics, vibrato; `samba` (tongued sax) and `guitar` (plucked) styles |
 | `tune_bars.py` | Writes a `carnival.py` tune as bar melodies for `tools/bake/bake_tune.mjs`, which lays the rings out for it |

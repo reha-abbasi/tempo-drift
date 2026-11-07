@@ -6,15 +6,17 @@ extends Node
 ##   shaker (4), od = Overdrive's kicks and crashes, jet = the jetpack's wind and heartbeat, ghost = the melody's
 ##   in-between notes, melA / melB = the ring notes (every other note each, so neighbouring notes don't cut each other)
 ## The band plays through filters that colour it for each way of flying, as in the web game.
+## The melody layers each play on their own player, started with the band: a player's volume glides across each mix,
+## while a layer's volume inside a synchronized stream jumps once a frame, which clicked when a note opened or closed.
 
 const LAYERS_BAND := ["core", "full", "arp", "perc", "od", "jet", "ghost"]
 const LAYERS_LEAD := ["melA", "melB"]
 const OFF_DB := -80.0
 
 var band_player: AudioStreamPlayer
-var lead_player: AudioStreamPlayer
+var lead_player: AudioStreamPlayer   # the melody's level (the menu silences it); each layer plays on _lead_players
 var band_stream: AudioStreamSynchronized
-var lead_stream: AudioStreamSynchronized
+var _lead_players: Array = []
 var target := {}
 var gain := {}
 var playing := false
@@ -25,7 +27,18 @@ var _paused_at := -1.0
 var _lp: AudioEffectLowPassFilter
 var _hp: AudioEffectHighPassFilter
 var _lp_target := 20000.0
+## recording a video (--write-movie): frames are drawn slower than real time, so the song clock follows the frames
+var _movie := Engine.get_write_movie_path() != ""
+var _movie_t := 0.0
 var _hp_target := 20.0
+var _late := {}
+## Flow music: extra band layers to load with the song (scripts/flow_music.gd); none = as before
+var extra_band: Array = []
+var _band: Array = LAYERS_BAND
+## Flow music: doubles of melA / melB that follow them while double_on (the anthem step)
+var extra_lead: Array = []
+var double_on := false
+var _lead: Array = LAYERS_LEAD
 
 
 func _ready() -> void:
@@ -48,19 +61,25 @@ func load_song(folder: String, loop_from := -1.0, gain_db := 0.0) -> void:
 	_loop_len = 0.0
 	_wraps = 0
 	_last_pos = 0.0
+	_band = LAYERS_BAND + extra_band
 	band_stream = AudioStreamSynchronized.new()
-	band_stream.stream_count = LAYERS_BAND.size()
-	for i in LAYERS_BAND.size():
-		band_stream.set_sync_stream(i, _layer(folder, LAYERS_BAND[i]))
-	lead_stream = AudioStreamSynchronized.new()
-	lead_stream.stream_count = LAYERS_LEAD.size()
-	for i in LAYERS_LEAD.size():
-		lead_stream.set_sync_stream(i, _layer(folder, LAYERS_LEAD[i]))
+	band_stream.stream_count = _band.size()
+	for i in _band.size():
+		band_stream.set_sync_stream(i, _layer(folder, _band[i]))
+	_lead = LAYERS_LEAD + extra_lead
+	for p in _lead_players:
+		p.queue_free()
+	_lead_players = []
+	for i in _lead.size():
+		var p := AudioStreamPlayer.new()
+		p.bus = "Lead"
+		p.stream = _layer(folder, _lead[i])
+		add_child(p)
+		_lead_players.append(p)
 	band_player.volume_db = gain_db
 	lead_player.volume_db = gain_db
 	band_player.stream = band_stream
-	lead_player.stream = lead_stream
-	for k in LAYERS_BAND + LAYERS_LEAD:
+	for k in _band + _lead:
 		target[k] = 0.0
 		gain[k] = 0.0
 	target.core = 1.0
@@ -100,9 +119,12 @@ func start(at := 0.0) -> void:
 	_last_pos = at
 	_apply()
 	band_player.play(at)
-	lead_player.play(at)
+	for p in _lead_players:
+		if p.stream:
+			p.play(at)
 	_t0 = Time.get_ticks_usec() - int(at * 1e6)
 	_clock = at
+	_movie_t = at
 	_paused_at = -1.0
 	playing = true
 
@@ -110,16 +132,20 @@ func start(at := 0.0) -> void:
 func seek(t: float) -> void:
 	## carry on from t (Flight School, after waiting for a move)
 	band_player.seek(t)
-	lead_player.seek(t)
+	for p in _lead_players:
+		if p.playing:
+			p.seek(t)
 	_t0 = Time.get_ticks_usec() - int((t + offset) * 1e6)
 	_clock = t
+	_movie_t = t
 	_last_pos = t
 
 
 func stop() -> void:
 	playing = false
 	band_player.stop()
-	lead_player.stop()
+	for p in _lead_players:
+		p.stop()
 
 
 func set_paused(p: bool) -> void:
@@ -129,7 +155,8 @@ func set_paused(p: bool) -> void:
 		_t0 = Time.get_ticks_usec() - int(_paused_at * 1e6)
 		_paused_at = -1.0
 	band_player.stream_paused = p
-	lead_player.stream_paused = p
+	for l in _lead_players:
+		l.stream_paused = p
 
 
 func song_time() -> float:
@@ -139,6 +166,8 @@ func song_time() -> float:
 		return _paused_at
 	if not playing:
 		return _clock
+	if _movie:
+		return _movie_t
 	var wall := (Time.get_ticks_usec() - _t0) / 1e6 - offset
 	var t := wall
 	if band_player.playing and band_player.get_playback_position() > 0.0 and AudioServer.get_driver_name() != "Dummy":
@@ -165,8 +194,14 @@ func set_ghosts(on: bool) -> void:
 	target.ghost = 1.0 if on else 0.0
 
 
-func set_lead(layer: int, on: bool) -> void:
+func set_lead(layer: int, on: bool, late := false) -> void:
+	## late: the note is already sounding (caught late, or missed): its layer fades in over ~0.12 s or out over
+	## ~0.08 s instead, since opening or closing fast mid-note clicked
 	target[LAYERS_LEAD[layer]] = 1.0 if on else 0.0
+	_late[LAYERS_LEAD[layer]] = late
+	if layer < extra_lead.size():
+		target[extra_lead[layer]] = 1.0 if on and double_on else 0.0
+		_late[extra_lead[layer]] = late
 
 
 func set_form(form: int) -> void:
@@ -181,11 +216,17 @@ func muffle() -> void:
 
 
 func _process(delta: float) -> void:
+	if _movie and playing and _paused_at < 0.0:
+		_movie_t += delta
 	if band_stream == null:
 		return
 	for k in gain.keys():
-		# the band eases over ~0.15 s; the melody snaps (~15 ms) so a played note keeps its attack
-		var rate := 70.0 if k.begins_with("mel") else 9.0
+		# the band eases over ~0.15 s. The melody opens over ~40 ms (it opens ~20 ms before its note, so the attack
+		# stays) and closes over ~25 ms: snapping it open in one frame clicked on the echoes still ringing in it
+		var rate := 9.0
+		if k.begins_with("mel"):
+			var late: bool = _late.get(k, false)
+			rate = (8.0 if late else 25.0) if target[k] > gain[k] else (12.0 if late else 40.0)
 		gain[k] = move_toward(gain[k], target[k], delta * rate)
 	_apply()
 	if _lp:
@@ -196,10 +237,10 @@ func _process(delta: float) -> void:
 func _apply() -> void:
 	if band_stream == null:
 		return
-	for i in LAYERS_BAND.size():
-		band_stream.set_sync_stream_volume(i, _db(gain.get(LAYERS_BAND[i], 0.0)))
-	for i in LAYERS_LEAD.size():
-		lead_stream.set_sync_stream_volume(i, _db(gain.get(LAYERS_LEAD[i], 0.0)))
+	for i in _band.size():
+		band_stream.set_sync_stream_volume(i, _db(gain.get(_band[i], 0.0)))
+	for i in _lead_players.size():
+		_lead_players[i].volume_db = lead_player.volume_db + _db(gain.get(_lead[i], 0.0))
 
 
 static func _db(g: float) -> float:

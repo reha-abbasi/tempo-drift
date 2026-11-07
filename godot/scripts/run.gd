@@ -31,6 +31,7 @@ var _prev := Vector2.ZERO
 var _lead_next := [0, 1]  # (with marked layers both start at the first note; see _music)     # the next note index of each melody layer
 var _swipe_from := Vector2.INF
 var _swiped := false
+var _feel: Swipes = null    # the swipes on a phone (scripts/swipes.gd); the menu backdrop flies itself
 var _resume_at := -1.0
 var _ring_scene: PackedScene = preload("res://scenes/track/note_ring.tscn")
 var _theme := {}
@@ -42,6 +43,10 @@ var revived := false
 var m_done := []             # missions finished in this run: [{say, rw}]
 var _paid_hits := 0
 var _overs := 0
+var _bounce: Node3D = null   # the ride bounces off the edges of the road (scripts/edge_bounce.gd)
+var _rescue: Node3D = null   # a friend brings the spare car after a crash (scripts/rescue_plane.gd)
+var _haptics: Node = null    # the phone taps along with the run (scripts/haptics.gd)
+var flow_music: FlowMusic    # the band grows while you keep playing notes (scripts/flow_music.gd)
 
 @onready var music: Music = $Music
 @onready var camera: Camera3D = $Camera3D
@@ -92,6 +97,8 @@ func _ready() -> void:
 	if menu:
 		rules.autopilot = true
 		rules.autopilot_lead = 0.13
+	else:
+		_feel = Swipes.new(rules)
 	_connect_rules()
 	# the city of the episode
 	if lv:
@@ -109,8 +116,20 @@ func _ready() -> void:
 	pilot = (load("res://scenes/pilots/%s.tscn" % Save.data.pilot) as PackedScene).instantiate()
 	ride.add_child(pilot)
 	pilot.visible = false
+	if not menu:
+		_haptics = preload("res://scripts/haptics.gd").new()
+		add_child(_haptics)
+		_haptics.setup(self)
+	if not rules.tutorial:
+		_rescue = (load("res://scripts/rescue_plane.gd") as GDScript).new()
+		add_child(_rescue)
+		_rescue.setup(self)
 	var cal = Save.data.settings.get("cal")
 	music.offset = float(cal) if cal is float or cal is int else 0.0
+	if not rules.tutorial:
+		flow_music = FlowMusic.new()
+		add_child(flow_music)
+		flow_music.setup(rules, music, hud, info.audio)
 	music.load_song(info.audio, loop_from, gain)
 	if menu:
 		# behind the menus the main-menu theme plays instead (main.gd)
@@ -150,6 +169,10 @@ func _connect_rules() -> void:
 	rules.moved.connect(_on_moved)
 	rules.cleared.connect(_on_cleared)
 	rules.game_over.connect(_on_game_over)
+	if not menu:
+		_bounce = preload("res://scripts/edge_bounce.gd").new()
+		add_child(_bounce)
+		_bounce.setup(self)
 
 
 # ------------------------------------------------------------------ the frame
@@ -163,6 +186,8 @@ func _process(delta: float) -> void:
 	if rules.tutorial and not menu:
 		t = _school(t, delta)
 	rules.step(t)
+	if _feel:
+		_feel.tick()
 	_place(delta)
 	_music()
 	hud.update(t)
@@ -244,6 +269,10 @@ func _place(delta: float) -> void:
 		car.motion(vel, 1.0 if rules.od_t > 0.0 else 0.0)
 	else:
 		pilot.lean(vel.x, vel.y)
+	if _rescue:
+		_rescue.place()
+	if _bounce:
+		_bounce.apply(ride, delta)
 	# rings ahead, from the note data
 	var t := rules.t
 	var ahead := VIEW / (rules.SPEED * K)
@@ -336,6 +365,8 @@ func _look_target() -> Vector3:
 func _music() -> void:
 	music.set_band(rules.band, rules.od_t > 0.0, rules.form == 1)
 	music.set_form(rules.form if rules.respawn <= 0.0 else 0)
+	if flow_music:
+		flow_music.update(rules.t)
 	# the melody: every other note on its own layer. As each note comes up its layer opens if the note is played
 	# (or the car is in its cell), and closes if not, so a missed note is never heard
 	# (the episodes' recordings alternate note by note; the loop songs mark each note's layer)
@@ -371,7 +402,7 @@ func _on_moved(dc: int, dr: int) -> void:
 
 
 func _on_judged(grade: String, n: Dictionary) -> void:
-	music.set_lead(int(n.get("layer", int(n.i) % 2)), true)
+	music.set_lead(int(n.get("layer", int(n.i) % 2)), true, rules.t > float(n.t))
 	if _rings.has(n.i):
 		_rings[n.i].played()
 		fx.catch(_rings[n.i].global_position, int(n.row))
@@ -383,7 +414,7 @@ func _on_judged(grade: String, n: Dictionary) -> void:
 
 
 func _on_missed(n: Dictionary) -> void:
-	music.set_lead(int(n.get("layer", int(n.i) % 2)), false)
+	music.set_lead(int(n.get("layer", int(n.i) % 2)), false, true)
 	if _rings.has(n.i):
 		_rings[n.i].missed()
 	hud.missed(rules)
@@ -402,7 +433,7 @@ func _on_crashed(h: Dictionary) -> void:
 	music.muffle()
 	fx.crash(ride.global_position, rules.form)
 	hud.crash()
-	if Save.data.settings.get("haptics", true):
+	if Save.data.settings.get("haptics", true) and not _haptics:
 		Input.vibrate_handheld(220)
 
 
@@ -413,7 +444,8 @@ func _on_form_lost(form: int) -> void:
 
 
 func _on_delivered(form: int) -> void:
-	Sound.play("deliver")
+	# (the rescue plane lands it on a beat, under the band's hits: a little softer there)
+	Sound.play("deliver", -2.0 if _rescue else 0.0)
 	if form == 2:
 		mission("rescue", 1)
 	fx.delivered(ride.global_position, form)
@@ -514,6 +546,8 @@ func revive() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	if not started or paused or menu:
+		return
+	if _feel and _feel.input(e):
 		return
 	if e is InputEventKey and e.pressed and not e.echo:
 		match e.keycode:

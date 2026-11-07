@@ -64,6 +64,8 @@ var first_t := 0.0         # the first note's bar line: the count-in lands on it
 var ep := 0
 var tutorial := false
 var rescue_k := 1.6
+var rescue_miss := RESCUE_MISS  # what a missed note takes off the rescue meter (the rescue plane sets it per course)
+var rescue_lead := 0.35         # the car arrives on the first beat this long after the meter fills (the rescue plane: longer)
 var sync_k := 1.0
 
 # ---- the car (where it counts as being, and where it is drawn)
@@ -377,7 +379,7 @@ func _hurt(n: float) -> void:
 	if tutorial or od_t > 0.0:
 		return
 	sync = maxf(0.0, sync - n)
-	rescue = maxf(0.0, rescue - RESCUE_MISS)
+	rescue = maxf(0.0, rescue - rescue_miss)
 
 
 func _check_hazards() -> void:
@@ -450,7 +452,7 @@ func _rescue_gain(n: float) -> void:
 		return
 	rescue = clampf(rescue + n * rescue_k, 0.0, 100.0)
 	if rescue >= 100.0:
-		deliver_at = ceilf((t + 0.35) / BEAT) * BEAT
+		deliver_at = ceilf((t + rescue_lead) / BEAT) * BEAT
 		popped.emit("RESCUE INBOUND · YOUR CAR" if form == 1 else "RESCUE INBOUND · JETPACK", "gold", 2)
 		rescue_inbound.emit(deliver_at)
 
