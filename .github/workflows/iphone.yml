@@ -1,0 +1,99 @@
+# iPhone test build: GitHub's Mac machines turn the Godot game into an iPhone app and attach it to the
+# "iphone-test" release (https://github.com/reha-abbasi/tempo-drift/releases/tag/iphone-test).
+# The app is unsigned: install it from a PC with Sideloadly and your own Apple ID, which signs it for your phone
+# (a free Apple ID lasts 7 days per install). Runs on every push to main that changes the game, or by hand from the
+# Actions tab ("Run workflow").
+name: iPhone test build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["godot/**", ".github/workflows/iphone.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  iphone:
+    runs-on: macos-15
+    timeout-minutes: 120
+    env:
+      GODOT: "4.7.2"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Godot and its iPhone export template
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT}-stable"
+          curl -sSfL -o godot.zip "$base/Godot_v${GODOT}-stable_macos.universal.zip"
+          unzip -q godot.zip
+          echo "$PWD/Godot.app/Contents/MacOS" >> "$GITHUB_PATH"
+          curl -sSfL -o templates.tpz "$base/Godot_v${GODOT}-stable_export_templates.tpz"
+          dest="$HOME/Library/Application Support/Godot/export_templates/${GODOT}.stable"
+          mkdir -p "$dest"
+          unzip -q -j templates.tpz templates/ios.zip templates/version.txt -d "$dest"
+          rm godot.zip templates.tpz
+
+      - name: The iPhone export settings
+        run: |
+          cat > godot/export_presets.cfg <<'EOF'
+          [preset.0]
+
+          name="iOS"
+          platform="iOS"
+          runnable=true
+          dedicated_server=false
+          custom_features=""
+          export_filter="all_resources"
+          include_filter=""
+          exclude_filter="tests/*, tools/*"
+          export_path=""
+          encryption_include_filters=""
+          encryption_exclude_filters=""
+          encrypt_pck=false
+          encrypt_directory=false
+
+          [preset.0.options]
+
+          application/app_store_team_id="AAAAAAAAAA"
+          application/bundle_identifier="com.rehaabbasi.tempodrift"
+          application/short_version="0.29"
+          application/version="${{ github.run_number }}"
+          application/export_project_only=true
+          application/targeted_device_family=0
+          application/min_ios_version="14.0"
+          application/export_method_debug=1
+          application/export_method_release=1
+          EOF
+          cat godot/export_presets.cfg | head -3
+
+      - name: Import the project and export the Xcode project
+        run: |
+          Godot --headless --path godot --import
+          mkdir -p build/ios
+          Godot --headless --path godot --export-release "iOS" "$GITHUB_WORKSPACE/build/ios/TempoDrift.ipa"
+          ls build/ios
+
+      - name: Build the app (unsigned)
+        working-directory: build/ios
+        run: |
+          xcodebuild -project TempoDrift.xcodeproj -scheme TempoDrift -configuration Release -sdk iphoneos \
+            -destination "generic/platform=iOS" -derivedDataPath dd \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build | tail -n 40
+          app=$(find dd/Build/Products -maxdepth 2 -name "*.app" | head -n 1)
+          echo "app: $app"
+          mkdir Payload
+          cp -R "$app" Payload/
+          zip -qry "$GITHUB_WORKSPACE/build/TempoDrift.ipa" Payload
+          ls -la "$GITHUB_WORKSPACE/build/TempoDrift.ipa"
+
+      - name: Attach it to the iphone-test release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view iphone-test >/dev/null 2>&1 || gh release create iphone-test --prerelease \
+            --title "iPhone test build" \
+            --notes "The latest main as an iPhone app, unsigned. Install TempoDrift.ipa with Sideloadly and your Apple ID."
+          gh release upload iphone-test build/TempoDrift.ipa --clobber
+          gh release edit iphone-test --notes "The latest main (build ${{ github.run_number }}, commit ${GITHUB_SHA::7}) as an iPhone app, unsigned. Install TempoDrift.ipa with Sideloadly and your Apple ID."

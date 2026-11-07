@@ -16,6 +16,7 @@ run/main_scene="res://scenes/main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Tempo Drift"
 config/features=PackedStringArray("4.7", "Mobile")
+config/icon="res://icon.png"
 
 [audio]
 

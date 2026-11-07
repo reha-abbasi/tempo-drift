@@ -26,6 +26,15 @@ This repo holds two versions of the same game:
 The Godot version started from the web version's rules: the same rules, menus, garage, map and missions. Its courses were made by running the web game's own code
 (`godot/tools/bake/`); its music is now being remade city by city with `godot/tools/music/`.
 
+## Test on an iPhone
+
+GitHub builds the latest `main` as an iPhone app: download `TempoDrift.ipa` from the
+[iphone-test release](https://github.com/reha-abbasi/tempo-drift/releases/tag/iphone-test) and install it with
+[Sideloadly](https://sideloadly.io) (Windows or Mac, iPhone on a USB cable) and your Apple ID, which signs the app
+for your phone. With a free Apple ID the app runs for 7 days, then install it again. The first time, on the iPhone:
+Settings → Privacy & Security → Developer Mode on, and Settings → General → VPN & Device Management → trust your
+Apple ID.
+
 ## Open the Godot version
 
 1. Install **Godot 4.7.2** (standard, not .NET).

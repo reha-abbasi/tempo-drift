@@ -54,6 +54,10 @@ note rings, picked from two rounds of graphics tries.
 - **Haptic beats.** The phone taps softly on every note you play, knocks on a miss, and buzzes for the big moments
   (crash, new car, Overdrive, shield save, power-up, the band stepping up, the finish), with the web game's own
   patterns. Follows the Haptics setting.
+- **An iPhone test build.** On every update to `main`, GitHub's Mac machines build the game as an iPhone app and
+  attach it to the [iphone-test release](https://github.com/reha-abbasi/tempo-drift/releases/tag/iphone-test)
+  (`.github/workflows/iphone.yml`), so the haptics and touch controls can be tried on a real phone. The game now has
+  its icon (the sunset road and coin of the iPhone web version).
 - **No more melody clicks.** Catching a note right after a miss made a small click (the melody switched back on in
   one jump); each melody line now plays on its own player and glides in and out.
 
