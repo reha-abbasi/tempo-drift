@@ -50,7 +50,7 @@ func _ready() -> void:
 	%CarPrev.pressed.connect(func(): g_i -= 1; _render_garage())
 	%CarNext.pressed.connect(func(): g_i += 1; _render_garage())
 	%CarAct.pressed.connect(_garage_act)
-	%CarView.pressed.connect(func(): _backdrop().set_garage(not _backdrop().garage); _render_garage())
+	%CarView.pressed.connect(func(): main.toggle_garage_view(); _render_garage())
 	%CarCoins.pressed.connect(func(): Save.add_coins(5000); _render_garage())
 	for t in [["TabOld", "old"], ["TabSunset", "sunset"], ["TabRain", "rain"]]:
 		get_node("%" + t[0]).pressed.connect(func(): board_map = t[1]; _render_board())
@@ -70,7 +70,8 @@ func _ready() -> void:
 
 
 func _backdrop() -> Node:
-	return main.backdrop
+	## the garage's view of the car: the rooftop showroom, or the street's in-game view
+	return main.garage_view() if main.has_method("garage_view") else main.backdrop
 
 
 func _process(delta: float) -> void:
@@ -94,7 +95,7 @@ func open(screen: String) -> void:
 		main.screen(screen)
 	for s in ["Home", "Eps", "Garage", "Missions", "Board", "Settings", "Sync", "Changes"]:
 		$Root.get_node(s).visible = s == screen
-	if _backdrop():
+	if _backdrop() and not _backdrop() is Rooftop:
 		_backdrop().set_garage(false)
 		_backdrop().menu_look = -1.1 if screen == "Home" else -0.7
 	match screen:
@@ -107,7 +108,8 @@ func open(screen: String) -> void:
 			g_tab = "cars"
 			g_i = CAR_KEYS.find(Save.data.car)
 			_render_garage()
-			_backdrop().set_garage(true)
+			if not _backdrop() is Rooftop:
+				_backdrop().set_garage(true)
 		"Missions":
 			_render_missions()
 		"Board":
@@ -309,7 +311,7 @@ func _render_garage() -> void:
 		%CarAct.text = "NEED %s MORE" % _commas(int(item.price) - Save.wallet())
 		%CarAct.disabled = true
 	%CarCoins.visible = Save.dev()
-	%CarView.text = "SHOWROOM" if _backdrop().garage == false else "IN-GAME VIEW"
+	%CarView.text = "SHOWROOM" if main.get("garage_street") else "IN-GAME VIEW"
 	for c in %CarDots.get_children():
 		c.queue_free()
 	for i in keys.size():

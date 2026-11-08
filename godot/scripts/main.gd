@@ -6,8 +6,10 @@ extends Node
 const RUN := preload("res://scenes/run/run.tscn")
 const ROOFTOP := preload("res://scenes/menu/rooftop.tscn")
 
-## the garage's street (only while the garage is open)
+## the street behind the garage's in-game view (the old turn round the car in the street), only while it shows
 var backdrop: Node
+## the garage shows the in-game view (else its showroom: the car and pilot on the rooftop)
+var garage_street := false
 ## the rooftop behind the other menus (out of the scene while the garage is open)
 var rooftop: Rooftop
 var _map := ""
@@ -68,8 +70,24 @@ func _notification(what: int) -> void:
 
 
 func screen(name: String) -> void:
-	## the menus are opening a screen: the garage stands in the street, every other screen on the rooftop
-	_street(name == "Garage")
+	## the menus are opening a screen: every screen stands on the rooftop, the garage too (its showroom)
+	garage_street = false
+	_street(false)
+	if rooftop:
+		rooftop.set_garage(name == "Garage")
+
+
+func garage_view() -> Node:
+	## what the garage shows the car with: the rooftop's showroom, or the street's in-game view
+	return backdrop if backdrop else rooftop
+
+
+func toggle_garage_view() -> void:
+	## the garage's button: from the showroom to the in-game view (the old turn round the car in the street) and back
+	garage_street = not garage_street
+	_street(garage_street)
+	if backdrop:
+		backdrop.set_garage(true)
 
 
 func _street(on: bool) -> void:

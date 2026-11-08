@@ -35,8 +35,7 @@ func setup(r: Node3D) -> void:
 	_swap_traffic(run.city, run.info.map == "rain")
 	dress()
 	_restyle_fx(run.fx)
-	# (a car caught in a street banner is wrapped up in it, not blown up: scripts/street_banner.gd)
-	run.rules.crashed.connect(_on_crashed)
+	run.rules.crashed.connect(func(_h): _fireball(run.ride.global_position))
 	_im = ImmediateMesh.new()
 	_trail = MeshInstance3D.new()
 	_trail.mesh = _im
@@ -46,11 +45,6 @@ func setup(r: Node3D) -> void:
 	tm.shader = preload("res://materials/gfx_ride/ride_trail.gdshader")
 	_trail.material_override = tm
 	add_child(_trail)
-
-
-func _on_crashed(h: Dictionary) -> void:
-	if h.kind != "barrier":
-		_fireball(run.ride.global_position)
 
 
 func dress() -> void:

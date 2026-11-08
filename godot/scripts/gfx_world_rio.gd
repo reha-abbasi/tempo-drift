@@ -317,7 +317,7 @@ func _hills() -> Mesh:
 	GfxWorld.paint(k, "far", Color("4a5a6a"), 1.0)
 	GfxWorld.paint(k, "forest", Color("2f4a32"), 1.0)
 	GfxWorld.paint(k, "forest_near", Color("26402a"), 1.0)
-	GfxWorld.paint(k, "rock", Color("6e6660"), 0.9)
+	k.use("rock", load("res://materials/granite.tres"), 6.0)
 	GfxWorld.paint(k, "statue", Color("f4efe6"), 0.6, 0.0, 0.6)
 	# the far range
 	_terrain(k, "far", -520.0, 520.0, -520.0, -640.0, 40, 4, func(x: float, z: float) -> float:
@@ -329,7 +329,11 @@ func _hills() -> Mesh:
 		ridge *= smoothstep(40.0, -60.0, x)
 		ridge += 95.0 * exp(-pow((x + 120.0) / 26.0, 2.0))
 		return ridge * _bell((z + 450.0) / 45.0) - 4.0)
-	var top := Vector3(-120.0, 152.0, -450.0)
+	# Christ the Redeemer stands on Corcovado's summit (the needle's top, from the same height as the hill)
+	var cx := -120.0
+	var cz := -450.0
+	var summit := (62.0 + 18.0 * sin(cx * 0.019 + 0.5) + 10.0 * sin(cx * 0.053)) * smoothstep(40.0, -60.0, cx) + 95.0
+	var top := Vector3(cx, summit * _bell((cz + 450.0) / 45.0) - 4.0 - 0.5, cz)
 	k.box("statue", top + Vector3(0, 4.0, 0), Vector3(2.2, 8.0, 1.6))
 	k.box("statue", top + Vector3(0, 6.6, 0), Vector3(9.5, 1.2, 1.2))
 	k.box("statue", top + Vector3(0, 8.6, 0), Vector3(1.1, 1.2, 1.1))
@@ -356,14 +360,18 @@ static func _bell(u: float) -> float:
 
 
 func _terrain(k: MeshKit, m: String, x0: float, x1: float, z0: float, z1: float, nx: int, nz: int, fn: Callable) -> void:
-	## a patch of hills from a height function, smooth-shaded (the edges should sink below the sea)
+	## a patch of hills from a height function, smooth-shaded; its edges are faded down into the ground and the sea,
+	## so no rim of the patch floats in the air (seen from a rooftop), at twice the detail
+	nx *= 2
+	nz *= 2
 	var g := []
 	for j in nz + 1:
 		var row := []
 		for i in nx + 1:
 			var x := lerpf(x0, x1, float(i) / nx)
 			var z := lerpf(z0, z1, float(j) / nz)
-			var y: float = fn.call(x, z)
+			var edge := smoothstep(0.0, 0.18, minf(float(i) / nx, 1.0 - float(i) / nx)) * smoothstep(0.0, 0.18, minf(float(j) / nz, 1.0 - float(j) / nz))
+			var y: float = lerpf(-3.0, float(fn.call(x, z)), edge)
 			var e := 2.0
 			var nrm := Vector3(-(float(fn.call(x + e, z)) - float(fn.call(x - e, z))) / (2.0 * e), 1.0, -(float(fn.call(x, z + e)) - float(fn.call(x, z - e))) / (2.0 * e)).normalized()
 			row.append([Vector3(x, maxf(y, -3.0), z), nrm])

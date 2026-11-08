@@ -3,6 +3,38 @@
 What changed in `main`, newest first. Every update to `main` adds an entry here. The game's own change log
 (the ✦ pill on the main menu, `godot/data/changelog.json`) has the same versions in shorter words.
 
+## v30 Rooftops & Banners · 8 Nov 2026
+
+A new main menu and garage, street banners in place of the floating roadblocks, and a few fixes from playing.
+The rules, the music and the levels' rings are unchanged.
+
+- **The main menu is a rooftop.** Behind the menus you now stand on a roof high over the chosen era's open city,
+  in its light: London 1890 at gaslight dusk with Big Ben down the street, Rio at golden hour with Sugarloaf over
+  the sea, Berlin 2075 at neon night with the TV tower. Your car is parked on the landing pad; the pilot has
+  climbed out and leans on the parapet with a drink (tea in London, a coconut in Rio, a glowing can in Berlin),
+  taking a sip now and then. Traffic streams along the street below, and the city's own streets and buildings
+  run out on every side, so it looks whole on a wide screen too. Choosing another era fades over to its roof.
+  It is built from the levels' own art (street sections, Reha's city detail and light, the levels' materials and
+  lamps) plus a few Poly Haven props (CC0).
+- **The garage is on the same roof.** The camera glides in to the car; changing cars eases in to the new one. On
+  the pilots' tab the pilot stands up from the parapet and turns round to face you. IN-GAME VIEW still shows the
+  old turn round the car in the street; the street now carries on behind the car as far as ahead, and a second
+  landmark stands behind it: the Monument in London, Dois Irmãos and Pedra da Gávea in Rio, the Victory Column
+  over the Brandenburg Gate in Berlin.
+- **Street banners instead of floating roadblocks.** A roadblock is now a banner on a cable strung between two
+  masts at the kerbs, hanging over its lane at skyway height: fly under it on the road or hop over it, as before.
+  Each era has its own design (a gilt-framed music-hall bill in the Past, a samba-school flag in the Present, an
+  LED mesh panel in the Future) and each city its own words and colours, three per city. Fly into one and the
+  cable snaps, the banner wraps round your car, and the pilot is thrown out to the jetpack.
+- **NEXT goes to the next open city** after an episode (London, Rio, Berlin, round again), and after Flight
+  School START goes to the era's open city instead of a locked one.
+- **A street section behind the start line**, so the car no longer starts beside an empty plot.
+- **Rio's hills**: their edges now meet the ground and the sea instead of floating, at twice the detail, with
+  real granite on the bare rock; Christ the Redeemer stands on Corcovado's summit.
+- **New in the project:** banner fonts (Abril Fatface, Playfair Display, Lobster, Bungee; SIL Open Font
+  License), the banner artwork (`data/banners.json`, drawn by `tools/editor/build_banners.gd`), and checks
+  (`tests/next_check`, `replay_check`, `hit_shot`, `garage_shot`).
+
 ## v29 Brass & Swing · 2–7 Nov 2026
 
 Two more cities open, London 1890 with acoustic jazz and Rio de Janeiro with a real samba band, and Berlin 2075 gets

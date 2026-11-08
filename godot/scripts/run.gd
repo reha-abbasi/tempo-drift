@@ -331,12 +331,6 @@ func _place(delta: float) -> void:
 	_fov += (fov_t - _fov) * minf(1.0, delta * 5.0)
 	camera.fov = _fov
 	fx.follow(camera, ride, rules)
-	# the garage's showroom shows the car alone: no rings flying through it, no shield or magnet round it
-	var showroom := garage and menu
-	$Rings.visible = not showroom
-	if showroom:
-		fx.shield.visible = false
-		fx.magnet.visible = false
 
 
 func set_garage(on: bool) -> void:
