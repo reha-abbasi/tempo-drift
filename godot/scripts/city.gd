@@ -80,6 +80,13 @@ func section_at(i: int) -> int:
 func use_street(laid_out: Node3D) -> void:
 	## a level's own street, laid out end to end: shown near the car instead of placed as it goes
 	_fixed = laid_out
+	# one more section behind the start line, so the car and the camera don't start beside an empty plot
+	if not sections.is_empty() and not laid_out.has_node("BeforeStart"):
+		var before := sections[_order[_order.size() - 1]].instantiate() as Node3D
+		before.name = "BeforeStart"
+		before.position.z = section_length
+		laid_out.add_child(before)
+		laid_out.move_child(before, 0)
 	for s in _fixed.get_children():
 		(s as Node3D).visible = false
 

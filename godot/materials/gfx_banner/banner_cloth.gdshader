@@ -10,13 +10,26 @@ uniform float sway = 1.0;
 uniform float phase = 0.0;
 uniform float glow = 0.25;
 uniform float stiff = 0.0;
+// torn off and wrapped round a car (0 hanging .. 1 wrapped): in the car's own space, from flat across its nose to
+// rolled round its body, its height laid along the car
+uniform float wrap = 0.0;
+uniform float wrap_radius = 0.8;
 
 void vertex() {
-	float hang = pow(UV.y, 1.4) * (1.0 - stiff);
+	float hang = pow(UV.y, 1.4) * (1.0 - stiff) * (1.0 - wrap);
 	float t = TIME + phase;
 	float wave = sin(t * 1.7 + UV.x * 2.6) * 0.11 + sin(t * 4.3 + UV.x * 7.0 + UV.y * 5.0) * 0.025;
 	VERTEX.z += wave * hang * sway;
 	VERTEX.x += sin(t * 1.1 + UV.y * 2.0) * 0.03 * hang * sway;
+	if (wrap > 0.0) {
+		float a = VERTEX.x / wrap_radius;
+		vec3 flat_pos = vec3(VERTEX.x, VERTEX.y + 0.25, -1.9);
+		vec3 rolled = vec3(sin(a) * wrap_radius, 0.25 + cos(a) * wrap_radius, -VERTEX.y * 1.05 - 0.2);
+		// a little crumple so it doesn't look like a sleeve
+		rolled += vec3(0.0, sin(VERTEX.y * 9.0 + VERTEX.x * 4.0) * 0.06, 0.0);
+		VERTEX = mix(flat_pos, rolled, wrap);
+		NORMAL = normalize(mix(NORMAL, vec3(sin(a), cos(a), 0.0), wrap));
+	}
 }
 
 void fragment() {

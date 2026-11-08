@@ -29,6 +29,15 @@ const STYLES := {"old": "gaslight", "sunset": "carnival", "rain": "led"}
 		_dirty = true
 
 var _struck := false
+var _wraps := false           # the car crashed into it: the cloth wraps the wreck
+var _wreck: Node3D            # a copy of the car, left to tumble with the banner round it
+var _wreck_v := Vector3.ZERO
+var _wreck_spin := Vector3.ZERO
+var _pilot: Node3D            # the pilot, thrown out of the wreck up to the jetpack
+var _ride: Node3D
+var _t_hit := 0.0
+var _line: MeshInstance3D     # the cable and what hangs on it (snaps when hit)
+var _dangles: Array[Node3D] = []
 var _dirty := true
 var _lane_x := INF
 var _hang: Node3D
@@ -75,16 +84,113 @@ func _process(delta: float) -> void:
 		_lane_x = x
 		_build_rig()
 	if _struck and not Engine.is_editor_hint():
-		_fall = minf(_fall + delta / 0.7, 1.0)
-		_hang.rotation.x = -1.35 * _fall * _fall
-		_hang.position.y = SIZE.y / 2.0 - 2.4 * _fall * _fall
-		_cloth.transparency = _fall
+		_t_hit += delta
+		_swing_dangles()
+		if _wraps:
+			_wrap_step(delta)
+		else:
+			# torn off by a shield (or the jetpack): it falls away behind
+			_fall = minf(_fall + delta / 0.7, 1.0)
+			_hang.rotation.x = -1.35 * _fall * _fall
+			_hang.position.y = SIZE.y / 2.0 - 2.4 * _fall * _fall
+			_cloth.transparency = _fall
 
 
 func struck(_from: Vector3) -> void:
-	## hit: the cloth tears off the cable and falls away behind the car
+	## hit: the cable snaps and its two ends swing down from the masts. If the car crashed into it, the cloth wraps
+	## round the car, the wrapped car tumbles on and drops to the road, and the pilot is thrown out of it up to the
+	## jetpack; a shield (or the jetpack) only tears it off, and it falls away
 	_struck = true
 	_fall = 0.0
+	_t_hit = 0.0
+	_snap()
+	var run := get_tree().current_scene
+	if run == null or run.get("rules") == null or run.get("car") == null:
+		return
+	# (called while the crash is being dealt: the car is lost only after this)
+	if run.rules.respawn > 0.0 and run.rules.form == 2 and is_instance_valid(run.car):
+		_wraps = true
+		_ride = run.ride
+		_pilot = run.pilot
+		_wreck = run.car.duplicate() as Node3D
+		get_parent().add_child(_wreck)
+		_wreck.global_transform = run.car.global_transform
+		_wreck_v = Vector3(0.0, 1.5, -float(run.rules.SPEED) * K * 0.98)
+		_wreck_spin = Vector3(randf_range(-1.0, 1.0), randf_range(-1.5, 1.5), randf_range(2.0, 3.5) * (1.0 if randf() < 0.5 else -1.0))
+		_cloth.top_level = true
+		_cloth.extra_cull_margin = 4.0
+		_cloth.global_transform = _wreck.global_transform
+		(_cloth.material_override as ShaderMaterial).set_shader_parameter("wrap", 0.001)
+		tree_exiting.connect(func() -> void:
+			if is_instance_valid(_pilot):
+				_pilot.position = Vector3.ZERO)
+
+
+func _wrap_step(delta: float) -> void:
+	var m := _cloth.material_override as ShaderMaterial
+	m.set_shader_parameter("wrap", maxf(0.001, smoothstep(0.0, 0.35, _t_hit)))
+	# the wreck: carried on by its speed, dragged down, tumbling, until it lies on the road
+	if is_instance_valid(_wreck):
+		_wreck_v.z *= exp(-delta * 0.45)
+		_wreck_v.y -= 14.0 * delta
+		_wreck.global_position += _wreck_v * delta
+		if _wreck.global_position.y < 0.45:
+			_wreck.global_position.y = 0.45
+			_wreck_v.y = absf(_wreck_v.y) * 0.25
+			_wreck_spin *= 0.6
+		_wreck.rotation += _wreck_spin * delta * (1.0 if _t_hit > 0.25 else 0.3)
+		_cloth.global_transform = _wreck.global_transform
+	# the pilot bursts out of the wreck and arcs up to where the jetpack carries on
+	if is_instance_valid(_pilot) and is_instance_valid(_ride) and is_instance_valid(_wreck):
+		var k := clampf((_t_hit - 0.3) / 0.45, 0.0, 1.0)
+		if k < 1.0:
+			var from := _ride.to_local(_wreck.global_position)
+			_pilot.position = from.lerp(Vector3.ZERO, smoothstep(0.0, 1.0, k)) + Vector3(0, sin(k * PI) * 1.6, 0)
+			_pilot.rotation.z = (1.0 - k) * TAU * 0.5
+		else:
+			_pilot.position = Vector3.ZERO
+			_pilot.rotation.z = 0.0
+			_pilot = null
+
+
+func _snap() -> void:
+	## the cable parts at the banner: what hung on it goes, and each end swings down from its mast
+	if _line:
+		_line.visible = false
+	var s := style()
+	var top := SIZE.y / 2.0 + 0.04
+	for mx in [-MAST_X - _lane_x, MAST_X - _lane_x]:
+		var pivot := Node3D.new()
+		pivot.position = Vector3(mx + signf(-mx) * 0.25, top, 0)
+		add_child(pivot)
+		var len := minf(absf(mx) - SIZE.x / 2.0, 3.6)
+		var tube := MeshInstance3D.new()
+		var cm := CylinderMesh.new()
+		cm.top_radius = 0.014
+		cm.bottom_radius = 0.014
+		cm.height = len
+		cm.radial_segments = 4
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color("2ef2ff") if s == "led" else Color("15161a")
+		if s == "led":
+			mat.emission_enabled = true
+			mat.emission = mat.albedo_color
+			mat.emission_energy_multiplier = 2.0
+		cm.material = mat
+		tube.mesh = cm
+		tube.position.y = -len / 2.0
+		pivot.add_child(tube)
+		pivot.set_meta("dir", signf(-mx))
+		_dangles.append(pivot)
+	_swing_dangles()
+
+
+func _swing_dangles() -> void:
+	## from lying along the street (where the cable was) down to hanging, with a damped swing
+	for p in _dangles:
+		var dir: float = p.get_meta("dir")
+		var a := (PI / 2.0) * exp(-2.2 * _t_hit) * cos(5.0 * _t_hit)
+		p.rotation.z = -dir * a
 
 
 func is_struck() -> bool:
@@ -188,12 +294,21 @@ func _build_rig() -> void:
 		_cyl(trimst, Vector3(-SIZE.x / 2.0 - 0.08, top + 0.02, 0), 0.025, 0.025, SIZE.x + 0.16, 8, true)
 	_commit(am, mast, _mat(col_mast, 0.55, 0.6 if s != "carnival" else 0.1))
 	_commit(am, trimst, _mat(col_trim, 0.35, 0.8 if s == "gaslight" else 0.2, 2.5 if s == "led" else 0.0))
-	_commit(am, cab, _mat(Color("15161a"), 0.6, 0.3))
+	_rig.mesh = am
+	# the cable and what hangs on it, apart from the masts so it can snap
+	var lm := ArrayMesh.new()
+	_commit(lm, cab, _mat(Color("15161a"), 0.6, 0.3))
 	var dm := _mat(Color.WHITE, 0.8, 0.0, 1.8 if s == "led" else 0.15)
 	dm.vertex_color_use_as_albedo = true
 	dm.cull_mode = BaseMaterial3D.CULL_DISABLED
-	_commit(am, deco, dm)
-	_rig.mesh = am
+	_commit(lm, deco, dm)
+	if _line == null:
+		_line = MeshInstance3D.new()
+		_line.name = "Line"
+		_line.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(_line)
+	_line.mesh = lm
+	_line.visible = not _struck
 
 
 func _flag_color(s: String, i: int) -> Color:
