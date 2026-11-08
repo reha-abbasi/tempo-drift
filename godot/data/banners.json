@@ -1,0 +1,99 @@
+{
+  "_about": "The street banners (the roadblocks across the skyway), city by city: the era's style, four colours (cloth, second, trim, ink) and three banners of [top line, headline, line under]. Rebuild the textures with tools/editor/build_banners.gd after a change.",
+  "old_0": {"style": "gaslight", "colors": ["7a1424", "0f2a4a", "e8bf62", "fff3d6"], "banners": [
+    ["ROYAL ALHAMBRA · LEICESTER SQUARE", "GRAND VARIETY", "Every Evening at Eight"],
+    ["THE STRAND MUSIC HALL", "SONGS & DANCES", "Comic Turns · Acrobats · Orchestra"],
+    ["HYDE PARK BANDSTAND", "BAND CONCERT", "Sunday Afternoon · Admission Free"]]},
+  "old_1": {"style": "gaslight", "colors": ["0f4f4a", "5a1630", "e2b75a", "fbf0d8"], "banners": [
+    ["GRANDE RUE DE PÉRA", "CONCERT", "Ce soir à neuf heures"],
+    ["BATEAUX DU BOSPHORE", "VAPEURS", "Départ toutes les heures"],
+    ["PETITS-CHAMPS", "GRANDE FÊTE", "Musique · Illuminations"]]},
+  "old_2": {"style": "gaslight", "colors": ["1a2a5c", "6a1a2a", "e6c56e", "fdf4e0"], "banners": [
+    ["EXPOSITION INTERNATIONALE", "ARTS DÉCORATIFS", "Paris · Avril – Octobre 1925"],
+    ["MONTMARTRE", "MOULIN ROUGE", "Bal tous les soirs"],
+    ["PLACE DU TERTRE", "GRANDE FÊTE", "Peintres · Musique · Danse"]]},
+  "old_3": {"style": "gaslight", "colors": ["0e3b2e", "5a1a1a", "e8c36a", "fff6e0"], "banners": [
+    ["BROADWAY", "OPENING TONIGHT", "A Musical Revue in Two Acts"],
+    ["CONEY ISLAND", "LUNA PARK", "By Subway · Five Cents"],
+    ["TIMES SQUARE", "NEW YEAR'S EVE", "The Ball Drops at Midnight"]]},
+  "old_4": {"style": "gaslight", "colors": ["0f6f78", "8a1f3c", "f0c870", "fff8e8"], "banners": [
+    ["LA HABANA", "TROPICANA", "Paraíso bajo las estrellas"],
+    ["EL MALECÓN", "CARNAVAL", "Comparsas · Sábado"],
+    ["PRADO", "MAMBO", "Orquesta esta noche"]]},
+  "old_5": {"style": "gaslight", "colors": ["5a1630", "1f3a2e", "e4c068", "fbf2dc"], "banners": [
+    ["WIENER PRATER", "WALZERABEND", "Heute um acht Uhr"],
+    ["WIENER SECESSION", "AUSSTELLUNG", "Der Zeit ihre Kunst"],
+    ["PRATER HAUPTALLEE", "BLUMENKORSO", "Sonntag · Musik · Blumen"]]},
+  "old_6": {"style": "gaslight", "colors": ["1d2b5a", "7a3410", "ecc66c", "fdf3dc"], "banners": [
+    ["OPÉRA DU CAIRE", "GALA", "Ce soir · Aïda"],
+    ["JARDIN DE L'EZBÉKIEH", "GRANDE FÊTE", "Fanfare · Illuminations"],
+    ["RUE EMAD EL-DIN", "CINÉMA", "Séances à 6 h et 9 h"]]},
+  "old_7": {"style": "gaslight", "colors": ["8a2a12", "123a5a", "ecc56a", "fff4de"], "banners": [
+    ["TRASTEVERE", "FESTA DE' NOANTRI", "Luglio · Musica e Fuochi"],
+    ["CINECITTÀ", "PRIMA VISIONE", "Stasera al cinema"],
+    ["VIA DEI FORI IMPERIALI", "GIRO D'ITALIA", "Arrivo di tappa"]]},
+  "sunset_0": {"style": "carnival", "colors": ["0b6a6a", "c99a2e", "ffd76a", "ffffff"], "banners": [
+    ["DUBAI SHOPPING FESTIVAL", "Ahlan!", "Fireworks over the Creek tonight"],
+    ["DUBAI MARINA", "Festival", "Walk · Music · Lights"],
+    ["AL FAHIDI", "Heritage Nights", "Old Dubai · Free entry"]]},
+  "sunset_1": {"style": "carnival", "colors": ["0c8f4a", "e6347f", "ffd23f", "ffffff"], "banners": [
+    ["G.R.E.S. UNIDOS DA ORLA", "Carnaval", "Bloco na Avenida Atlântica"],
+    ["BLOCO DA PRAIA", "Samba!", "Copacabana · Domingo, 16h"],
+    ["RIO DE JANEIRO", "Alegria", "Ensaio da bateria hoje"]]},
+  "sunset_2": {"style": "carnival", "colors": ["c8102e", "f2efe6", "ffd34d", "ffffff"], "banners": [
+    ["SINGAPORE NIGHT FESTIVAL", "Lights!", "Bras Basah · Bugis"],
+    ["CHINATOWN", "Mid-Autumn", "Lantern walk tonight"],
+    ["MARINA BAY", "Countdown", "Fireworks at midnight"]]},
+  "sunset_3": {"style": "carnival", "colors": ["c0362c", "1f4e8a", "ffc94a", "ffffff"], "banners": [
+    ["FLEET WEEK SAN FRANCISCO", "Blue Angels", "Marina Green · Saturday"],
+    ["CHINATOWN SF", "New Year", "Grant Avenue parade"],
+    ["NORTH BEACH", "Festival", "Columbus Ave · Live music"]]},
+  "sunset_4": {"style": "carnival", "colors": ["1d3f8f", "f08a24", "ffd65c", "ffffff"], "banners": [
+    ["VIVID SYDNEY", "Lights", "Circular Quay · Nightly"],
+    ["SYDNEY HARBOUR", "New Year", "Fireworks at midnight"],
+    ["BONDI", "Sculpture", "by the Sea · Coastal walk"]]},
+  "sunset_5": {"style": "carnival", "colors": ["d6262f", "1c7a3e", "ffd84a", "ffffff"], "banners": [
+    ["KAAPSE KLOPSE", "Carnival", "Tweede Nuwe Jaar · 2 January"],
+    ["V&A WATERFRONT", "Summer", "Live music by the harbour"],
+    ["BO-KAAP", "Colour", "Heritage walk · Saturday"]]},
+  "sunset_6": {"style": "carnival", "colors": ["d4a017", "b3121f", "ffe27a", "ffffff"], "banners": [
+    ["FESTA MAJOR DE GRÀCIA", "Festa!", "Carrers guarnits · Agost"],
+    ["LA MERCÈ", "Correfoc", "Via Laietana · Dissabte"],
+    ["PLAÇA DE LA CATEDRAL", "Sardanes", "Diumenge al matí"]]},
+  "sunset_7": {"style": "carnival", "colors": ["0f3c78", "c8102e", "f4d35e", "ffffff"], "banners": [
+    ["MENNINGARNÓTT", "Culture Night", "Reykjavík · August"],
+    ["HARPA", "Tónleikar", "Í kvöld kl. 20"],
+    ["LAUGAVEGUR", "Jólamarkaður", "Christmas market"]]},
+  "rain_0": {"style": "led", "colors": ["ff3f6c", "2ef2ff", "ffd45c", "ffffff"], "banners": [
+    ["TEMPLE STREET", "NIGHT MARKET", "Open till 4 am"],
+    ["VICTORIA HARBOUR", "SKY FERRY", "Every 90 seconds"],
+    ["NATHAN ROAD · LEVEL 40", "KOWLOON", "Neon city 2049"]]},
+  "rain_1": {"style": "led", "colors": ["ff4fd8", "4af2ff", "ffe14a", "ffffff"], "banners": [
+    ["SHIBUYA 2060", "SKY CROSSING", "Walk in the light"],
+    ["AKIHABARA", "ARCADE", "Floors 1–30 · 24 h"],
+    ["TOKYO BAY", "MAGLEV", "Haneda 6 min"]]},
+  "rain_2": {"style": "led", "colors": ["ff7a2e", "b46bff", "ffd45c", "ffffff"], "banners": [
+    ["HOLLYWOOD 2070", "PREMIERE", "Red carpet · level 12"],
+    ["SANTA MONICA", "SKY PIER", "Open all night"],
+    ["LA METRO", "LINE Z", "Downtown · 4 min"]]},
+  "rain_3": {"style": "led", "colors": ["ff3048", "ffb347", "2ef2ff", "ffffff"], "banners": [
+    ["THE BUND 2085", "LIGHT SHOW", "Nightly · 8 pm"],
+    ["NANJING ROAD", "SKY MALL", "Floors 1–90"],
+    ["PUDONG", "MAGLEV", "Airport · 3 min"]]},
+  "rain_4": {"style": "led", "colors": ["2ef2ff", "ff4fd8", "ffe14a", "ffffff"], "banners": [
+    ["GANGNAM 2099", "K-POP LIVE", "Holo stage · tonight"],
+    ["MYEONGDONG", "NIGHT MARKET", "Street food · 24 h"],
+    ["HAN RIVER", "DRONE SHOW", "Banpo Bridge · 9 pm"]]},
+  "rain_5": {"style": "led", "colors": ["ff3fb4", "2ef2ff", "ffd45c", "ffffff"], "banners": [
+    ["KREUZBERG · 2075", "NACHTMARKT", "Jeden Freitag ab 22 Uhr"],
+    ["BVG · U-BAHN", "MAGLEV U9", "Alexanderplatz · 2 Min"],
+    ["OSTKREUZ", "TECHNO", "Klub geöffnet bis Montag"]]},
+  "rain_6": {"style": "led", "colors": ["2effc8", "ff5fa8", "ffe14a", "ffffff"], "banners": [
+    ["OCEAN DRIVE 2088", "ART DECO", "Neon festival · weekend"],
+    ["SOUTH BEACH", "SKY POOL", "Open till sunrise"],
+    ["LITTLE HAVANA", "SALSA", "Calle Ocho · live"]]},
+  "rain_7": {"style": "led", "colors": ["ffd23f", "ff3fb4", "2ef2ff", "ffffff"], "banners": [
+    ["THE STRIP 2099", "JACKPOT", "Win · Win · Win"],
+    ["FREMONT STREET", "SKY SHOW", "Every hour on the hour"],
+    ["LAS VEGAS", "WEDDING CHAPEL", "Drive-thru · 24 h"]]}
+}

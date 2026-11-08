@@ -39,6 +39,10 @@ func setup(c: City, laid_out: Node3D, map: String, i: int, reduce: bool) -> void
 	if city.horizon:
 		builder.restyle_horizon(city.horizon)
 		city.horizon.add_child(_detail(BAKED + _key + "/horizon.scn", func() -> Node3D: return builder.horizon()))
+		# the view behind the car (its other landmark), seen when the garage camera turns round
+		var key := _key
+		var b := builder
+		city.horizon.add_child(_detail(BAKED + _key + "/horizon_back.scn", func() -> Node3D: return GfxWorldBack.build(key, b)))
 	if laid_out:
 		for s in laid_out.get_children():
 			_dress(s as Node3D)

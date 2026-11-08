@@ -83,6 +83,23 @@ func unlocked(map: String, i: int) -> bool:
 	return OPEN.has(map) and i in OPEN[map]
 
 
+func next_open(map: String, i: int) -> Dictionary:
+	## the open city after this one, era by era (Past, Present, Future) and in order within an era, wrapping round
+	## after the last; {} when this is the only open city
+	var all := []
+	for m in Catalog.MAPS:
+		for k in 8:
+			if unlocked(m, k):
+				all.append({"map": m, "i": k})
+	var at := -1
+	for j in all.size():
+		if all[j].map == map and all[j].i == i:
+			at = j
+	if all.size() < 2 and at >= 0:
+		return {}
+	return all[(at + 1) % all.size()] if not all.is_empty() else {}
+
+
 func next_episode(map: String) -> int:
 	## the first open episode not yet cleared (or the weakest open one, when all are)
 	if not era_open(map):

@@ -1,6 +1,7 @@
 extends SceneTree
 ## Bakes the "New city look" detail (GfxWorld) into scenes, so a run only has to load it:
-## scenes/gfx_world/<city>/section_<n>.scn for each street section kind, and horizon.scn for the far view.
+## scenes/gfx_world/<city>/section_<n>.scn for each street section kind, horizon.scn for the far view ahead and
+## horizon_back.scn for the view behind (GfxWorldBack).
 ## Run it again after changing a gfx_world builder:
 ##   godot --headless --path . -s res://scripts/gfx_world_bake.gd
 
@@ -16,6 +17,9 @@ func _initialize() -> void:
 			_save(GfxWorld.pack(GfxWorld.section_node(b, sec)), dir + "/" + ps.resource_path.get_file().get_basename() + ".scn")
 			sec.free()
 		_save(GfxWorld.pack(b.horizon()), dir + "/horizon.scn")
+		var back := GfxWorldBack.build(key, b)
+		if back:
+			_save(GfxWorld.pack(back), dir + "/horizon_back.scn")
 		c.free()
 	quit()
 

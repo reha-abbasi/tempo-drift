@@ -48,7 +48,8 @@ func show_era(map: String) -> void:
 		backdrop.queue_free()
 	Launch.mode = "menu"
 	Launch.map = map
-	Launch.index = 0
+	# the era's open city (with its new look), not its first city
+	Launch.index = int(Save.OPEN.get(map, [0])[0])
 	backdrop = RUN.instantiate()
 	backdrop.name = "Backdrop"
 	add_child(backdrop)

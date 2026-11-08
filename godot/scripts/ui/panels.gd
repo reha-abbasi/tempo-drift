@@ -180,17 +180,13 @@ func show_results(res: Dictionary) -> void:
 		chips.append("NO CRASH")
 	_chips(chips)
 	%ClearNote.text = tip
-	# after the last episode of an era, on to the next era if it's open
-	var to_era := next_era if last and next_era != "" and Save.era_open(next_era) else ""
-	%NextEp.visible = not (last and to_era == "")
-	# (while only Berlin is open there is no next episode to go on to)
-	if not last and not Save.unlocked(map, int(ep.i) + 1):
-		%NextEp.visible = false
-	%NextEp.set_meta("era", to_era)
-	if to_era != "":
-		%NextEp.text = "NEXT ERA · %s" % String(Catalog.ERAS[to_era].name).to_upper()
-	elif not last:
-		%NextEp.text = "NEXT · %s" % String(Catalog.episodes(map)[int(ep.i) + 1].name).to_upper()
+	# on to the next open city: the next episode, or the next era's first open city, round to the first after the last
+	var nxt := Save.next_open(map, int(ep.i))
+	%NextEp.visible = not nxt.is_empty()
+	%NextEp.set_meta("to", nxt)
+	if not nxt.is_empty():
+		var other_era: bool = nxt.map != map
+		%NextEp.text = "%s · %s" % ["NEXT ERA" if other_era else "NEXT", String(Catalog.episodes(nxt.map)[int(nxt.i)].name).to_upper()]
 
 
 func _grade_style(g: String) -> void:
@@ -343,10 +339,14 @@ func show_school() -> void:
 	%ClearNote.text = "In episodes you have 2 lives: a crash wrecks your car and you carry on by jetpack; crash again and the run is over. Play notes to fill the rescue meter and get your car back."
 	%ClearEarn.text = _earn(got, " (100 for finishing school)" if first else "")
 	_missions(%ClearMis, run.m_done)
-	%NextEp.visible = true
-	%NextEp.set_meta("era", "")
-	%NextEp.set_meta("first", true)
-	%NextEp.text = "START EPISODE 1"
+	# on to the era's first open city
+	var map: String = run.info.map
+	var first_ep := Save.next_episode(map)
+	var to := {"map": map, "i": first_ep} if first_ep >= 0 else Save.next_open(map, -1)
+	%NextEp.visible = not to.is_empty()
+	%NextEp.set_meta("to", to)
+	if not to.is_empty():
+		%NextEp.text = "START · %s" % String(Catalog.episodes(to.map)[int(to.i)].name).to_upper()
 
 
 # ------------------------------------------------------------------ where to go next
@@ -363,11 +363,9 @@ func _menu() -> void:
 
 
 func _next() -> void:
-	var to_era: String = %NextEp.get_meta("era", "")
-	if %NextEp.get_meta("first", false):
-		Launch.episode(run.info.map, 0)
-	elif to_era != "":
-		Launch.episode(to_era, 0)
+	var to: Dictionary = %NextEp.get_meta("to", {})
+	if not to.is_empty():
+		Launch.episode(to.map, int(to.i))
 	else:
 		Launch.episode(run.info.map, mini(7, int(run.info.i) + 1))
 	get_tree().change_scene_to_file(RUN)

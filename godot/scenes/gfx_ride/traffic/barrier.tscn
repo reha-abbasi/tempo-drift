@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/street_banner.gd" id="1_fpwdl"]
+[ext_resource type="Shader" path="res://materials/gfx_banner/banner_cloth.gdshader" id="2_rayty"]
+[ext_resource type="Texture2D" path="res://assets/banners/old_0_0.webp" id="3_7tn7c"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fhw0u"]
+render_priority = 0
+shader = ExtResource("2_rayty")
+shader_parameter/art = ExtResource("3_7tn7c")
+shader_parameter/back_color = Color(0.3, 0.1, 0.12, 1)
+shader_parameter/sway = 1.0
+shader_parameter/phase = 0.0
+shader_parameter/glow = 0.25
+shader_parameter/stiff = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nkqc2"]
+material = SubResource("ShaderMaterial_fhw0u")
+size = Vector2(2.9, 1.8125)
+subdivide_width = 18
+subdivide_depth = 12
+orientation = 2
+
+[node name="Banner" type="Node3D" unique_id=635626548]
+script = ExtResource("1_fpwdl")
+
+[node name="Hang" type="Node3D" parent="." unique_id=1507876054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90625, 0)
+
+[node name="Cloth" type="MeshInstance3D" parent="Hang" unique_id=793656877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.90625, 0)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_nkqc2")
+
+[node name="Rig" type="MeshInstance3D" parent="." unique_id=1104742734]
+cast_shadow = 0

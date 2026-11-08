@@ -69,7 +69,8 @@ func _ready() -> void:
 		"endless", "menu":
 			var level: String = Save.setting("level") if Launch.mode == "endless" else "normal"
 			var k := randi() % 6 if Launch.mode == "endless" else 0
-			info = {"map": Launch.map, "i": 0, "name": "Endless", "level": level, "course": "res://data/endless_%s_%s_%d.json" % [Launch.map, level, k], "audio": "res://audio/loop_%s" % Launch.map}
+			# (the garage stands in the era's open city, Launch.index; Endless in its first)
+			info = {"map": Launch.map, "i": Launch.index if Launch.mode == "menu" else 0, "name": "Endless", "level": level, "course": "res://data/endless_%s_%s_%d.json" % [Launch.map, level, k], "audio": "res://audio/loop_%s" % Launch.map}
 			gain = 6.0
 		_:
 			info = Catalog.episodes(Launch.map)[Launch.index].duplicate()
@@ -330,10 +331,18 @@ func _place(delta: float) -> void:
 	_fov += (fov_t - _fov) * minf(1.0, delta * 5.0)
 	camera.fov = _fov
 	fx.follow(camera, ride, rules)
+	# the garage's showroom shows the car alone: no rings flying through it, no shield or magnet round it
+	var showroom := garage and menu
+	$Rings.visible = not showroom
+	if showroom:
+		fx.shield.visible = false
+		fx.magnet.visible = false
 
 
 func set_garage(on: bool) -> void:
 	garage = on
+	# the camera turns right round the car: as much street behind as ahead
+	city.behind = city.view_ahead if on else 20.0
 
 
 func show_ride(car_key: String, pilot_key: String, show_pilot: bool) -> void:
@@ -360,7 +369,8 @@ func _cam_target() -> Vector3:
 	if garage:
 		var a := garage_angle + rules.t * 0.3
 		var sa := sin(a)
-		return Vector3(rules.x * K + sa * 3.3 * K, (rules.y - Rules.ROAD_Y + 1.2 + absf(sa) * 0.9) * K, cos(a) * 4.8 * K)
+		# (low and nearly level, so the end of the street and its landmark show over the car, ahead and behind)
+		return Vector3(rules.x * K + sa * 3.3 * K, (rules.y - Rules.ROAD_Y + 0.55 + absf(sa) * 0.6) * K, cos(a) * 4.8 * K)
 	if menu:
 		return Vector3(rules.x * 0.7 * K, (rules.y * 0.45 + 1.4 - Rules.ROAD_Y) * K, CAM_Z * K)
 	var cz := CAM_Z - (1.0 if rules.form < 2 else 0.0)
@@ -369,7 +379,7 @@ func _cam_target() -> Vector3:
 
 func _look_target() -> Vector3:
 	if garage:
-		return Vector3(rules.x * K, (rules.y - 0.55 - Rules.ROAD_Y) * K, 0.0)
+		return Vector3(rules.x * K, (rules.y + 0.05 - Rules.ROAD_Y) * K, 0.0)
 	if menu:
 		return Vector3(rules.x * 0.6 * K, (rules.y * 0.4 + menu_look - Rules.ROAD_Y) * K, -14.0 * K)
 	return Vector3(rules.x * 0.6 * K, (rules.y * 0.4 + CAM_LOOK_Y - Rules.ROAD_Y) * K, -14.0 * K)

@@ -24,7 +24,7 @@ func build(_host: Node) -> void:
 	bus()
 	hovercab()
 	drone()
-	barrier()
+	# (the roadblock is now the street banner: tools/editor/build_banners.gd)
 
 
 func m(name: String) -> Material:

@@ -10,6 +10,9 @@ class_name City
 @export var sections: Array[PackedScene] = []
 @export var section_length := 48.0
 @export var view_ahead := 190.0
+## how much street to keep behind the car: just past the camera in a run; the garage turns round the car, so it
+## keeps as much behind as ahead (run.gd sets it)
+var behind := 20.0
 ## traffic by kind (as in the course data): oldcar, dbus, biplane, taxi, truck, bus, hovercab, drone, barrier
 @export var traffic: Dictionary = {}
 ## body colours for cars and buses here
@@ -44,6 +47,15 @@ func _ready() -> void:
 		c.queue_free()
 	for i in 64:
 		_order.append(section_at(i))
+	# the far skyline behind the car too (turned round, so it isn't the same row of towers), for the garage
+	var sky: MeshInstance3D = null
+	if horizon:
+		sky = horizon.get_node_or_null("Skyline") as MeshInstance3D
+	if sky and not Engine.is_editor_hint() and not horizon.has_node("SkylineBack"):
+		var back := sky.duplicate() as MeshInstance3D
+		back.name = "SkylineBack"
+		back.rotation.y = PI
+		horizon.add_child(back)
 	if Engine.is_editor_hint() and preview_street and not sections.is_empty():
 		for i in 6:
 			var s := sections[_order[i]].instantiate() as Node3D
@@ -73,15 +85,16 @@ func use_street(laid_out: Node3D) -> void:
 
 
 func follow(car_z: float) -> void:
-	## keep sections from just behind the camera to view_ahead in front of the car
+	## keep sections from behind the car (behind) to view_ahead in front of it
 	if _fixed:
 		for s in _fixed.get_children():
 			var z: float = (s as Node3D).position.z
-			(s as Node3D).visible = z < car_z + 20.0 + section_length and z >= car_z - view_ahead
+			(s as Node3D).visible = z < car_z + behind + section_length and z >= car_z - view_ahead
 		if horizon:
 			horizon.position.z = car_z
 		return
-	var first := maxi(0, int(floor(-(car_z + 20.0) / section_length)))
+	# (sections before the start of the street too, so there is a street behind the car from the first moment)
+	var first := int(floor(-(car_z + behind) / section_length))
 	var last := int(floor(-(car_z - view_ahead) / section_length))
 	for i in _placed.keys():
 		if i < first or i > last:
@@ -89,7 +102,7 @@ func follow(car_z: float) -> void:
 			_placed.erase(i)
 	for i in range(first, last + 1):
 		if not _placed.has(i):
-			var s := sections[_order[i % _order.size()]].instantiate() as Node3D
+			var s := sections[_order[posmod(i, _order.size())]].instantiate() as Node3D
 			s.position.z = -i * section_length
 			street.add_child(s)
 			_placed[i] = s
@@ -102,6 +115,9 @@ func vehicle(kind: String, pick: int) -> Node3D:
 		return null
 	var n := (traffic[kind] as PackedScene).instantiate() as Node3D
 	paint(n, kind, pick)
+	# a street banner shows one of this city's three
+	if n.has_method("setup_banner"):
+		n.setup_banner(scene_file_path.get_file().get_basename(), pick)
 	return n
 
 

@@ -1,10 +1,36 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/traffic.gd" id="1_w3a8v"]
-[ext_resource type="ArrayMesh" path="res://assets/meshes/traffic/barrier.res" id="2_jwrhg"]
+[ext_resource type="Script" path="res://scripts/street_banner.gd" id="1_jwrhg"]
+[ext_resource type="Shader" path="res://materials/gfx_banner/banner_cloth.gdshader" id="2_cwssi"]
+[ext_resource type="Texture2D" path="res://assets/banners/old_0_0.webp" id="3_qjlmw"]
 
-[node name="Barrier" type="Node3D" unique_id=1619314174]
-script = ExtResource("1_w3a8v")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fhw0u"]
+render_priority = 0
+shader = ExtResource("2_cwssi")
+shader_parameter/art = ExtResource("3_qjlmw")
+shader_parameter/back_color = Color(0.3, 0.1, 0.12, 1)
+shader_parameter/sway = 1.0
+shader_parameter/phase = 0.0
+shader_parameter/glow = 0.25
+shader_parameter/stiff = 0.0
 
-[node name="Body" type="MeshInstance3D" parent="." unique_id=803906030]
-mesh = ExtResource("2_jwrhg")
+[sub_resource type="PlaneMesh" id="PlaneMesh_nkqc2"]
+material = SubResource("ShaderMaterial_fhw0u")
+size = Vector2(2.9, 1.8125)
+subdivide_width = 18
+subdivide_depth = 12
+orientation = 2
+
+[node name="Barrier" type="Node3D" unique_id=635626548]
+script = ExtResource("1_jwrhg")
+
+[node name="Hang" type="Node3D" parent="." unique_id=1507876054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90625, 0)
+
+[node name="Cloth" type="MeshInstance3D" parent="Hang" unique_id=793656877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.90625, 0)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_nkqc2")
+
+[node name="Rig" type="MeshInstance3D" parent="." unique_id=1104742734]
+cast_shadow = 0
