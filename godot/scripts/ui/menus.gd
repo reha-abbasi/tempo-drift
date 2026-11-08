@@ -90,6 +90,8 @@ func toast(text: String) -> void:
 # ------------------------------------------------------------------ navigation
 
 func open(screen: String) -> void:
+	if main.has_method("screen"):
+		main.screen(screen)
 	for s in ["Home", "Eps", "Garage", "Missions", "Board", "Settings", "Sync", "Changes"]:
 		$Root.get_node(s).visible = s == screen
 	if _backdrop():

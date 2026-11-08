@@ -1,10 +1,16 @@
 extends Node
-## The main scene: the studio intro (first launch), then the menus over the live city of the chosen era
-## (a run in menu mode: the car flies the era's first course by itself).
+## The main scene: the studio intro (first launch), then the menus over the chosen era's rooftop (your car parked
+## high over the era's open city, scripts/rooftop.gd). The garage shows the car in the street instead: a run in
+## menu mode (the car flies the era's course by itself), made while the garage is open.
 
 const RUN := preload("res://scenes/run/run.tscn")
+const ROOFTOP := preload("res://scenes/menu/rooftop.tscn")
 
+## the garage's street (only while the garage is open)
 var backdrop: Node
+## the rooftop behind the other menus (out of the scene while the garage is open)
+var rooftop: Rooftop
+var _map := ""
 
 
 var menu_music: AudioStreamPlayer
@@ -44,13 +50,44 @@ func _after_intro() -> void:
 
 
 func show_era(map: String) -> void:
+	## the chosen era behind the menus: its rooftop, or its street while the garage is open
+	_map = map
+	if rooftop == null:
+		rooftop = ROOFTOP.instantiate() as Rooftop
+		add_child(rooftop)
+		move_child(rooftop, 0)
+	rooftop.set_era(map)
+	if backdrop:
+		_street(true)
+
+
+func _notification(what: int) -> void:
+	# the rooftop may be out of the scene (garage open) when the menus close: free it with the main scene
+	if what == NOTIFICATION_PREDELETE and rooftop and is_instance_valid(rooftop) and not rooftop.is_inside_tree():
+		rooftop.free()
+
+
+func screen(name: String) -> void:
+	## the menus are opening a screen: the garage stands in the street, every other screen on the rooftop
+	_street(name == "Garage")
+
+
+func _street(on: bool) -> void:
 	if backdrop:
 		backdrop.queue_free()
-	Launch.mode = "menu"
-	Launch.map = map
-	# the era's open city (with its new look), not its first city
-	Launch.index = int(Save.OPEN.get(map, [0])[0])
-	backdrop = RUN.instantiate()
-	backdrop.name = "Backdrop"
-	add_child(backdrop)
-	move_child(backdrop, 0)
+		backdrop = null
+	if on:
+		Launch.mode = "menu"
+		Launch.map = _map
+		# the era's open city (with its new look), not its first city
+		Launch.index = int(Save.OPEN.get(_map, [0])[0])
+		backdrop = RUN.instantiate()
+		backdrop.name = "Backdrop"
+		# (the rooftop leaves the scene meanwhile: one city, one light and one camera at a time)
+		if rooftop and rooftop.is_inside_tree():
+			remove_child(rooftop)
+		add_child(backdrop)
+		move_child(backdrop, 0)
+	elif rooftop and not rooftop.is_inside_tree():
+		add_child(rooftop)
+		move_child(rooftop, 0)
