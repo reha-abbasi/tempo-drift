@@ -11,8 +11,6 @@ func _ready() -> void:
 	get_tree().root.add_child.call_deferred(main)
 	await get_tree().create_timer(2.5).timeout
 	var menus = main.get_node("Menus")
-	if main.has_node("Intro"):
-		main.get_node("Intro").queue_free()
 	menus.visible = true
 	menus.get_node("%Gift").visible = false
 	for s in OS.get_environment("SCREENS").split(","):

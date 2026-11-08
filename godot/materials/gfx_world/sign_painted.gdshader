@@ -6,7 +6,7 @@ uniform vec4 gilt : source_color = vec4(0.95, 0.76, 0.38, 1.0);
 
 #include "res://materials/gfx_world/sign_font.gdshaderinc"
 
-varying vec4 tint;
+varying flat vec4 tint;  // flat: the seed in its alpha goes through hash(), and blending it made every pixel random
 varying vec3 wp;
 
 void vertex() {

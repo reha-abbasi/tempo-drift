@@ -3,6 +3,24 @@
 What changed in `main`, newest first. Every update to `main` adds an entry here. The game's own change log
 (the ✦ pill on the main menu, `godot/data/changelog.json`) has the same versions in shorter words.
 
+## v31 New Pilots · 8 Nov 2026
+
+Every pilot is new, the game opens on the main menu, and the Future map's buildings are clean. The rules, the music
+and the levels are unchanged.
+
+- **All the pilots were sculpted again.** They used to be plain capsules joined at the joints. Each is now one
+  smooth, detailed body that bends at the joints, with its own suit, gloves, boots and jetpack: the Astronaut (soft
+  white suit, gold visor, life-support pack), the Racer (red and white suit, long aero helmet), the Robot (steel panels on
+  ball joints, one big thruster), the Fox Pilot (bomber jacket, goggles, a bushy tail, a copper rocket), the Cyber Ninja
+  (layered black armour, lines of cyan light) and the Mech Suit (crimson armour, boot thrusters). They show on the rooftop,
+  in the garage, on the jetpack and in the rescue.
+- **New pilot: the Test Pilot,** free in the garage: orange flight suit, black harness, white helmet, twin rocket tanks.
+- **Arms out when flying.** The pilots' arms used to bend inward through the body; they now hold them out for balance.
+- **The game opens on the main menu.** The studio intro (the door and the TV) is gone.
+- **No more points flying from the car.** The score at the top still counts up.
+- **Future map: the black specks are gone.** A rounding error gave every pixel of the lit walls and signs its own random
+  pattern. The walls are clean, the signs read properly (HOTEL, TAXI, 2075), and their glow is balanced to match.
+
 ## v30 Rooftops & Banners · 8 Nov 2026
 
 A new main menu and garage, street banners in place of the floating roadblocks, and a few fixes from playing.

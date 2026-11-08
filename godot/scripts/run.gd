@@ -423,7 +423,7 @@ func _on_judged(grade: String, n: Dictionary) -> void:
 	if _rings.has(n.i):
 		_rings[n.i].played()
 		fx.catch(_rings[n.i].global_position, int(n.row))
-	hud.judged(grade, rules)
+	hud.judged()
 	mission("coins", 1)
 	mission("combo", rules.combo)
 	if grade == "ex":

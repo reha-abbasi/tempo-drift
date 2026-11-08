@@ -1,5 +1,18 @@
 [
  {
+  "v": "31",
+  "name": "New Pilots",
+  "date": "8 Nov 2026",
+  "items": [
+   "All pilots sculpted again, smooth and detailed",
+   "New: Test Pilot, free in the garage",
+   "Pilots hold their arms out when flying",
+   "Game opens on the main menu",
+   "No more points flying from the car",
+   "Future map: black specks gone, signs readable"
+  ]
+ },
+ {
   "v": "30",
   "name": "Rooftops & Banners",
   "date": "8 Nov 2026",

@@ -106,7 +106,7 @@ func setup(r: Node3D) -> void:
 	for s in ["L", "R"]:
 		var hand := friend.get_node("Hip/Torso/Shoulder%s/Elbow/Hand" % s) as MeshInstance3D
 		hand.material_override = glove
-		hand.scale = Vector3.ONE * 2.6
+		hand.scale = Vector3.ONE * 1.5
 	for f in friend.find_children("Flame*", "", true, false):
 		var g := MeshInstance3D.new()
 		var q := QuadMesh.new()

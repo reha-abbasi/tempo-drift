@@ -1,7 +1,7 @@
 # Tempo Drift (Godot)
 
-The game in Godot 4.7.2, now at **v30 Rooftops & Banners** (see [`../PATCH-NOTES.md`](../PATCH-NOTES.md)). It started from
-the web game's rules (`../web/game.html`): the same rules, menus, garage, map and missions. Open this folder's `project.godot` in Godot 4.7.2. Play (F5) starts at the studio intro,
+The game in Godot 4.7.2, now at **v31 New Pilots** (see [`../PATCH-NOTES.md`](../PATCH-NOTES.md)). It started from
+the web game's rules (`../web/game.html`): the same rules, menus, garage, map and missions. Open this folder's `project.godot` in Godot 4.7.2. Play (F5) starts at the main menu,
 then the menus.
 
 ## Where things are
@@ -11,11 +11,10 @@ then the menus.
 | `scenes/levels/` | **The levels.** `old_0` … `old_7` (Past), `sunset_0` … `sunset_7` (Present), `rain_0` … `rain_7` (Future), and `school_old`, `school_sunset`, `school_rain` (Flight School) |
 | `scenes/cities/` | The 24 cities: sky, light, fog, landmark, traffic colours. `<city>/section_0..3` are its street pieces |
 | `scenes/landmarks/`, `scenes/buildings/`, `scenes/props/` | Landmarks, buildings, lamps, trees, signs |
-| `scenes/cars/`, `scenes/pilots/`, `scenes/traffic/` | The garage's cars and pilots, and the traffic |
+| `scenes/cars/`, `scenes/pilots/`, `scenes/traffic/` | The garage's cars and pilots, and the traffic. The pilots are sculpted in code: `tools/pilots/<pilot>.py`, then `tools/editor/build_pilots.gd` |
 | `scenes/ui/` | `menus.tscn` (every menu screen, under Root), `hud.tscn`, `panels.tscn` (pause, results) |
 | `scenes/run/run.tscn` | The run: camera, effects, HUD |
-| `scenes/intro/intro.tscn` | The studio intro |
-| `scenes/main.tscn` | What Play starts: the intro, then the menus over the live city |
+| `scenes/main.tscn` | What Play starts: the menus over the rooftop |
 
 ## Editing a level
 

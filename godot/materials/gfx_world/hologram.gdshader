@@ -6,7 +6,7 @@ render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled;
 
 uniform float energy = 1.6;
 
-varying vec4 tint;
+varying flat vec4 tint;  // flat: the seed in its alpha goes through hash(), and blending it made every pixel random
 
 float hash(float n) { return fract(sin(n * 12.9898) * 43758.5453); }
 

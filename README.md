@@ -4,7 +4,7 @@ A flying-car rhythm runner for iPhone by [@reha-abbasi](https://github.com/reha-
 [@muratbyk](https://github.com/muratbyk). Fly through 24 cities across three eras, swiping into a ring on every note
 of the song.
 
-**Current version: v30 Rooftops & Banners** (8 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
+**Current version: v31 New Pilots** (8 Nov 2026). What changed in each version: [`PATCH-NOTES.md`](PATCH-NOTES.md).
 
 ![Tempo Drift: the Future's map, London 1890 at gaslight dusk, Rio de Janeiro at sunset and Berlin 2075 at night](.github/screenshots.png)
 
@@ -47,7 +47,7 @@ Apple ID.
 1. Install **Godot 4.7.2** (standard, not .NET).
 2. In Godot's Project Manager: **Import** → pick `godot/project.godot` → **Import & Edit**. The first import takes a
    few minutes.
-3. Press **F5** to play from the start (intro, then menus), or open a level from `godot/scenes/levels/` and press
+3. Press **F5** to play from the start (the main menu), or open a level from `godot/scenes/levels/` and press
    **F6** to fly just that level.
 
 ## The other folders

@@ -1,5 +1,5 @@
 extends Node
-## The main scene: the studio intro (first launch), then the menus over the chosen era's rooftop (your car parked
+## The main scene: the menus over the chosen era's rooftop (your car parked
 ## high over the era's open city, scripts/rooftop.gd). The garage shows the car in the street instead: a run in
 ## menu mode (the car flies the era's course by itself), made while the garage is open.
 
@@ -29,25 +29,7 @@ func _ready() -> void:
 	menu_music.volume_db = -5.0
 	menu_music.bus = "Menu" if AudioServer.get_bus_index("Menu") >= 0 else "Master"
 	add_child(menu_music)
-	# the city backdrop waits for the intro: they share one 3D world, and the backdrop's camera would take over
-	if has_node("Intro") and not Intro_seen:
-		$Intro.finished.connect(_after_intro)
-		$Menus.visible = false
-	else:
-		if has_node("Intro"):
-			$Intro.queue_free()
-		show_era(Save.data.get("map", "old"))
-		menu_music.play()
-
-
-static var Intro_seen := false
-
-
-func _after_intro() -> void:
-	Intro_seen = true
 	show_era(Save.data.get("map", "old"))
-	$Menus.visible = true
-	$Menus.open("Home")
 	menu_music.play()
 
 

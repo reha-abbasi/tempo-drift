@@ -103,7 +103,7 @@ func _dress_pilot(p: Node3D) -> void:
 		f.add_child(g)
 	for mi in p.find_children("*", "MeshInstance3D", true, false):
 		var m := (mi as MeshInstance3D)
-		if m.mesh == null or m.get_parent().name.begins_with("Flame"):
+		if m.mesh == null or m.has_meta("dressed") or m.get_parent().name.begins_with("Flame"):
 			continue
 		var sm := m.get_active_material(0) as StandardMaterial3D
 		if sm and not sm.emission_enabled:

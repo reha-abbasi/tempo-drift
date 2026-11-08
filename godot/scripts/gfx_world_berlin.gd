@@ -127,7 +127,7 @@ func restyle(sec: Node3D) -> void:
 
 func _sign_mat() -> ShaderMaterial:
 	if _sign == null:
-		_sign = GfxWorld.sign_mat(PackedStringArray(WORDS), 3.4)
+		_sign = GfxWorld.sign_mat(PackedStringArray(WORDS), 2.3)
 	return _sign
 
 

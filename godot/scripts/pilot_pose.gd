@@ -15,7 +15,7 @@ func lean(vx: float, vy: float) -> void:
 		hip.rotation = Vector3.ZERO
 		torso.rotation = Vector3(0, 0, sin(_t * 1.6) * 0.03)
 		for s in ["L", "R"]:
-			_joint("Hip/Torso/Shoulder" + s, Vector3(0.1, 0, (0.15 if s == "L" else -0.15)))
+			_joint("Hip/Torso/Shoulder" + s, Vector3(0.1, 0, (-0.12 if s == "L" else 0.12)))
 			_joint("Hip/Torso/Shoulder%s/Elbow" % s, Vector3(-0.3, 0, 0))
 			_joint("Hip/Leg" + s, Vector3.ZERO)
 			_joint("Hip/Leg%s/Knee" % s, Vector3.ZERO)
@@ -24,8 +24,8 @@ func lean(vx: float, vy: float) -> void:
 	hip.rotation = Vector3(-0.35 - clampf(vy, -6, 6) * 0.03, 0, clampf(-vx * 0.06, -0.5, 0.5))
 	torso.rotation = Vector3(0.1, 0, 0)
 	var sway := sin(_t * 3.0) * 0.08
-	_joint("Hip/Torso/ShoulderL", Vector3(0.2 + sway, 0, 0.7))
-	_joint("Hip/Torso/ShoulderR", Vector3(0.2 - sway, 0, -0.7))
+	_joint("Hip/Torso/ShoulderL", Vector3(0.2 + sway, 0, -0.7))
+	_joint("Hip/Torso/ShoulderR", Vector3(0.2 - sway, 0, 0.7))
 	_joint("Hip/Torso/ShoulderL/Elbow", Vector3(-0.5, 0, 0))
 	_joint("Hip/Torso/ShoulderR/Elbow", Vector3(-0.5, 0, 0))
 	_joint("Hip/LegL", Vector3(0.35 + sway, 0, 0.05))

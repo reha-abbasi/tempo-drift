@@ -8,11 +8,13 @@ uniform vec4 glass_color : source_color = vec4(0.03, 0.04, 0.06, 1.0);
 uniform vec4 slab_color : source_color = vec4(0.07, 0.075, 0.09, 1.0);
 uniform float spandrel = 0.22;  // share of each floor that is solid slab
 uniform float lit_share = 0.42; // share of rooms with the light on
-uniform float energy = 2.4;
+uniform float energy = 1.7;
 global uniform vec4 accent_a;
 global uniform vec4 accent_b;
 
-varying float face;
+// (flat: the same exact number over the whole face. Blended across a wall, its tiny rounding differences went through
+// hash() and came out as a different window pattern on every pixel: black specks all over the lit walls)
+varying flat float face;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 

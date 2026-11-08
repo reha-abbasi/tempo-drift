@@ -1,5 +1,5 @@
 extends RefCounted
-## The garage: five cars and six pilots (with their jetpacks), as in the web game's garage, modelled once and saved as
+## The garage: five cars, as in the web game's garage, modelled once and saved as
 ## scenes in scenes/cars/ and scenes/pilots/. A car's nose points to -Z; its origin is its middle. The paint, the light
 ## strip and the engine glow are separate surfaces named "paint", "strip" and "pods", so each era can recolour them
 ## (scripts/car_look.gd), as the web game paints the car per era.
@@ -8,7 +8,7 @@ const M := "res://materials/%s.tres"
 
 
 func build(_host: Node) -> void:
-	for d in ["res://scenes/cars", "res://scenes/pilots", "res://assets/meshes/cars"]:
+	for d in ["res://scenes/cars", "res://assets/meshes/cars"]:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(d))
 	_car_materials()
 	arrow()
@@ -16,8 +16,6 @@ func build(_host: Node) -> void:
 	retro()
 	spinner()
 	manta()
-	for k in ["astro", "racer", "robot", "fox", "ninja", "mech"]:
-		pilot(k)
 
 
 func m(name: String) -> Material:
@@ -298,137 +296,6 @@ func manta() -> void:
 		k.box("tail", Vector3(s * 0.85, 0.14, 0.55), Vector3(0.12, 0.03, 0.04))
 		k.box("head", Vector3(s * 0.14, 0.12, -0.8), Vector3(0.12, 0.03, 0.02))
 	_save_car(k, "manta", [[Vector3(-0.15, 0.1, 0.8), 0.07], [Vector3(0.15, 0.1, 0.8), 0.07]])
-
-
-# ------------------------------------------------------------------ the pilots
-
-func pilot(key: String) -> void:
-	## a pilot standing on air with a jetpack on their back (the jetpack life and the garage), facing -Z.
-	## Each is built from a simple skeleton of parts so the run can pose it (scripts/pilot_pose.gd)
-	var parts := {
-		"astro": {"suit": Color("f2efe8"), "acc": Color("ff7a3c"), "dark": Color("3a3e48"), "head": "visor", "visor": Color("ffc457"), "pack": "twin"},
-		"racer": {"suit": Color("d8232a"), "acc": Color("f6f6f2"), "dark": Color("141418"), "head": "aero", "visor": Color("16202c"), "pack": "twin"},
-		"robot": {"suit": Color("8fb0c8"), "acc": Color("6affd8"), "dark": Color("2a3440"), "head": "box", "visor": Color("6affd8"), "pack": "single"},
-		"fox": {"suit": Color("5a4030"), "acc": Color("f0e6d0"), "dark": Color("2a2018"), "head": "fox", "visor": Color("9ad8ff"), "pack": "twin"},
-		"ninja": {"suit": Color("16161c"), "acc": Color("2ef2ff"), "dark": Color("0c0c10"), "head": "ninja", "visor": Color("2ef2ff"), "pack": "twin"},
-		"mech": {"suit": Color("b8202a"), "acc": Color("e0b050"), "dark": Color("2a2a30"), "head": "mech", "visor": Color("9ae8ff"), "pack": "twin"},
-	}
-	var p: Dictionary = parts[key]
-	var root := Node3D.new()
-	root.name = key.capitalize()
-	root.set_script(load("res://scripts/pilot_pose.gd"))
-	var suit := _mat(p.suit, 0.6, 0.1)
-	var acc := _mat(p.acc, 0.45, 0.1, p.acc if key in ["robot", "ninja"] else Color.BLACK)
-	var dark := _mat(p.dark, 0.4, 0.5)
-	var visor := _mat(p.visor, 0.08, 0.9, p.visor if key in ["robot", "ninja", "mech"] else Color.BLACK)
-	var hip := Node3D.new()
-	hip.name = "Hip"
-	hip.position.y = 0.5
-	root.add_child(hip)
-	_part(hip, "Pelvis", _cap(0.13, 0.12), suit, Vector3(0, 0, 0), Vector3(0, 0, PI / 2))
-	var torso := Node3D.new()
-	torso.name = "Torso"
-	hip.add_child(torso)
-	if key in ["robot", "mech"]:
-		_part(torso, "Chest", _box(Vector3(0.4, 0.4, 0.26)), suit, Vector3(0, 0.25, 0))
-		_part(torso, "Core", _sph(0.06), acc, Vector3(0, 0.3, -0.135))
-	else:
-		_part(torso, "Chest", _cap(0.17, 0.42), suit, Vector3(0, 0.25, 0))
-		_part(torso, "Belt", _cyl(0.17, 0.05), acc, Vector3(0, 0.07, 0))
-	# the jetpack
-	var pack := Node3D.new()
-	pack.name = "Jetpack"
-	pack.position = Vector3(0, 0.26, 0.17)
-	torso.add_child(pack)
-	_part(pack, "Tank", _box(Vector3(0.3, 0.32, 0.14)), dark, Vector3.ZERO)
-	var nozzles := [Vector3(0, -0.2, 0.03)] if p.pack == "single" else [Vector3(-0.1, -0.2, 0.03), Vector3(0.1, -0.2, 0.03)]
-	for i in nozzles.size():
-		_part(pack, "Nozzle%d" % i, _cyl(0.06 if p.pack == "twin" else 0.09, 0.14), dark, nozzles[i] + Vector3(0, 0.05, 0))
-		var f := Node3D.new()
-		f.name = "Flame%d" % i
-		f.position = nozzles[i] + Vector3(0, -0.04, 0)
-		f.rotation.x = PI / 2  # the flame points down
-		f.add_to_group("flame", true)
-		pack.add_child(f)
-		_pilot_flame(f, 0.06 if p.pack == "twin" else 0.09)
-	# the head
-	var head := Node3D.new()
-	head.name = "Head"
-	head.position.y = 0.58
-	torso.add_child(head)
-	match p.head:
-		"visor":
-			_part(head, "Helmet", _sph(0.15), suit, Vector3.ZERO)
-			_part(head, "Visor", _sph(0.12), visor, Vector3(0, 0.0, -0.06), Vector3.ZERO, Vector3(1.05, 0.8, 0.7))
-		"aero":
-			_part(head, "Helmet", _sph(0.14), suit, Vector3(0, 0, 0.03), Vector3.ZERO, Vector3(1, 0.95, 1.35))
-			_part(head, "Visor", _sph(0.12), visor, Vector3(0, 0.0, -0.07), Vector3.ZERO, Vector3(1.0, 0.55, 0.7))
-			_part(head, "Stripe", _box(Vector3(0.02, 0.05, 0.3)), acc, Vector3(0, 0.12, 0.05))
-		"box":
-			_part(head, "Head", _box(Vector3(0.26, 0.22, 0.24)), suit, Vector3.ZERO)
-			for s: int in [-1, 1]:
-				_part(head, "Eye", _box(Vector3(0.06, 0.04, 0.02)), visor, Vector3(s * 0.06, 0.02, -0.125))
-			_part(head, "Antenna", _cyl(0.01, 0.16), dark, Vector3(0, 0.18, 0))
-		"fox":
-			var fur := _mat(Color("e8763a"), 0.85, 0.0)
-			var white := _mat(Color("f8f0e4"), 0.85, 0.0)
-			_part(head, "Head", _sph(0.14), fur, Vector3.ZERO)
-			_part(head, "Snout", _sph(0.07), white, Vector3(0, -0.03, -0.13), Vector3.ZERO, Vector3(1, 0.8, 1.4))
-			_part(head, "Nose", _sph(0.025), dark, Vector3(0, -0.01, -0.22))
-			for s: int in [-1, 1]:
-				_part(head, "Ear", _cone(0.06, 0.14), fur, Vector3(s * 0.08, 0.15, 0.02), Vector3(0, 0, -s * 0.3))
-				_part(head, "Goggle", _cyl(0.04, 0.03), visor, Vector3(s * 0.055, 0.07, -0.11), Vector3(PI / 2 - 0.3, 0, 0))
-		"ninja":
-			_part(head, "Helmet", _sph(0.13), suit, Vector3.ZERO, Vector3.ZERO, Vector3(1, 1.05, 1.12))
-			_part(head, "Visor", _box(Vector3(0.19, 0.03, 0.05)), visor, Vector3(0, 0.01, -0.13))
-			_part(head, "Fin", _cone(0.03, 0.16), suit, Vector3(0, 0.12, 0.08), Vector3(-1.2, 0, 0))
-		"mech":
-			_part(head, "Helmet", _box(Vector3(0.26, 0.24, 0.26)), suit, Vector3.ZERO)
-			_part(head, "Visor", _box(Vector3(0.2, 0.05, 0.02)), visor, Vector3(0, 0.02, -0.135))
-			_part(head, "Crest", _box(Vector3(0.04, 0.08, 0.2)), acc, Vector3(0, 0.15, 0))
-	# arms and legs: each an upper and lower part on joints the pose can bend
-	for s: int in [-1, 1]:
-		var side := "L" if s < 0 else "R"
-		var sh := Node3D.new()
-		sh.name = "Shoulder" + side
-		sh.position = Vector3(s * 0.22, 0.42, 0)
-		torso.add_child(sh)
-		_part(sh, "Upper", _cap(0.06, 0.26), suit, Vector3(0, -0.12, 0))
-		var el := Node3D.new()
-		el.name = "Elbow"
-		el.position.y = -0.25
-		sh.add_child(el)
-		_part(el, "Lower", _cap(0.055, 0.24), suit, Vector3(0, -0.11, 0))
-		_part(el, "Hand", _sph(0.055), dark if key != "fox" else acc, Vector3(0, -0.25, 0))
-		var hp := Node3D.new()
-		hp.name = "Leg" + side
-		hp.position = Vector3(s * 0.09, -0.02, 0)
-		hip.add_child(hp)
-		_part(hp, "Thigh", _cap(0.075, 0.3), suit, Vector3(0, -0.15, 0))
-		var kn := Node3D.new()
-		kn.name = "Knee"
-		kn.position.y = -0.3
-		hp.add_child(kn)
-		_part(kn, "Shin", _cap(0.065, 0.28), suit, Vector3(0, -0.13, 0))
-		_part(kn, "Boot", _box(Vector3(0.12, 0.08, 0.2)), dark, Vector3(0, -0.29, -0.03))
-	Kit.save(root, "res://scenes/pilots/%s.tscn" % key)
-
-
-func _pilot_flame(holder: Node3D, r: float) -> void:
-	var cone := MeshInstance3D.new()
-	cone.name = "Cone"
-	var cm := CylinderMesh.new()
-	cm.top_radius = r
-	cm.bottom_radius = 0.0
-	cm.height = r * 7.0
-	var mat := ShaderMaterial.new()
-	mat.shader = load("res://materials/shaders/flame.gdshader")
-	cm.material = mat
-	cone.mesh = cm
-	cone.rotation.x = -PI / 2
-	cone.position.z = r * 3.5
-	cone.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	holder.add_child(cone)
 
 
 func _mat(c: Color, rough: float, metal: float, emit := Color.BLACK) -> StandardMaterial3D:

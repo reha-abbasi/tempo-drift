@@ -4,7 +4,7 @@ extends CanvasLayer
 
 const RUN := "res://scenes/run/run.tscn"
 const CAR_KEYS := ["arrow", "bubble", "retro", "spinner", "manta"]
-const PILOT_KEYS := ["astro", "racer", "robot", "fox", "ninja", "mech"]
+const PILOT_KEYS := ["astro", "testpilot", "racer", "robot", "fox", "ninja", "mech"]
 const LEVELS := ["normal", "hard"]
 const ERA_K := {"old": Color("e8c38a"), "sunset": Color("ffb37a"), "rain": Color("ff3fb4")}
 

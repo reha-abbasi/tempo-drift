@@ -7,7 +7,6 @@ func _ready() -> void:
 	get_tree().create_timer(400.0).timeout.connect(get_tree().quit.bind(1))
 	var map := OS.get_environment("MAP") if OS.get_environment("MAP") != "" else "old"
 	Save.data.map = map
-	(load("res://scripts/main.gd") as GDScript).set("Intro_seen", true)
 	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	get_tree().root.add_child.call_deferred(main)
 	await get_tree().create_timer(2.5).timeout

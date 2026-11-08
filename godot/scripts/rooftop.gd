@@ -353,7 +353,7 @@ func _pose_pilot() -> void:
 func _j(path: String, rot: Vector3) -> void:
 	## a joint between its leaning pose and standing (arms easy, the drink held up a little, looking at the camera)
 	var stand := {"Hip": Vector3(0.0, 0.0, 0.0), "Hip/Torso": Vector3(0.05, 0.0, 0.0), "Hip/Torso/Head": Vector3(0.0, 0.0, 0.0),
-		"Hip/Torso/ShoulderL": Vector3(0.1, 0.0, 0.18), "Hip/Torso/ShoulderL/Elbow": Vector3(-0.25, 0.0, 0.0),
+		"Hip/Torso/ShoulderL": Vector3(0.1, 0.0, -0.12), "Hip/Torso/ShoulderL/Elbow": Vector3(-0.25, 0.0, 0.0),
 		"Hip/Torso/ShoulderR": Vector3(0.55, 0.0, -0.2), "Hip/Torso/ShoulderR/Elbow": Vector3(-1.1, 0.0, 0.0),
 		"Hip/LegL": Vector3.ZERO, "Hip/LegL/Knee": Vector3.ZERO, "Hip/LegR": Vector3(0.05, 0.0, -0.04), "Hip/LegR/Knee": Vector3(0.08, 0.0, 0.0)}
 	var n := _pilot.get_node_or_null(path) as Node3D

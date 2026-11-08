@@ -30,12 +30,13 @@ const CARS := {
 	"manta": {"name": "Manta", "price": 2000, "about": "Flying wing · low, wide and fast", "perk": {"coin": 1.25}, "say": "Perk: +25% coins from every run"},
 }
 const PILOTS := {
-	"astro": {"name": "Astronaut", "price": 0, "about": "Chunky white suit, gold mirror visor", "lead": "bell"},
-	"racer": {"name": "Racer", "price": 300, "about": "Race suit and a long aero helmet", "lead": "saw"},
-	"robot": {"name": "Robot", "price": 600, "about": "Boxy robot, LED eyes, one big thruster", "lead": "chip"},
-	"fox": {"name": "Fox Pilot", "price": 900, "about": "Fox in a bomber jacket and goggles", "lead": "flute"},
-	"ninja": {"name": "Cyber Ninja", "price": 1200, "about": "Matte armour, neon edges, glowing visor", "lead": "koto"},
-	"mech": {"name": "Mech Suit", "price": 2000, "about": "Armoured suit, chest light, boot thrusters", "lead": "hero"},
+	"astro": {"name": "Astronaut", "price": 0, "about": "Soft white suit, gold mirror visor, life-support pack", "lead": "bell"},
+	"testpilot": {"name": "Test Pilot", "price": 0, "about": "Orange flight suit, black harness, twin rocket tanks", "lead": "saw"},
+	"racer": {"name": "Racer", "price": 300, "about": "Red and white race suit, long aero helmet", "lead": "saw"},
+	"robot": {"name": "Robot", "price": 600, "about": "Steel panels, LED eyes, one big thruster", "lead": "chip"},
+	"fox": {"name": "Fox Pilot", "price": 900, "about": "Bomber jacket, goggles, a big bushy tail", "lead": "flute"},
+	"ninja": {"name": "Cyber Ninja", "price": 1200, "about": "Layered black armour, lines of cyan light", "lead": "koto"},
+	"mech": {"name": "Mech Suit", "price": 2000, "about": "Heavy crimson armour, chest light, boot thrusters", "lead": "hero"},
 }
 
 ## missions ask for something on purpose (timing, clean runs, stars), not just for playing

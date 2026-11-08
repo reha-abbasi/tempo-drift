@@ -6,7 +6,7 @@ uniform float seed = 1.0;
 uniform vec2 grid = vec2(1.0, 4.0); // glyphs across and down
 // a building's signs share one material: each sign's colour and seed then come from its vertices (MeshKit)
 uniform bool vertex_tint = false;
-varying vec4 tint;
+varying flat vec4 tint;  // flat: the seed in its alpha goes through hash(), and blending it made every pixel random
 float hash(vec2 p, float s) { return fract(sin(dot(p, vec2(12.9898, 78.233)) + s * 17.0) * 43758.5453); }
 void vertex() { tint = COLOR; }
 void fragment() {
